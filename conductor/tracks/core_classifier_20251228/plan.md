@@ -32,8 +32,8 @@
 
 ## Phase 6: Recursive Tree Growth
 - [x] Task: Write tests for tree growing (depth, min_samples stopping) [1d2cb82]
-- [ ] Task: Implement recursive `_fit_node` algorithm
-- [ ] Task: Implement leaf prediction logic (majority class)
+- [x] Task: Implement recursive `_fit_node` algorithm [8d1479c]
+- [x] Task: Implement leaf prediction logic (majority class) [8d1479c]
 - [ ] Task: Conductor - User Manual Verification 'Phase 6: Recursive Tree Growth' (Protocol in workflow.md)
 
 ## Phase 7: Prediction & Probability
