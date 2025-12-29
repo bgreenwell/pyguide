@@ -9,7 +9,7 @@ from .selection import select_split_variable
 from .splitting import find_best_split
 from .interactions import calc_interaction_p_value
 
-class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
+class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
     """
     GUIDE (Generalized, Unbiased, Interaction Detection and Estimation) Tree Classifier.
     """
@@ -29,14 +29,13 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         self.interaction_depth = interaction_depth
         self.categorical_features = categorical_features
 
-    def _get_categorical_mask(self, X):
+    def _get_categorical_mask(self, X, n_features):
         """Identify categorical features."""
-        n_features = X.shape[1]
         if self.categorical_features is None:
             # Simple heuristic: if it's a DataFrame, check dtypes
             if isinstance(X, pd.DataFrame):
                 return X.dtypes.isin(['object', 'category']).values
-            # If it's a numpy array, we can't easily tell, so assume all numerical
+            # If it's a numpy array or something else, assume all numerical
             return np.zeros(n_features, dtype=bool)
         
         mask = np.zeros(n_features, dtype=bool)
@@ -57,7 +56,7 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         self.n_classes_ = len(self.classes_)
         self.n_features_in_ = X.shape[1]
         
-        self._categorical_mask = self._get_categorical_mask(X_orig)
+        self._categorical_mask = self._get_categorical_mask(X_orig, self.n_features_in_)
         
         # 2. Build the tree
         self.tree_ = self._fit_node(X, y, depth=0)
@@ -185,6 +184,8 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         """
         check_is_fitted(self)
         X = check_array(X)
+        if X.shape[1] != self.n_features_in_:
+            raise ValueError(f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input.")
         
         return np.array([self._predict_single(x, self.tree_) for x in X])
 
@@ -211,6 +212,8 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         """
         check_is_fitted(self)
         X = check_array(X)
+        if X.shape[1] != self.n_features_in_:
+            raise ValueError(f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input.")
         
         return np.array([self._predict_proba_single(x, self.tree_) for x in X])
 
