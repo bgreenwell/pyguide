@@ -31,7 +31,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 5: Split Point Optimization' (Protocol in workflow.md) [9dbbd16]
 
 ## Phase 6: Recursive Tree Growth
-- [ ] Task: Write tests for tree growing (depth, min_samples stopping)
+- [x] Task: Write tests for tree growing (depth, min_samples stopping) [1d2cb82]
 - [ ] Task: Implement recursive `_fit_node` algorithm
 - [ ] Task: Implement leaf prediction logic (majority class)
 - [ ] Task: Conductor - User Manual Verification 'Phase 6: Recursive Tree Growth' (Protocol in workflow.md)
