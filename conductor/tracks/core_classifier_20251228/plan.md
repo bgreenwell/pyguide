@@ -42,11 +42,11 @@
 - [x] Task: Implement `predict_proba` returning class frequencies [97a3530]
 - [x] Task: Conductor - User Manual Verification 'Phase 7: Prediction & Probability' (Protocol in workflow.md) [ff2e8fa]
 
-## Phase 8: Basic Interaction Detection (Fallback)
+## Phase 8: Basic Interaction Detection (Fallback) [checkpoint: 640be3b]
 - [x] Task: Write tests for simple interaction detection fallback [aa7456b]
 - [x] Task: Implement interaction p-value calculation for variable pairs [0aa709c]
 - [x] Task: Integrate interaction check if main effects are not significant [0aa709c]
-- [ ] Task: Conductor - User Manual Verification 'Phase 8: Basic Interaction Detection (Fallback)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 8: Basic Interaction Detection (Fallback)' (Protocol in workflow.md) [640be3b]
 
 ## Phase 9: Final Verification & Benchmarking
 - [ ] Task: Run `check_estimator` from `sklearn.utils.estimator_checks`
