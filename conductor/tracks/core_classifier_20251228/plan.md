@@ -2,7 +2,7 @@
 
 ## Phase 1: Project Scaffolding & CI/CD
 - [x] Task: Initialize Python project with `uv` and `pyproject.toml` (Poetry style) [dbdedd1]
-- [ ] Task: Configure `ruff` and `pytest` with coverage requirements
+- [x] Task: Configure `ruff` and `pytest` with coverage requirements [c9768e7]
 - [ ] Task: Create basic directory structure (`src/pyguide`, `tests/`)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & CI/CD' (Protocol in workflow.md)
 
