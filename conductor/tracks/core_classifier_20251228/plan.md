@@ -1,10 +1,10 @@
 # Plan: Build the core GuideTreeClassifier infrastructure
 
-## Phase 1: Project Scaffolding & CI/CD
+## Phase 1: Project Scaffolding & CI/CD [checkpoint: 2b14280]
 - [x] Task: Initialize Python project with `uv` and `pyproject.toml` (Poetry style) [dbdedd1]
 - [x] Task: Configure `ruff` and `pytest` with coverage requirements [c9768e7]
 - [x] Task: Create basic directory structure (`src/pyguide`, `tests/`) [c8d9c43]
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & CI/CD' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & CI/CD' (Protocol in workflow.md) [2b14280]
 
 ## Phase 2: Scikit-learn Compliance & Base Structure
 - [ ] Task: Write tests for `GuideTreeClassifier` basic interface (init, fit, predict)
