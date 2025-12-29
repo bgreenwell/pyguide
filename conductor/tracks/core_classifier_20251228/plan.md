@@ -43,7 +43,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 7: Prediction & Probability' (Protocol in workflow.md) [ff2e8fa]
 
 ## Phase 8: Basic Interaction Detection (Fallback)
-- [ ] Task: Write tests for simple interaction detection fallback
+- [x] Task: Write tests for simple interaction detection fallback [aa7456b]
 - [ ] Task: Implement interaction p-value calculation for variable pairs
 - [ ] Task: Integrate interaction check if main effects are not significant
 - [ ] Task: Conductor - User Manual Verification 'Phase 8: Basic Interaction Detection (Fallback)' (Protocol in workflow.md)
