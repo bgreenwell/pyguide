@@ -7,6 +7,7 @@ from sklearn.utils.multiclass import check_classification_targets
 from .node import GuideNode
 from .selection import select_split_variable
 from .splitting import find_best_split
+from .interactions import calc_interaction_p_value
 
 class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
     """
@@ -64,6 +65,38 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         self.is_fitted_ = True
         return self
 
+    def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
+        """
+        Calculate total gain of splitting on split_feat, then splitting children on next_feat.
+        """
+        is_cat = self._categorical_mask[split_feat]
+        threshold, gain1 = find_best_split(X[:, split_feat], y, is_categorical=is_cat)
+        
+        if threshold is None:
+            return 0.0
+            
+        if is_cat:
+            left_mask = (X[:, split_feat] == threshold)
+        else:
+            left_mask = (X[:, split_feat] <= threshold)
+            
+        y_left = y[left_mask]
+        y_right = y[~left_mask]
+        X_left = X[left_mask]
+        X_right = X[~left_mask]
+        
+        n = len(y)
+        n_left = len(y_left)
+        n_right = len(y_right)
+        
+        # Gain from second level (next_feat)
+        is_cat_next = self._categorical_mask[next_feat]
+        _, gain2_left = find_best_split(X_left[:, next_feat], y_left, is_categorical=is_cat_next)
+        _, gain2_right = find_best_split(X_right[:, next_feat], y_right, is_categorical=is_cat_next)
+        
+        total_gain = gain1 + (n_left/n)*gain2_left + (n_right/n)*gain2_right
+        return total_gain
+
     def _fit_node(self, X, y, depth):
         """Recursive function to grow the tree."""
         n_samples = len(y)
@@ -87,12 +120,50 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         # 3. Variable Selection (GUIDE step 1)
         best_idx, p = select_split_variable(X, y, categorical_features=self._categorical_mask)
         
+        # Interaction Detection (Fallback)
+        interaction_split_override = False
+        if p > self.significance_threshold and self.interaction_depth > 0:
+            best_int_p = 1.0
+            best_int_pair = None
+            n_features = X.shape[1]
+            
+            # Exhaustive pair search
+            for i in range(n_features):
+                for j in range(i + 1, n_features):
+                    p_int = calc_interaction_p_value(
+                        X[:, i], X[:, j], y,
+                        is_cat1=self._categorical_mask[i],
+                        is_cat2=self._categorical_mask[j]
+                    )
+                    if p_int < best_int_p:
+                        best_int_p = p_int
+                        best_int_pair = (i, j)
+            
+            if best_int_p < self.significance_threshold:
+                # Interaction found! Perform look-ahead split selection.
+                # We compare splitting on i then j vs splitting on j then i.
+                i, j = best_int_pair
+                
+                gain_i_then_j = self._calculate_lookahead_gain(X, y, i, j)
+                gain_j_then_i = self._calculate_lookahead_gain(X, y, j, i)
+                
+                if gain_i_then_j >= gain_j_then_i:
+                    best_idx = i
+                else:
+                    best_idx = j
+                
+                interaction_split_override = True
+        
+        # Check significance threshold
+        if not interaction_split_override and p > self.significance_threshold:
+             return GuideNode(depth=depth, is_leaf=True, prediction=prediction, probabilities=probabilities)
+
         # 4. Split Point Optimization (GUIDE step 2)
         is_cat = self._categorical_mask[best_idx]
         threshold, gain = find_best_split(X[:, best_idx], y, is_categorical=is_cat)
         
         # 5. If no valid split found, return leaf
-        if threshold is None or gain <= 0:
+        if threshold is None or (gain <= 0 and not interaction_split_override):
             return GuideNode(depth=depth, is_leaf=True, prediction=prediction, probabilities=probabilities)
             
         # 6. Create node and recurse

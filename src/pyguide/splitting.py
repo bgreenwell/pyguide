@@ -14,7 +14,7 @@ def _find_best_threshold_numerical(x, y):
     Minimizes Gini impurity.
     """
     best_threshold = None
-    best_gain = 0.0
+    best_gain = -1.0
     current_impurity = _gini(y)
     n_samples = len(y)
     
@@ -68,7 +68,7 @@ def _find_best_split_categorical(x, y):
     Returns the category to go left.
     """
     best_category = None
-    best_gain = 0.0
+    best_gain = -1.0
     current_impurity = _gini(y)
     n_samples = len(y)
     

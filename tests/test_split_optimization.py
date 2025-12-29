@@ -20,8 +20,10 @@ def test_find_best_split_no_gain():
     y = np.array([0, 0, 0, 0])
     
     threshold, gain = find_best_split(x, y, is_categorical=False)
-    assert threshold is None
+    # It might return a threshold now (e.g. 1.5), but gain must be 0
     assert gain == 0
+    # Threshold is not None because we allow finding 0-gain splits for interaction lookahead
+    assert threshold is not None
 
 def test_find_best_split_categorical_simple():
     # Only two categories, split is trivial
