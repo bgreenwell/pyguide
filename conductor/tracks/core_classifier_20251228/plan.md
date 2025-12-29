@@ -26,8 +26,8 @@
 
 ## Phase 5: Split Point Optimization
 - [x] Task: Write tests for finding the optimal Gini split on a single feature [0f24202]
-- [ ] Task: Implement `_find_best_threshold` for numerical features
-- [ ] Task: Implement basic categorical split search (binary split)
+- [x] Task: Implement `_find_best_threshold` for numerical features [ce28635]
+- [x] Task: Implement basic categorical split search (binary split) [ce28635]
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: Split Point Optimization' (Protocol in workflow.md)
 
 ## Phase 6: Recursive Tree Growth
