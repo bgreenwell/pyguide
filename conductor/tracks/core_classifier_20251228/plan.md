@@ -12,11 +12,11 @@
 - [x] Task: Create `GuideNode` class for tree structure [0ca1ffa]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Scikit-learn Compliance & Base Structure' (Protocol in workflow.md) [526a9ad]
 
-## Phase 3: Statistical Testing Utility
+## Phase 3: Statistical Testing Utility [checkpoint: 2c78f09]
 - [x] Task: Write tests for Chi-square p-value calculation (main effects) [1ff3067]
 - [x] Task: Implement `calc_curvature_p_value` helper using `scipy.stats.chi2_contingency` [a2b6219]
 - [x] Task: Implement data binning for continuous variables (GUIDE style) [a2b6219]
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Statistical Testing Utility' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Statistical Testing Utility' (Protocol in workflow.md) [2c78f09]
 
 ## Phase 4: Variable Selection Logic
 - [ ] Task: Write tests for `select_split_variable`
