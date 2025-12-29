@@ -6,6 +6,8 @@ def _bin_continuous(x, n_bins=None):
     """
     Bin a continuous variable into groups based on quartiles (GUIDE style).
     """
+    unique_values = np.unique(x)
+    
     if n_bins is None:
         if len(x) >= 40:
             n_bins = 4
@@ -15,13 +17,19 @@ def _bin_continuous(x, n_bins=None):
             # Too few samples to bin effectively, return ranks to preserve order
             return np.argsort(np.argsort(x))
     
+    # If the feature has very few unique values, don't bin it using quartiles
+    # as it might collapse into a single bin. Instead, map to unique ranks.
+    if len(unique_values) <= n_bins:
+        # Map values to their rank (0, 1, 2...)
+        mapping = {val: i for i, val in enumerate(unique_values)}
+        return np.array([mapping[v] for v in x])
+    
     try:
         # Use pandas qcut for quartile-based binning
         # duplicates='drop' handles cases with many identical values
         return pd.qcut(x, q=n_bins, labels=False, duplicates='drop')
     except (ValueError, IndexError):
         # Fallback to simple uniform binning if qcut fails
-        # (e.g., if all values are identical or nearly so)
         return np.zeros_like(x, dtype=int)
 
 def calc_curvature_p_value(x, z, is_categorical=False):
