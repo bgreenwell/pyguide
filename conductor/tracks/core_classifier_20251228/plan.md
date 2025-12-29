@@ -7,7 +7,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & CI/CD' (Protocol in workflow.md) [2b14280]
 
 ## Phase 2: Scikit-learn Compliance & Base Structure
-- [ ] Task: Write tests for `GuideTreeClassifier` basic interface (init, fit, predict)
+- [x] Task: Write tests for `GuideTreeClassifier` basic interface (init, fit, predict) [09b9618]
 - [ ] Task: Implement `GuideTreeClassifier` shell with scikit-learn validation (`check_X_y`, `check_array`)
 - [ ] Task: Create `GuideNode` class for tree structure
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Scikit-learn Compliance & Base Structure' (Protocol in workflow.md)
