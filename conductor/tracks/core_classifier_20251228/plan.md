@@ -50,6 +50,6 @@
 
 ## Phase 9: Final Verification & Benchmarking
 - [x] Task: Run `check_estimator` from `sklearn.utils.estimator_checks` [88efc18]
-- [ ] Task: Create a benchmark script comparing against `DecisionTreeClassifier` on bias-prone synthetic data
+- [x] Task: Create a benchmark script comparing against `DecisionTreeClassifier` on bias-prone synthetic data [e6b879b]
 - [ ] Task: Final code cleanup and documentation pass
 - [ ] Task: Conductor - User Manual Verification 'Phase 9: Final Verification & Benchmarking' (Protocol in workflow.md)
