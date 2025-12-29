@@ -1,6 +1,7 @@
 import numpy as np
-import pytest
+
 from pyguide.stats import calc_curvature_p_value
+
 
 def test_calc_curvature_p_value_categorical_dependent():
     # Strong association
@@ -9,12 +10,14 @@ def test_calc_curvature_p_value_categorical_dependent():
     p = calc_curvature_p_value(x, z, is_categorical=True)
     assert p < 0.05
 
+
 def test_calc_curvature_p_value_categorical_independent():
     # Weak/no association
     x = np.array([0, 1, 0, 1, 0, 1, 0, 1])
     z = np.array([0, 0, 1, 1, 0, 0, 1, 1])
     p = calc_curvature_p_value(x, z, is_categorical=True)
     assert p > 0.05
+
 
 def test_calc_curvature_p_value_numerical():
     # Numerical x with clear split point for z
