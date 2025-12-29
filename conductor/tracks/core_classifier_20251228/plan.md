@@ -25,7 +25,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Variable Selection Logic' (Protocol in workflow.md) [7a9e6e0]
 
 ## Phase 5: Split Point Optimization
-- [ ] Task: Write tests for finding the optimal Gini split on a single feature
+- [x] Task: Write tests for finding the optimal Gini split on a single feature [0f24202]
 - [ ] Task: Implement `_find_best_threshold` for numerical features
 - [ ] Task: Implement basic categorical split search (binary split)
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: Split Point Optimization' (Protocol in workflow.md)
