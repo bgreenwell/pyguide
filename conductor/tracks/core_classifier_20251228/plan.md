@@ -24,11 +24,11 @@
 - [x] Task: Implement handling of categorical vs numerical features in selection [3ad63a1]
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Variable Selection Logic' (Protocol in workflow.md) [7a9e6e0]
 
-## Phase 5: Split Point Optimization
+## Phase 5: Split Point Optimization [checkpoint: 9dbbd16]
 - [x] Task: Write tests for finding the optimal Gini split on a single feature [0f24202]
 - [x] Task: Implement `_find_best_threshold` for numerical features [ce28635]
 - [x] Task: Implement basic categorical split search (binary split) [ce28635]
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Split Point Optimization' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Split Point Optimization' (Protocol in workflow.md) [9dbbd16]
 
 ## Phase 6: Recursive Tree Growth
 - [ ] Task: Write tests for tree growing (depth, min_samples stopping)
