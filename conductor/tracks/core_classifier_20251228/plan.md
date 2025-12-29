@@ -19,7 +19,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Statistical Testing Utility' (Protocol in workflow.md) [2c78f09]
 
 ## Phase 4: Variable Selection Logic
-- [ ] Task: Write tests for `select_split_variable`
+- [x] Task: Write tests for `select_split_variable` [447234d]
 - [ ] Task: Implement variable selection loop across all features
 - [ ] Task: Implement handling of categorical vs numerical features in selection
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Variable Selection Logic' (Protocol in workflow.md)
