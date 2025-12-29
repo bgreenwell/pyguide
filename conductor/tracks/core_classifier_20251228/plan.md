@@ -44,8 +44,8 @@
 
 ## Phase 8: Basic Interaction Detection (Fallback)
 - [x] Task: Write tests for simple interaction detection fallback [aa7456b]
-- [ ] Task: Implement interaction p-value calculation for variable pairs
-- [ ] Task: Integrate interaction check if main effects are not significant
+- [x] Task: Implement interaction p-value calculation for variable pairs [0aa709c]
+- [x] Task: Integrate interaction check if main effects are not significant [0aa709c]
 - [ ] Task: Conductor - User Manual Verification 'Phase 8: Basic Interaction Detection (Fallback)' (Protocol in workflow.md)
 
 ## Phase 9: Final Verification & Benchmarking
