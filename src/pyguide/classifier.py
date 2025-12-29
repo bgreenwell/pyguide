@@ -69,15 +69,20 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         n_samples = len(y)
         unique_y = np.unique(y)
         
-        # 1. Majority class for prediction
+        # 1. Majority class and probabilities
         counts = np.bincount(y, minlength=self.n_classes_)
+        if np.sum(counts) > 0:
+            probabilities = counts / np.sum(counts)
+        else:
+            probabilities = np.ones(self.n_classes_) / self.n_classes_
+            
         prediction = self.classes_[np.argmax(counts)]
         
         # 2. Check stopping criteria
         if (len(unique_y) == 1 or 
             n_samples < self.min_samples_split or 
             (self.max_depth is not None and depth >= self.max_depth)):
-            return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
+            return GuideNode(depth=depth, is_leaf=True, prediction=prediction, probabilities=probabilities)
             
         # 3. Variable Selection (GUIDE step 1)
         best_idx, p = select_split_variable(X, y, categorical_features=self._categorical_mask)
@@ -88,10 +93,10 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         
         # 5. If no valid split found, return leaf
         if threshold is None or gain <= 0:
-            return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
+            return GuideNode(depth=depth, is_leaf=True, prediction=prediction, probabilities=probabilities)
             
         # 6. Create node and recurse
-        node = GuideNode(depth=depth, split_feature=best_idx, split_threshold=threshold)
+        node = GuideNode(depth=depth, split_feature=best_idx, split_threshold=threshold, probabilities=probabilities)
         
         if is_cat:
             left_mask = (X[:, best_idx] == threshold)
@@ -136,11 +141,21 @@ class GuideTreeClassifier(BaseEstimator, ClassifierMixin):
         check_is_fitted(self)
         X = check_array(X)
         
-        # For now, return 1.0 for the predicted class and 0.0 for others
-        # Later we can store class frequencies in leaves
-        preds = self.predict(X)
-        proba = np.zeros((X.shape[0], self.n_classes_))
-        for i, p in enumerate(preds):
-            class_idx = np.where(self.classes_ == p)[0][0]
-            proba[i, class_idx] = 1.0
-        return proba
+        return np.array([self._predict_proba_single(x, self.tree_) for x in X])
+
+    def _predict_proba_single(self, x, node):
+        """Predict probabilities for a single sample."""
+        if node.is_leaf:
+            return node.probabilities
+            
+        is_cat = self._categorical_mask[node.split_feature]
+        
+        if is_cat:
+            go_left = (x[node.split_feature] == node.split_threshold)
+        else:
+            go_left = (x[node.split_feature] <= node.split_threshold)
+            
+        if go_left:
+            return self._predict_proba_single(x, node.left)
+        else:
+            return self._predict_proba_single(x, node.right)
