@@ -1,13 +1,19 @@
 import numpy as np
 import pandas as pd
-from scipy.stats import chi2_contingency
+from scipy.stats import chi2_contingency, fisher_exact
 
 def _bin_continuous(x, n_bins=None):
     """
     Bin a continuous variable into groups based on quartiles (GUIDE style).
     """
     if n_bins is None:
-        n_bins = 4 if len(x) >= 40 else 3
+        if len(x) >= 40:
+            n_bins = 4
+        elif len(x) >= 3:
+            n_bins = 3
+        else:
+            # Too few samples to bin effectively, return ranks to preserve order
+            return np.argsort(np.argsort(x))
     
     try:
         # Use pandas qcut for quartile-based binning
@@ -51,6 +57,11 @@ def calc_curvature_p_value(x, z, is_categorical=False):
         # If the contingency table is too small (e.g., only one row/col), chi2 fails
         if contingency.size == 0 or contingency.shape[0] < 2 or contingency.shape[1] < 2:
             return 1.0
+        
+        # Use Fisher's exact test for 2x2 tables (more robust for small samples)
+        if contingency.shape == (2, 2):
+            _, p = fisher_exact(contingency)
+            return p
             
         chi2, p, dof, expected = chi2_contingency(contingency)
         return p
