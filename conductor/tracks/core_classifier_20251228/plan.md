@@ -20,8 +20,8 @@
 
 ## Phase 4: Variable Selection Logic
 - [x] Task: Write tests for `select_split_variable` [447234d]
-- [ ] Task: Implement variable selection loop across all features
-- [ ] Task: Implement handling of categorical vs numerical features in selection
+- [x] Task: Implement variable selection loop across all features [3ad63a1]
+- [x] Task: Implement handling of categorical vs numerical features in selection [3ad63a1]
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Variable Selection Logic' (Protocol in workflow.md)
 
 ## Phase 5: Split Point Optimization
