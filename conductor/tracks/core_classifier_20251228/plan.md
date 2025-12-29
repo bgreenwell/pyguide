@@ -1,7 +1,7 @@
 # Plan: Build the core GuideTreeClassifier infrastructure
 
 ## Phase 1: Project Scaffolding & CI/CD
-- [ ] Task: Initialize Python project with `uv` and `pyproject.toml` (Poetry style)
+- [x] Task: Initialize Python project with `uv` and `pyproject.toml` (Poetry style) [dbdedd1]
 - [ ] Task: Configure `ruff` and `pytest` with coverage requirements
 - [ ] Task: Create basic directory structure (`src/pyguide`, `tests/`)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Scaffolding & CI/CD' (Protocol in workflow.md)
