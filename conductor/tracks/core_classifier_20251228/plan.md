@@ -13,7 +13,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Scikit-learn Compliance & Base Structure' (Protocol in workflow.md) [526a9ad]
 
 ## Phase 3: Statistical Testing Utility
-- [ ] Task: Write tests for Chi-square p-value calculation (main effects)
+- [x] Task: Write tests for Chi-square p-value calculation (main effects) [1ff3067]
 - [ ] Task: Implement `calc_curvature_p_value` helper using `scipy.stats.chi2_contingency`
 - [ ] Task: Implement data binning for continuous variables (GUIDE style)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Statistical Testing Utility' (Protocol in workflow.md)
