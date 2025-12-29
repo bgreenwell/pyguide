@@ -14,8 +14,8 @@
 
 ## Phase 3: Statistical Testing Utility
 - [x] Task: Write tests for Chi-square p-value calculation (main effects) [1ff3067]
-- [ ] Task: Implement `calc_curvature_p_value` helper using `scipy.stats.chi2_contingency`
-- [ ] Task: Implement data binning for continuous variables (GUIDE style)
+- [x] Task: Implement `calc_curvature_p_value` helper using `scipy.stats.chi2_contingency` [a2b6219]
+- [x] Task: Implement data binning for continuous variables (GUIDE style) [a2b6219]
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Statistical Testing Utility' (Protocol in workflow.md)
 
 ## Phase 4: Variable Selection Logic
