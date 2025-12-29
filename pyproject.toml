@@ -17,3 +17,22 @@ dev = [
     "pytest-cov>=7.0.0",
     "ruff>=0.14.10",
 ]
+
+[tool.pytest.ini_options]
+addopts = "--cov=src/pyguide --cov-report=term-missing"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/pyguide"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I"]
+ignore = []
