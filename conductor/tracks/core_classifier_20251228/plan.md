@@ -37,9 +37,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 6: Recursive Tree Growth' (Protocol in workflow.md) [67c1c0b]
 
 ## Phase 7: Prediction & Probability
-- [ ] Task: Write tests for `predict` and `predict_proba`
-- [ ] Task: Implement tree traversal for prediction
-- [ ] Task: Implement `predict_proba` returning class frequencies
+- [x] Task: Write tests for `predict` and `predict_proba` [97a3530]
+- [x] Task: Implement tree traversal for prediction [97a3530]
+- [x] Task: Implement `predict_proba` returning class frequencies [97a3530]
 - [ ] Task: Conductor - User Manual Verification 'Phase 7: Prediction & Probability' (Protocol in workflow.md)
 
 ## Phase 8: Basic Interaction Detection (Fallback)
