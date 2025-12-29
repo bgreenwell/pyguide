@@ -18,11 +18,11 @@
 - [x] Task: Implement data binning for continuous variables (GUIDE style) [a2b6219]
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Statistical Testing Utility' (Protocol in workflow.md) [2c78f09]
 
-## Phase 4: Variable Selection Logic
+## Phase 4: Variable Selection Logic [checkpoint: 7a9e6e0]
 - [x] Task: Write tests for `select_split_variable` [447234d]
 - [x] Task: Implement variable selection loop across all features [3ad63a1]
 - [x] Task: Implement handling of categorical vs numerical features in selection [3ad63a1]
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Variable Selection Logic' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Variable Selection Logic' (Protocol in workflow.md) [7a9e6e0]
 
 ## Phase 5: Split Point Optimization
 - [ ] Task: Write tests for finding the optimal Gini split on a single feature
