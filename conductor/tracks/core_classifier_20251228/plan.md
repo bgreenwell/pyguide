@@ -36,11 +36,11 @@
 - [x] Task: Implement leaf prediction logic (majority class) [8d1479c]
 - [x] Task: Conductor - User Manual Verification 'Phase 6: Recursive Tree Growth' (Protocol in workflow.md) [67c1c0b]
 
-## Phase 7: Prediction & Probability
+## Phase 7: Prediction & Probability [checkpoint: ff2e8fa]
 - [x] Task: Write tests for `predict` and `predict_proba` [97a3530]
 - [x] Task: Implement tree traversal for prediction [97a3530]
 - [x] Task: Implement `predict_proba` returning class frequencies [97a3530]
-- [ ] Task: Conductor - User Manual Verification 'Phase 7: Prediction & Probability' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 7: Prediction & Probability' (Protocol in workflow.md) [ff2e8fa]
 
 ## Phase 8: Basic Interaction Detection (Fallback)
 - [ ] Task: Write tests for simple interaction detection fallback
