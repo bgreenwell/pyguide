@@ -8,9 +8,10 @@ class GuideNode:
         depth,
         is_leaf=False,
         prediction=None,
-        probabilities=None,  # Add probabilities
+        probabilities=None,
         split_feature=None,
         split_threshold=None,
+        missing_go_left=True,
         left=None,
         right=None,
     ):
@@ -20,5 +21,6 @@ class GuideNode:
         self.probabilities = probabilities
         self.split_feature = split_feature
         self.split_threshold = split_threshold
+        self.missing_go_left = missing_go_left
         self.left = left
         self.right = right
