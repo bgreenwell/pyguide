@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Advanced Categorical and Missing Value Handling
-*Link: [./conductor/tracks/advanced_handling_20251229/](./conductor/tracks/advanced_handling_20251229/)*
+## [ ] Track: Pruning, Visualization, and Optimization
+*Link: [./conductor/tracks/pruning_viz_opt_20251229/](./conductor/tracks/pruning_viz_opt_20251229/)*
