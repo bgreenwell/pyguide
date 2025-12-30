@@ -29,8 +29,8 @@ def test_sse_split_categorical():
 
     best_cat, _, gain = find_best_split(x, y, is_categorical=True, criterion="mse")
 
-    # Either 'A' or 'B' as the "go left" category would result in 0 residual SSE
-    assert best_cat in ["A", "B"]
+    # Either {'A'} or {'B'} as the "go left" category would result in 0 residual SSE
+    assert best_cat == {"A"} or best_cat == {"B"}
     assert gain == 8100.0
 
 

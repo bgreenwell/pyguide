@@ -37,8 +37,5 @@ def test_find_best_split_categorical_simple():
 
     threshold, _, gain = find_best_split(x, y, is_categorical=True)
     # For binary categorical, threshold usually separates one category from others
-    # Here, 0 goes left, 1 goes right.
-    # threshold might be represented as a set {0} or similar.
-    # For now, let's assume it returns the category to go left, or a mask.
-    assert threshold is not None
+    assert threshold == {0} or threshold == {1}
     assert gain > 0

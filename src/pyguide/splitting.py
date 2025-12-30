@@ -107,20 +107,19 @@ def _calculate_gain(y_left, y_right, current_impurity, n_samples, calc_impurity,
 
 def _find_best_split_categorical(x, y, criterion="gini"):
     """
-    Find best categorical split (one-vs-rest).
-    Returns (category_to_go_left, missing_go_left, gain).
+    Find best categorical split.
+    For regression and binary classification, we use the 'ordered' heuristic:
+    sort categories by their mean target value.
+    Returns (set_of_categories_to_go_left, missing_go_left, gain).
     """
-    best_category = None
+    best_categories = None
     best_gain = -1.0
     best_missing_go_left = True
 
     # Handle missing values in categorical (None or NaN)
-    # x might be object array
     if x.dtype.kind == 'O' or x.dtype.kind == 'U' or x.dtype.kind == 'S':
-        nan_mask = pd.isna(x) if hasattr(x, '__len__') else np.array([False]*len(x))
-        # Handle the case where x is a numpy array of objects which can have None or np.nan
-        if x.dtype.kind == 'O':
-            nan_mask = np.array([(v is None or (isinstance(v, float) and np.isnan(v))) for v in x])
+        # Need to be careful with pd.isna on object arrays containing various types
+        nan_mask = pd.isna(x)
     else:
         nan_mask = np.isnan(x)
 
@@ -144,8 +143,21 @@ def _find_best_split_categorical(x, y, criterion="gini"):
     if len(unique_categories) < 2:
         return None, True, 0.0
 
+    # 1. Calculate mean target for each category
+    cat_means = []
     for cat in unique_categories:
-        mask = x_non_nan == cat
+        cat_means.append(np.mean(y_non_nan[x_non_nan == cat]))
+    
+    # 2. Sort categories by mean
+    sorted_idx = np.argsort(cat_means)
+    sorted_cats = unique_categories[sorted_idx]
+
+    # 3. Evaluate splits along the sorted order (K-1 possible splits)
+    # This is optimal for MSE and Gini with binary targets.
+    for i in range(1, len(sorted_cats)):
+        left_cats = set(sorted_cats[:i])
+        
+        mask = np.array([val in left_cats for val in x_non_nan])
         y_left_non_nan = y_non_nan[mask]
         y_right_non_nan = y_non_nan[~mask]
 
@@ -166,9 +178,9 @@ def _find_best_split_categorical(x, y, criterion="gini"):
             else:
                 best_gain = gain_right
                 best_missing_go_left = False
-            best_category = cat
+            best_categories = left_cats
 
-    return best_category, best_missing_go_left, best_gain
+    return best_categories, best_missing_go_left, best_gain
 
 
 def find_best_split(x, y, is_categorical=False, criterion="gini"):

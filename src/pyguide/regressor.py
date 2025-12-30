@@ -87,7 +87,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             return 0.0
 
         if is_cat:
-            left_mask = X[:, split_feat] == threshold
+            left_mask = np.array([v in threshold for v in X[:, split_feat]])
         else:
             left_mask = X[:, split_feat] <= threshold
             
@@ -197,7 +197,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         )
 
         if is_cat:
-            left_mask = X[:, best_idx] == threshold
+            left_mask = np.array([v in threshold for v in X[:, best_idx]])
         else:
             left_mask = X[:, best_idx] <= threshold
             
@@ -263,7 +263,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             go_left = node.missing_go_left
         else:
             if is_cat:
-                go_left = val == node.split_threshold
+                go_left = val in node.split_threshold
             else:
                 go_left = val <= node.split_threshold
 
