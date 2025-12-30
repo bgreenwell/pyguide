@@ -40,8 +40,7 @@ def test_regressor_variable_selection_integration():
     reg = GuideTreeRegressor(max_depth=1, significance_threshold=1.0)
     reg.fit(X, y)
 
-    # After implementation, reg.tree_ should not be a leaf with constant mean
+    # After implementation, reg._root should not be a leaf with constant mean
     # it should have a split_feature.
-    # (Currently it's a stub, so this test will fail)
-    assert reg.tree_.is_leaf is False
-    assert reg.tree_.split_feature == 0
+    assert reg._root.is_leaf is False
+    assert reg._root.split_feature == 0

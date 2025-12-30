@@ -12,8 +12,8 @@ def test_max_depth():
     clf.fit(X, y)
 
     # Root node should have children, but children should be leaves
-    assert clf.tree_.left.is_leaf
-    assert clf.tree_.right.is_leaf
+    assert clf._root.left.is_leaf
+    assert clf._root.right.is_leaf
 
 
 def test_min_samples_split():
@@ -24,7 +24,7 @@ def test_min_samples_split():
     clf = GuideTreeClassifier(min_samples_split=10)
     clf.fit(X, y)
 
-    assert clf.tree_.is_leaf
+    assert clf._root.is_leaf
 
 
 def test_pure_node_no_split():
@@ -35,5 +35,5 @@ def test_pure_node_no_split():
     clf = GuideTreeClassifier()
     clf.fit(X, y)
 
-    assert clf.tree_.is_leaf
-    assert clf.tree_.prediction == 1
+    assert clf._root.is_leaf
+    assert clf._root.prediction == 1

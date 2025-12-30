@@ -29,8 +29,8 @@ def test_high_cardinality_regression():
 
     # With one-vs-rest, it's unlikely to find the perfect split in one step
     # but it should still find some gain.
-    assert reg.tree_.split_feature == 0
-    assert reg.tree_.split_threshold is not None
+    assert reg._root.split_feature == 0
+    assert reg._root.split_threshold is not None
 
 
 def test_high_cardinality_classification():
@@ -52,5 +52,6 @@ def test_high_cardinality_classification():
     duration = time.time() - start
     print(f"\nClassification fit duration (50 cats): {duration:.4f}s")
 
-    assert clf.tree_.split_feature == 0
-    assert clf.tree_.split_threshold is not None
+    assert clf._root.split_feature == 0
+    assert clf._root.split_threshold is not None
+    

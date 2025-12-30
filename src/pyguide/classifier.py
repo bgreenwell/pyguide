@@ -7,7 +7,11 @@ from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 from .interactions import calc_interaction_p_value
 from .node import GuideNode
 from .selection import select_split_variable
-from .splitting import find_best_split
+from .splitting import (
+    find_best_split,
+    _gini,
+)
+from .visualization import build_mock_tree
 
 
 class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
@@ -83,10 +87,18 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         self._categorical_mask = self._get_categorical_mask(X_orig, self.n_features_in_)
 
         # 2. Build the tree
-        self.tree_ = self._fit_node(X, y, depth=0)
+        self._root = self._fit_node(X, y, depth=0)
 
         self.is_fitted_ = True
         return self
+
+    @property
+    def tree_(self):
+        """Returns a scikit-learn compatible MockTree."""
+        check_is_fitted(self)
+        return build_mock_tree(
+            self._root, n_classes=self.n_classes_, is_classifier=True
+        )
 
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """
@@ -148,7 +160,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         n_samples = len(y)
         unique_y = np.unique(y)
 
-        # 1. Majority class and probabilities
+        # Calculate majority class and probabilities
         counts = np.bincount(y, minlength=self.n_classes_)
         if np.sum(counts) > 0:
             probabilities = counts / np.sum(counts)
@@ -156,6 +168,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             probabilities = np.ones(self.n_classes_) / self.n_classes_
 
         prediction = self.classes_[np.argmax(counts)]
+        current_impurity = _gini(y)
 
         # 2. Check stopping criteria
         if (
@@ -168,6 +181,9 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 is_leaf=True,
                 prediction=prediction,
                 probabilities=probabilities,
+                n_samples=n_samples,
+                impurity=current_impurity,
+                value_distribution=counts,
             )
 
         # 3. Variable Selection (GUIDE step 1)
@@ -198,9 +214,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
 
             if best_int_p < self.significance_threshold:
                 # Interaction found! Perform look-ahead split selection.
-                # We compare splitting on i then j vs splitting on j then i.
                 i, j = best_int_pair
-
                 gain_i_then_j = self._calculate_lookahead_gain(X, y, i, j)
                 gain_j_then_i = self._calculate_lookahead_gain(X, y, j, i)
 
@@ -218,10 +232,14 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 is_leaf=True,
                 prediction=prediction,
                 probabilities=probabilities,
+                n_samples=n_samples,
+                impurity=current_impurity,
+                value_distribution=counts,
             )
 
         # 4. Split Point Optimization (GUIDE step 2)
         is_cat = self._categorical_mask[best_idx]
+
         threshold, missing_go_left, gain = find_best_split(
             X[:, best_idx], y, is_categorical=is_cat
         )
@@ -233,6 +251,9 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 is_leaf=True,
                 prediction=prediction,
                 probabilities=probabilities,
+                n_samples=n_samples,
+                impurity=current_impurity,
+                value_distribution=counts,
             )
 
         # 6. Create node and recurse
@@ -242,6 +263,9 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             split_threshold=threshold,
             missing_go_left=missing_go_left,
             probabilities=probabilities,
+            n_samples=n_samples,
+            impurity=current_impurity,
+            value_distribution=counts,
         )
 
         if is_cat:
@@ -294,7 +318,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input."
             )
 
-        return np.array([self._predict_single(x, self.tree_) for x in X])
+        return np.array([self._predict_single(x, self._root) for x in X])
 
     def _predict_single(self, x, node):
         """Predict for a single sample by traversing the tree."""
@@ -350,7 +374,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input."
             )
 
-        return np.array([self._predict_proba_single(x, self.tree_) for x in X])
+        return np.array([self._predict_proba_single(x, self._root) for x in X])
 
     def _predict_proba_single(self, x, node):
         """Predict probabilities for a single sample."""

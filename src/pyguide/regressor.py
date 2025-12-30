@@ -6,7 +6,8 @@ from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 from .interactions import calc_interaction_p_value
 from .node import GuideNode
 from .selection import select_split_variable
-from .splitting import find_best_split
+from .splitting import find_best_split, _sse
+from .visualization import build_mock_tree
 
 
 class GuideTreeRegressor(RegressorMixin, BaseEstimator):
@@ -68,10 +69,16 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         self._categorical_mask = self._get_categorical_mask(X_orig, self.n_features_in_)
 
         # Build the tree
-        self.tree_ = self._fit_node(X, y, depth=0)
+        self._root = self._fit_node(X, y, depth=0)
 
         self.is_fitted_ = True
         return self
+
+    @property
+    def tree_(self):
+        """Returns a scikit-learn compatible MockTree."""
+        check_is_fitted(self)
+        return build_mock_tree(self._root, is_classifier=False)
 
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """
@@ -131,19 +138,25 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
     def _fit_node(self, X, y, depth):
         """Recursive function to grow the tree for regression."""
         n_samples = len(y)
-        prediction = np.mean(y)
+        prediction = np.mean(y) if n_samples > 0 else 0.0
+        current_impurity = _sse(y) if n_samples > 0 else 0.0
 
         # 1. Check stopping criteria
-        # Use a small tolerance for constant y
         if (
             (n_samples > 0 and np.all(np.abs(y - prediction) < 1e-9))
             or n_samples < self.min_samples_split
             or (self.max_depth is not None and depth >= self.max_depth)
         ):
-            return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
+            return GuideNode(
+                depth=depth,
+                is_leaf=True,
+                prediction=prediction,
+                n_samples=n_samples,
+                impurity=current_impurity,
+                value_distribution=np.array([[prediction]]),
+            )
 
         # 2. Variable Selection (GUIDE step 1)
-        # Residual-based target for regression
         z = (y > prediction).astype(int)
 
         best_idx, p = select_split_variable(
@@ -183,7 +196,14 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
 
         # Check significance threshold
         if not interaction_split_override and p > self.significance_threshold:
-            return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
+            return GuideNode(
+                depth=depth,
+                is_leaf=True,
+                prediction=prediction,
+                n_samples=n_samples,
+                impurity=current_impurity,
+                value_distribution=np.array([[prediction]]),
+            )
 
         # 3. Split Point Optimization (GUIDE step 2)
         is_cat = self._categorical_mask[best_idx]
@@ -193,7 +213,14 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
 
         # 4. If no valid split found, return leaf
         if threshold is None or (gain <= 0 and not interaction_split_override):
-            return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
+            return GuideNode(
+                depth=depth,
+                is_leaf=True,
+                prediction=prediction,
+                n_samples=n_samples,
+                impurity=current_impurity,
+                value_distribution=np.array([[prediction]]),
+            )
 
         # 5. Create node and recurse
         node = GuideNode(
@@ -201,6 +228,9 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             split_feature=best_idx,
             split_threshold=threshold,
             missing_go_left=missing_go_left,
+            n_samples=n_samples,
+            impurity=current_impurity,
+            value_distribution=np.array([[prediction]]),
         )
 
         if is_cat:
@@ -252,7 +282,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input."
             )
 
-        return np.array([self._predict_single(x, self.tree_) for x in X])
+        return np.array([self._predict_single(x, self._root) for x in X])
 
     def _predict_single(self, x, node):
         """Predict for a single sample by traversing the tree."""

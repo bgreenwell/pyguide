@@ -3,6 +3,7 @@ from .regressor import GuideTreeRegressor
 from .selection import select_split_variable
 from .splitting import find_best_split
 from .stats import calc_curvature_p_value
+from .visualization import plot_tree
 
 __all__ = [
     "GuideTreeClassifier",
@@ -10,4 +11,5 @@ __all__ = [
     "calc_curvature_p_value",
     "select_split_variable",
     "find_best_split",
+    "plot_tree",
 ]

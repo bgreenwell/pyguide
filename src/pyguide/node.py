@@ -14,6 +14,9 @@ class GuideNode:
         missing_go_left=True,
         left=None,
         right=None,
+        n_samples=0,
+        impurity=0.0,
+        value_distribution=None,
     ):
         self.depth = depth
         self.is_leaf = is_leaf
@@ -24,3 +27,9 @@ class GuideNode:
         self.missing_go_left = missing_go_left
         self.left = left
         self.right = right
+        self.n_samples = n_samples
+        self.impurity = impurity
+        self.value_distribution = value_distribution
+
+    def is_leaf_node(self):
+        return self.is_leaf
