@@ -6,7 +6,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Regressor Foundation' (Protocol in workflow.md) [4cfe7d4]
 
 ## Phase 2: Regression Variable Selection
-- [ ] Task: Write tests for residual-to-class transformation logic
+- [x] Task: Write tests for residual-to-class transformation logic [c7381e3]
 - [ ] Task: Implement residual-based target creation in `_fit_node`
 - [ ] Task: Integrate `select_split_variable` with the new target
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Regression Variable Selection' (Protocol in workflow.md)
