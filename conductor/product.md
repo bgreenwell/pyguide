@@ -25,7 +25,9 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Residual-based variable selection for unbiased feature ranking.
   - SSE (Sum of Squared Errors) split optimization.
   - Full parity with Classifier features (interactions, categorical support).
+- **Advanced Data Support:**
+  - Native support for missing values (NaNs) using impurity-based routing.
+  - Optimized categorical splitting using ordered categories for $O(K)$ search instead of $O(2^K)$.
 
 ## Roadmap
-- **Phase 3:** Advanced handling of categorical variables and missing values.
 - **Phase 4:** Pruning and performance optimizations (Investigate sklearn visualization compatibility).
