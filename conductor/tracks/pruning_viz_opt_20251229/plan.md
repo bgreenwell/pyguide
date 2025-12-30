@@ -7,7 +7,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Visualization Compatibility' (Protocol in workflow.md) [d59ace6]
 
 ## Phase 2: Cost-Complexity Pruning
-- [ ] Task: Create tests for `ccp_alpha` (verify tree depth reduction)
+- [x] Task: Create tests for `ccp_alpha` (verify tree depth reduction) [b364bbd]
 - [ ] Task: Implement `ccp_alpha` parameter and `cost_complexity_pruning_path` stub
 - [ ] Task: Implement pruning logic (post-pruning) in `fit`
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Cost-Complexity Pruning' (Protocol in workflow.md)
