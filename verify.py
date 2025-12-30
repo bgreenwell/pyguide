@@ -1,25 +1,20 @@
 import numpy as np
-from pyguide.splitting import find_best_split
+from pyguide import GuideTreeRegressor
 
-def verify_sse_splitting():
-    # Clear split point for SSE
-    x = np.array([10, 20, 30, 40], dtype=float)
-    y = np.array([5, 5, 25, 25], dtype=float)
+def verify_recursive_regressor():
+    # Create a step-like relationship
+    # x < 5 -> y = 10, x >= 5 -> y = 100
+    X = np.array([1, 2, 3, 4, 6, 7, 8, 9], dtype=float).reshape(-1, 1)
+    y = np.array([10, 10, 10, 10, 100, 100, 100, 100], dtype=float)
+
+    reg = GuideTreeRegressor(max_depth=2, significance_threshold=1.0)
+    reg.fit(X, y)
     
-    # Numerical split
-    threshold, gain = find_best_split(x, y, is_categorical=False, criterion="mse")
-    print(f"Numerical Threshold: {threshold}, Gain: {gain}")
-    assert threshold == 25.0
-    assert gain > 0
+    y_pred = reg.predict(X)
+    print(f"Predictions: {y_pred}")
     
-    # Categorical split
-    xc = np.array(['low', 'low', 'high', 'high'])
-    cat, gain_c = find_best_split(xc, y, is_categorical=True, criterion="mse")
-    print(f"Categorical Split: {cat}, Gain: {gain_c}")
-    assert cat in ['low', 'high']
-    assert gain_c > 0
-    
-    print("SSE splitting verification successful!")
+    assert np.allclose(y_pred, y)
+    print("Recursive growth verification successful!")
 
 if __name__ == "__main__":
-    verify_sse_splitting()
+    verify_recursive_regressor()
