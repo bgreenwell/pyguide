@@ -12,9 +12,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Regression Variable Selection' (Protocol in workflow.md) [1fdcafa]
 
 ## Phase 3: SSE Split Optimization
-- [ ] Task: Write tests for finding the optimal SSE split
-- [ ] Task: Implement SSE calculation and optimization helper (`_find_best_threshold_sse`)
-- [ ] Task: Implement categorical SSE split search
+- [x] Task: Write tests for finding the optimal SSE split [3a3d97f]
+- [x] Task: Implement SSE calculation and optimization helper (`_find_best_threshold_sse`) [3a3d97f]
+- [x] Task: Implement categorical SSE split search [3a3d97f]
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: SSE Split Optimization' (Protocol in workflow.md)
 
 ## Phase 4: Recursive Tree Growth & Prediction
