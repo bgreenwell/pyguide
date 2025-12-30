@@ -90,11 +90,18 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             left_mask = np.array([v in threshold for v in X[:, split_feat]])
         else:
             left_mask = X[:, split_feat] <= threshold
-            
+
         # Handle NaNs
-        nan_mask = np.isnan(X[:, split_feat]) if not is_cat else pd.isna(X[:, split_feat])
-        if is_cat and X.dtype.kind == 'O':
-             nan_mask = np.array([(v is None or (isinstance(v, float) and np.isnan(v))) for v in X[:, split_feat]])
+        nan_mask = (
+            np.isnan(X[:, split_feat]) if not is_cat else pd.isna(X[:, split_feat])
+        )
+        if is_cat and X.dtype.kind == "O":
+            nan_mask = np.array(
+                [
+                    (v is None or (isinstance(v, float) and np.isnan(v)))
+                    for v in X[:, split_feat]
+                ]
+            )
 
         if missing_go_left:
             left_mask = left_mask | nan_mask
@@ -200,11 +207,16 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             left_mask = np.array([v in threshold for v in X[:, best_idx]])
         else:
             left_mask = X[:, best_idx] <= threshold
-            
+
         # Handle NaNs
         nan_mask = np.isnan(X[:, best_idx]) if not is_cat else pd.isna(X[:, best_idx])
-        if is_cat and X.dtype.kind == 'O':
-             nan_mask = np.array([(v is None or (isinstance(v, float) and np.isnan(v))) for v in X[:, best_idx]])
+        if is_cat and X.dtype.kind == "O":
+            nan_mask = np.array(
+                [
+                    (v is None or (isinstance(v, float) and np.isnan(v)))
+                    for v in X[:, best_idx]
+                ]
+            )
 
         if missing_go_left:
             left_mask = left_mask | nan_mask

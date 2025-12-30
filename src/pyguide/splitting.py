@@ -62,16 +62,28 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
         y_right_non_nan = y_sorted[split_idx:]
 
         # Option 1: Missing go left
-        y_left = np.concatenate([y_left_non_nan, y_nan]) if len(y_nan) > 0 else y_left_non_nan
+        y_left = (
+            np.concatenate([y_left_non_nan, y_nan])
+            if len(y_nan) > 0
+            else y_left_non_nan
+        )
         y_right = y_right_non_nan
-        
-        gain_left = _calculate_gain(y_left, y_right, current_impurity, n_samples, calc_impurity, criterion)
-        
+
+        gain_left = _calculate_gain(
+            y_left, y_right, current_impurity, n_samples, calc_impurity, criterion
+        )
+
         # Option 2: Missing go right
         y_left = y_left_non_nan
-        y_right = np.concatenate([y_right_non_nan, y_nan]) if len(y_nan) > 0 else y_right_non_nan
-        
-        gain_right = _calculate_gain(y_left, y_right, current_impurity, n_samples, calc_impurity, criterion)
+        y_right = (
+            np.concatenate([y_right_non_nan, y_nan])
+            if len(y_nan) > 0
+            else y_right_non_nan
+        )
+
+        gain_right = _calculate_gain(
+            y_left, y_right, current_impurity, n_samples, calc_impurity, criterion
+        )
 
         if gain_left > best_gain or gain_right > best_gain:
             if gain_left >= gain_right:
@@ -80,17 +92,19 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
             else:
                 best_gain = gain_right
                 best_missing_go_left = False
-                
+
             midpoint = (x_sorted[split_idx] + x_sorted[split_idx - 1]) / 2.0
             best_threshold = midpoint
 
     return best_threshold, best_missing_go_left, best_gain
 
 
-def _calculate_gain(y_left, y_right, current_impurity, n_samples, calc_impurity, criterion):
+def _calculate_gain(
+    y_left, y_right, current_impurity, n_samples, calc_impurity, criterion
+):
     if len(y_left) == 0 or len(y_right) == 0:
         return -1.0
-        
+
     imp_left = calc_impurity(y_left)
     imp_right = calc_impurity(y_right)
 
@@ -117,7 +131,7 @@ def _find_best_split_categorical(x, y, criterion="gini"):
     best_missing_go_left = True
 
     # Handle missing values in categorical (None or NaN)
-    if x.dtype.kind == 'O' or x.dtype.kind == 'U' or x.dtype.kind == 'S':
+    if x.dtype.kind == "O" or x.dtype.kind == "U" or x.dtype.kind == "S":
         # Need to be careful with pd.isna on object arrays containing various types
         nan_mask = pd.isna(x)
     else:
@@ -147,7 +161,7 @@ def _find_best_split_categorical(x, y, criterion="gini"):
     cat_means = []
     for cat in unique_categories:
         cat_means.append(np.mean(y_non_nan[x_non_nan == cat]))
-    
+
     # 2. Sort categories by mean
     sorted_idx = np.argsort(cat_means)
     sorted_cats = unique_categories[sorted_idx]
@@ -156,20 +170,32 @@ def _find_best_split_categorical(x, y, criterion="gini"):
     # This is optimal for MSE and Gini with binary targets.
     for i in range(1, len(sorted_cats)):
         left_cats = set(sorted_cats[:i])
-        
+
         mask = np.array([val in left_cats for val in x_non_nan])
         y_left_non_nan = y_non_nan[mask]
         y_right_non_nan = y_non_nan[~mask]
 
         # Option 1: Missing go left
-        y_left = np.concatenate([y_left_non_nan, y_nan]) if len(y_nan) > 0 else y_left_non_nan
+        y_left = (
+            np.concatenate([y_left_non_nan, y_nan])
+            if len(y_nan) > 0
+            else y_left_non_nan
+        )
         y_right = y_right_non_nan
-        gain_left = _calculate_gain(y_left, y_right, current_impurity, n_samples, calc_impurity, criterion)
+        gain_left = _calculate_gain(
+            y_left, y_right, current_impurity, n_samples, calc_impurity, criterion
+        )
 
         # Option 2: Missing go right
         y_left = y_left_non_nan
-        y_right = np.concatenate([y_right_non_nan, y_nan]) if len(y_nan) > 0 else y_right_non_nan
-        gain_right = _calculate_gain(y_left, y_right, current_impurity, n_samples, calc_impurity, criterion)
+        y_right = (
+            np.concatenate([y_right_non_nan, y_nan])
+            if len(y_nan) > 0
+            else y_right_non_nan
+        )
+        gain_right = _calculate_gain(
+            y_left, y_right, current_impurity, n_samples, calc_impurity, criterion
+        )
 
         if gain_left > best_gain or gain_right > best_gain:
             if gain_left >= gain_right:

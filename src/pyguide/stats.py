@@ -44,8 +44,7 @@ def calc_curvature_p_value(x, z, is_categorical=False):
         # Separate NaNs from continuous values for binning
         nan_mask = np.isnan(x)
         x_non_nan = x[~nan_mask]
-        z_non_nan = z[~nan_mask]
-        
+
         if len(x_non_nan) > 0:
             x_binned = _bin_continuous(x_non_nan)
             # Reconstruct x_processed with NaNs as a separate bin (e.g., -1)
@@ -55,18 +54,18 @@ def calc_curvature_p_value(x, z, is_categorical=False):
             x_processed = np.full(len(x), -1, dtype=int)
     else:
         # Categorical x: ensure NaNs are represented (e.g., as 'MISSING' string)
-        if x.dtype.kind == 'O' or x.dtype.kind == 'U' or x.dtype.kind == 'S':
-             # Use pandas to handle various missing representations
-             x_processed = pd.Series(x).fillna("MISSING")
+        if x.dtype.kind == "O" or x.dtype.kind == "U" or x.dtype.kind == "S":
+            # Use pandas to handle various missing representations
+            x_processed = pd.Series(x).fillna("MISSING")
         else:
-             nan_mask = np.isnan(x)
-             x_processed = x.copy()
-             # Use a value that doesn't exist in x
-             if len(x) > 0:
-                 missing_val = np.nanmin(x) - 1 if not np.all(np.isnan(x)) else -1
-                 x_processed[nan_mask] = missing_val
-             else:
-                 x_processed = x
+            nan_mask = np.isnan(x)
+            x_processed = x.copy()
+            # Use a value that doesn't exist in x
+            if len(x) > 0:
+                missing_val = np.nanmin(x) - 1 if not np.all(np.isnan(x)) else -1
+                x_processed[nan_mask] = missing_val
+            else:
+                x_processed = x
 
     # 2. Create contingency table
     try:

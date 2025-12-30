@@ -93,7 +93,9 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         Calculate total gain of splitting on split_feat, then splitting children on next_feat.
         """
         is_cat = self._categorical_mask[split_feat]
-        threshold, missing_go_left, gain1 = find_best_split(X[:, split_feat], y, is_categorical=is_cat)
+        threshold, missing_go_left, gain1 = find_best_split(
+            X[:, split_feat], y, is_categorical=is_cat
+        )
 
         if threshold is None:
             return 0.0
@@ -102,12 +104,19 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             left_mask = np.array([v in threshold for v in X[:, split_feat]])
         else:
             left_mask = X[:, split_feat] <= threshold
-            
+
         # Handle NaNs in split_feat for children mask
-        nan_mask = np.isnan(X[:, split_feat]) if not is_cat else pd.isna(X[:, split_feat])
-        if is_cat and X.dtype.kind == 'O':
-             nan_mask = np.array([(v is None or (isinstance(v, float) and np.isnan(v))) for v in X[:, split_feat]])
-             
+        nan_mask = (
+            np.isnan(X[:, split_feat]) if not is_cat else pd.isna(X[:, split_feat])
+        )
+        if is_cat and X.dtype.kind == "O":
+            nan_mask = np.array(
+                [
+                    (v is None or (isinstance(v, float) and np.isnan(v)))
+                    for v in X[:, split_feat]
+                ]
+            )
+
         if missing_go_left:
             left_mask = left_mask | nan_mask
         else:
@@ -213,7 +222,9 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
 
         # 4. Split Point Optimization (GUIDE step 2)
         is_cat = self._categorical_mask[best_idx]
-        threshold, missing_go_left, gain = find_best_split(X[:, best_idx], y, is_categorical=is_cat)
+        threshold, missing_go_left, gain = find_best_split(
+            X[:, best_idx], y, is_categorical=is_cat
+        )
 
         # 5. If no valid split found, return leaf
         if threshold is None or (gain <= 0 and not interaction_split_override):
@@ -237,11 +248,16 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             left_mask = np.array([v in threshold for v in X[:, best_idx]])
         else:
             left_mask = X[:, best_idx] <= threshold
-            
+
         # Handle NaNs
         nan_mask = np.isnan(X[:, best_idx]) if not is_cat else pd.isna(X[:, best_idx])
-        if is_cat and X.dtype.kind == 'O':
-             nan_mask = np.array([(v is None or (isinstance(v, float) and np.isnan(v))) for v in X[:, best_idx]])
+        if is_cat and X.dtype.kind == "O":
+            nan_mask = np.array(
+                [
+                    (v is None or (isinstance(v, float) and np.isnan(v)))
+                    for v in X[:, best_idx]
+                ]
+            )
 
         if missing_go_left:
             left_mask = left_mask | nan_mask
