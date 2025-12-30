@@ -9,8 +9,8 @@
 
 ## Phase 2: Optimized Categorical Splitting
 - [x] Task: Create tests for high-cardinality categorical splits (performance/correctness) [0bd571f]
-- [ ] Task: Implement ordered categorical splitting for Regression (mean target)
-- [ ] Task: Implement ordered categorical splitting for Binary Classification (class probability)
+- [x] Task: Implement ordered categorical splitting for Regression (mean target) [a98108a]
+- [x] Task: Implement ordered categorical splitting for Binary Classification (class probability) [a98108a]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Optimized Categorical Splitting' (Protocol in workflow.md)
 
 ## Phase 3: Final Integration & Verification
