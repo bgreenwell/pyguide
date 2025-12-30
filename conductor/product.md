@@ -21,8 +21,11 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Unbiased variable selection via Chi-square and Fisher's Exact tests.
   - Interaction detection using the full GUIDE look-ahead strategy.
   - Support for numerical and categorical features.
+- **GuideTreeRegressor:** Fully functional scikit-learn compatible regressor.
+  - Residual-based variable selection for unbiased feature ranking.
+  - SSE (Sum of Squared Errors) split optimization.
+  - Full parity with Classifier features (interactions, categorical support).
 
 ## Roadmap
-- **Phase 2:** `GuideTreeRegressor` implementation.
 - **Phase 3:** Advanced handling of categorical variables and missing values.
 - **Phase 4:** Pruning and performance optimizations (Investigate sklearn visualization compatibility).
