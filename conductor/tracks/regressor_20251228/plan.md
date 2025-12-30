@@ -5,11 +5,11 @@
 - [x] Task: Implement `GuideTreeRegressor` shell with `RegressorMixin` and basic validation [7c154c3]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Regressor Foundation' (Protocol in workflow.md) [4cfe7d4]
 
-## Phase 2: Regression Variable Selection
+## Phase 2: Regression Variable Selection [checkpoint: 1fdcafa]
 - [x] Task: Write tests for residual-to-class transformation logic [c7381e3]
 - [x] Task: Implement residual-based target creation in `_fit_node` [1540fd4]
 - [x] Task: Integrate `select_split_variable` with the new target [1540fd4]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Regression Variable Selection' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Regression Variable Selection' (Protocol in workflow.md) [1fdcafa]
 
 ## Phase 3: SSE Split Optimization
 - [ ] Task: Write tests for finding the optimal SSE split
