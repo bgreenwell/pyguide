@@ -8,7 +8,7 @@
 ## Phase 2: Regression Variable Selection
 - [x] Task: Write tests for residual-to-class transformation logic [c7381e3]
 - [x] Task: Implement residual-based target creation in `_fit_node` [1540fd4]
-- [ ] Task: Integrate `select_split_variable` with the new target
+- [x] Task: Integrate `select_split_variable` with the new target [1540fd4]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Regression Variable Selection' (Protocol in workflow.md)
 
 ## Phase 3: SSE Split Optimization
