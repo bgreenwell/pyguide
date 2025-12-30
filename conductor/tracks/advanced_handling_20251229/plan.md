@@ -7,11 +7,11 @@
 - [x] Task: Update `predict` to handle missing values using the new node logic [e20a30b]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Missing Value Support (Infrastructure)' (Protocol in workflow.md) [a78b271]
 
-## Phase 2: Optimized Categorical Splitting
+## Phase 2: Optimized Categorical Splitting [checkpoint: d548d30]
 - [x] Task: Create tests for high-cardinality categorical splits (performance/correctness) [0bd571f]
 - [x] Task: Implement ordered categorical splitting for Regression (mean target) [a98108a]
 - [x] Task: Implement ordered categorical splitting for Binary Classification (class probability) [a98108a]
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Optimized Categorical Splitting' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Optimized Categorical Splitting' (Protocol in workflow.md) [d548d30]
 
 ## Phase 3: Final Integration & Verification
 - [ ] Task: Update `check_estimator` tags to allow NaN
