@@ -1,26 +1,25 @@
 import numpy as np
-from pyguide import GuideTreeRegressor
+from pyguide.splitting import find_best_split
 
-def verify_selection():
-    # X0 is predictive, X1 is noise
-    X = np.array([
-        [0, 10],
-        [0, 20],
-        [1, 10],
-        [1, 20]
-    ], dtype=float)
-    y = np.array([10, 10, 50, 50], dtype=float)
-
-    # Force split by setting high significance threshold
-    reg = GuideTreeRegressor(max_depth=1, significance_threshold=1.0)
-    reg.fit(X, y)
+def verify_sse_splitting():
+    # Clear split point for SSE
+    x = np.array([10, 20, 30, 40], dtype=float)
+    y = np.array([5, 5, 25, 25], dtype=float)
     
-    print(f"Is leaf: {reg.tree_.is_leaf}")
-    print(f"Split feature: {reg.tree_.split_feature}")
+    # Numerical split
+    threshold, gain = find_best_split(x, y, is_categorical=False, criterion="mse")
+    print(f"Numerical Threshold: {threshold}, Gain: {gain}")
+    assert threshold == 25.0
+    assert gain > 0
     
-    assert reg.tree_.is_leaf is False
-    assert reg.tree_.split_feature == 0, f"Expected feature 0, got {reg.tree_.split_feature}"
-    print("Variable selection verification successful!")
+    # Categorical split
+    xc = np.array(['low', 'low', 'high', 'high'])
+    cat, gain_c = find_best_split(xc, y, is_categorical=True, criterion="mse")
+    print(f"Categorical Split: {cat}, Gain: {gain_c}")
+    assert cat in ['low', 'high']
+    assert gain_c > 0
+    
+    print("SSE splitting verification successful!")
 
 if __name__ == "__main__":
-    verify_selection()
+    verify_sse_splitting()
