@@ -1,7 +1,7 @@
 # Plan: Advanced Categorical and Missing Value Handling
 
 ## Phase 1: Missing Value Support (Infrastructure)
-- [ ] Task: Create tests for missing value handling in `fit` and `predict` (expect failure)
+- [x] Task: Create tests for missing value handling in `fit` and `predict` (expect failure) [f6e384a]
 - [ ] Task: Update `GuideNode` to store missing value direction
 - [ ] Task: Update `find_best_split` to optimize missing value direction
 - [ ] Task: Update `predict` to handle missing values using the new node logic
