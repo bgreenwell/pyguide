@@ -23,6 +23,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         significance_threshold=0.05,
         interaction_depth=1,
         categorical_features=None,
+        ccp_alpha=0.0,
     ):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -30,6 +31,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         self.significance_threshold = significance_threshold
         self.interaction_depth = interaction_depth
         self.categorical_features = categorical_features
+        self.ccp_alpha = ccp_alpha
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
@@ -73,6 +75,14 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
 
         self.is_fitted_ = True
         return self
+
+    def cost_complexity_pruning_path(self, X, y, sample_weight=None):
+        """
+        Compute the pruning path during Minimal Cost-Complexity Pruning.
+        Currently a stub for scikit-learn compatibility.
+        """
+        # TODO: Implement actual pruning path calculation
+        return {"ccp_alphas": np.array([0.0]), "impurities": np.array([0.0])}
 
     @property
     def tree_(self):
