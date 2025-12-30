@@ -16,8 +16,13 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
 - **Separated Splitting Process:** Implements a two-step process: first selecting the variable, then optimizing the cut-point.
 - **Interaction Detection:** Built-in support for detecting feature interactions with configurable depth, enhancing the model's predictive power and interpretability.
 
+## Current Capabilities
+- **GuideTreeClassifier:** Fully functional scikit-learn compatible classifier.
+  - Unbiased variable selection via Chi-square and Fisher's Exact tests.
+  - Interaction detection using the full GUIDE look-ahead strategy.
+  - Support for numerical and categorical features.
+
 ## Roadmap
-- **Phase 1 (MVP):** `GuideTreeClassifier` with core splitting and interaction logic.
 - **Phase 2:** `GuideTreeRegressor` implementation.
 - **Phase 3:** Advanced handling of categorical variables and missing values.
-- **Phase 4:** Pruning and performance optimizations.
+- **Phase 4:** Pruning and performance optimizations (Investigate sklearn visualization compatibility).
