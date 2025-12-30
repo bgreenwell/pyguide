@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Implement GuideTreeRegressor with residual-based selection
-*Link: [./conductor/tracks/regressor_20251228/](./conductor/tracks/regressor_20251228/)*
+## [ ] Track: Advanced Categorical and Missing Value Handling
+*Link: [./conductor/tracks/advanced_handling_20251229/](./conductor/tracks/advanced_handling_20251229/)*
