@@ -62,7 +62,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         else:
             dtype = "numeric"
 
-        X, y = check_X_y(X, y, dtype=dtype, force_all_finite="allow-nan")
+        X, y = check_X_y(X, y, dtype=dtype, ensure_all_finite="allow-nan")
 
         self.n_features_in_ = X.shape[1]
         self._categorical_mask = self._get_categorical_mask(X_orig, self.n_features_in_)
@@ -234,7 +234,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             else "numeric"
         )
 
-        X = check_array(X, dtype=dtype, force_all_finite="allow-nan")
+        X = check_array(X, dtype=dtype, ensure_all_finite="allow-nan")
         if X.shape[1] != self.n_features_in_:
             raise ValueError(
                 f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input."
@@ -248,11 +248,24 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             return node.prediction
 
         is_cat = self._categorical_mask[node.split_feature]
+        val = x[node.split_feature]
 
+        # Handle missing values
+        is_nan = False
         if is_cat:
-            go_left = x[node.split_feature] == node.split_threshold
+            if val is None or (isinstance(val, float) and np.isnan(val)):
+                is_nan = True
         else:
-            go_left = x[node.split_feature] <= node.split_threshold
+            if np.isnan(val):
+                is_nan = True
+
+        if is_nan:
+            go_left = node.missing_go_left
+        else:
+            if is_cat:
+                go_left = val == node.split_threshold
+            else:
+                go_left = val <= node.split_threshold
 
         if go_left:
             return self._predict_single(x, node.left)

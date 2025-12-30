@@ -11,7 +11,7 @@ def test_sse_split_numerical():
     x = np.array([1, 2, 3, 4], dtype=float)
     y = np.array([10, 10, 100, 100], dtype=float)
 
-    threshold, gain = find_best_split(x, y, is_categorical=False, criterion="mse")
+    threshold, _, gain = find_best_split(x, y, is_categorical=False, criterion="mse")
 
     assert threshold == 2.5
     # SSE Total: sum((y-55)**2) = 4 * (45**2) = 8100
@@ -27,7 +27,7 @@ def test_sse_split_categorical():
     x = np.array(["A", "A", "B", "B"])
     y = np.array([10, 10, 100, 100], dtype=float)
 
-    best_cat, gain = find_best_split(x, y, is_categorical=True, criterion="mse")
+    best_cat, _, gain = find_best_split(x, y, is_categorical=True, criterion="mse")
 
     # Either 'A' or 'B' as the "go left" category would result in 0 residual SSE
     assert best_cat in ["A", "B"]
@@ -39,5 +39,5 @@ def test_sse_split_no_gain():
     x = np.array([1, 2, 3, 4], dtype=float)
     y = np.array([10, 10, 10, 10], dtype=float)
 
-    threshold, gain = find_best_split(x, y, is_categorical=False, criterion="mse")
+    threshold, _, gain = find_best_split(x, y, is_categorical=False, criterion="mse")
     assert gain == 0.0
