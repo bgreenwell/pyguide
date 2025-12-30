@@ -31,13 +31,25 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         self.interaction_depth = interaction_depth
         self.categorical_features = categorical_features
 
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.input_tags.allow_nan = False
+        # If categorical_features is not None, we expect categorical data
+        # However, check_estimator passes objects without warning, 
+        # so we must be careful.
+        tags.input_tags.categorical = self.categorical_features is not None
+        return tags
+
     def _get_categorical_mask(self, X, n_features):
         """Identify categorical features."""
         if self.categorical_features is None:
             # Simple heuristic: if it's a DataFrame, check dtypes
             if isinstance(X, pd.DataFrame):
                 return X.dtypes.isin(["object", "category"]).values
-            # If it's a numpy array or something else, assume all numerical
+            # If it's a numpy array or something else, check for object/string types
+            if hasattr(X, "dtype") and X.dtype.kind in ["O", "U", "S"]:
+                return np.ones(n_features, dtype=bool)
+            # Assume all numerical
             return np.zeros(n_features, dtype=bool)
 
         mask = np.zeros(n_features, dtype=bool)
@@ -51,7 +63,17 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         # 1. Scikit-learn validation
         # We store the original format for categorical detection
         X_orig = X
-        X, y = check_X_y(X, y)
+        
+        # If user explicitly provided categorical features or X is obviously categorical
+        # we allow non-numeric dtypes.
+        if self.categorical_features is not None or isinstance(X, pd.DataFrame):
+            dtype = None
+        elif hasattr(X, "dtype") and X.dtype.kind in ["U", "S"]:
+            dtype = None
+        else:
+            dtype = "numeric"
+            
+        X, y = check_X_y(X, y, dtype=dtype)
         check_classification_targets(y)
 
         self.classes_, y = np.unique(y, return_inverse=True)
@@ -215,7 +237,12 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         Predict class for X.
         """
         check_is_fitted(self)
-        X = check_array(X)
+        
+        # Use numeric by default unless categorical features were handled in fit
+        dtype = None if (self.categorical_features is not None or 
+                         (hasattr(self, "_categorical_mask") and np.any(self._categorical_mask))) else "numeric"
+        
+        X = check_array(X, dtype=dtype)
         if X.shape[1] != self.n_features_in_:
             raise ValueError(
                 f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input."
@@ -245,7 +272,11 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         Predict class probabilities for X.
         """
         check_is_fitted(self)
-        X = check_array(X)
+        
+        dtype = None if (self.categorical_features is not None or 
+                         (hasattr(self, "_categorical_mask") and np.any(self._categorical_mask))) else "numeric"
+        
+        X = check_array(X, dtype=dtype)
         if X.shape[1] != self.n_features_in_:
             raise ValueError(
                 f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input."

@@ -30,11 +30,19 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         self.interaction_depth = interaction_depth
         self.categorical_features = categorical_features
 
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.input_tags.allow_nan = False
+        tags.input_tags.categorical = self.categorical_features is not None
+        return tags
+
     def _get_categorical_mask(self, X, n_features):
         """Identify categorical features."""
         if self.categorical_features is None:
             if isinstance(X, pd.DataFrame):
                 return X.dtypes.isin(["object", "category"]).values
+            if hasattr(X, "dtype") and X.dtype.kind in ["O", "U", "S"]:
+                return np.ones(n_features, dtype=bool)
             return np.zeros(n_features, dtype=bool)
 
         mask = np.zeros(n_features, dtype=bool)
@@ -46,7 +54,15 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         Build a GUIDE tree regressor from the training set (X, y).
         """
         X_orig = X
-        X, y = check_X_y(X, y)
+        
+        if self.categorical_features is not None or isinstance(X, pd.DataFrame):
+            dtype = None
+        elif hasattr(X, "dtype") and X.dtype.kind in ["U", "S"]:
+            dtype = None
+        else:
+            dtype = "numeric"
+            
+        X, y = check_X_y(X, y, dtype=dtype)
 
         self.n_features_in_ = X.shape[1]
         self._categorical_mask = self._get_categorical_mask(X_orig, self.n_features_in_)
@@ -182,7 +198,11 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         Predict regression target for X.
         """
         check_is_fitted(self)
-        X = check_array(X)
+        
+        dtype = None if (self.categorical_features is not None or 
+                         (hasattr(self, "_categorical_mask") and np.any(self._categorical_mask))) else "numeric"
+        
+        X = check_array(X, dtype=dtype)
         if X.shape[1] != self.n_features_in_:
             raise ValueError(
                 f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input."
