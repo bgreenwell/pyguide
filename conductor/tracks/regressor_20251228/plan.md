@@ -18,9 +18,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: SSE Split Optimization' (Protocol in workflow.md) [1b2c460]
 
 ## Phase 4: Recursive Tree Growth & Prediction
-- [ ] Task: Write tests for recursive regression tree fitting
-- [ ] Task: Implement `_fit_node` specific to regression (mean prediction)
-- [ ] Task: Implement `predict` for regression tree traversal
+- [x] Task: Write tests for recursive regression tree fitting [0bf88ac]
+- [x] Task: Implement `_fit_node` specific to regression (mean prediction) [0bf88ac]
+- [x] Task: Implement `predict` for regression tree traversal [0bf88ac]
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Recursive Tree Growth & Prediction' (Protocol in workflow.md)
 
 ## Phase 5: Final Verification & Benchmarking
