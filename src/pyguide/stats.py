@@ -37,29 +37,38 @@ def _bin_continuous(x, n_bins=None):
 def calc_curvature_p_value(x, z, is_categorical=False):
     """
     Calculate the Chi-square p-value for the association between x and z.
-
-    Parameters
-    ----------
-    x : array-like
-        The predictor variable.
-    z : array-like
-        The target variable (categorical labels).
-    is_categorical : bool
-        Whether x is categorical. If False, x will be binned.
-
-    Returns
-    -------
-    p : float
-        The p-value from the Chi-square test. Returns 1.0 on failure.
+    Missing values in x are treated as a separate category.
     """
     # 1. Prepare binned/categorical x
     if not is_categorical:
-        x_processed = _bin_continuous(x)
+        # Separate NaNs from continuous values for binning
+        nan_mask = np.isnan(x)
+        x_non_nan = x[~nan_mask]
+        z_non_nan = z[~nan_mask]
+        
+        if len(x_non_nan) > 0:
+            x_binned = _bin_continuous(x_non_nan)
+            # Reconstruct x_processed with NaNs as a separate bin (e.g., -1)
+            x_processed = np.full(len(x), -1, dtype=int)
+            x_processed[~nan_mask] = x_binned
+        else:
+            x_processed = np.full(len(x), -1, dtype=int)
     else:
-        x_processed = x
+        # Categorical x: ensure NaNs are represented (e.g., as 'MISSING' string)
+        if x.dtype.kind == 'O' or x.dtype.kind == 'U' or x.dtype.kind == 'S':
+             # Use pandas to handle various missing representations
+             x_processed = pd.Series(x).fillna("MISSING")
+        else:
+             nan_mask = np.isnan(x)
+             x_processed = x.copy()
+             # Use a value that doesn't exist in x
+             if len(x) > 0:
+                 missing_val = np.nanmin(x) - 1 if not np.all(np.isnan(x)) else -1
+                 x_processed[nan_mask] = missing_val
+             else:
+                 x_processed = x
 
     # 2. Create contingency table
-    # We use pandas crosstab for convenience, but could use numpy if needed for performance
     try:
         contingency = pd.crosstab(x_processed, z)
 
