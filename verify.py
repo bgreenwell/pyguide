@@ -1,27 +1,26 @@
 import numpy as np
 from pyguide import GuideTreeRegressor
-from sklearn.utils.validation import check_is_fitted
 
-def verify():
-    X = np.array([[10], [20], [30]])
-    y = np.array([1, 2, 3])
+def verify_selection():
+    # X0 is predictive, X1 is noise
+    X = np.array([
+        [0, 10],
+        [0, 20],
+        [1, 10],
+        [1, 20]
+    ], dtype=float)
+    y = np.array([10, 10, 50, 50], dtype=float)
 
-    reg = GuideTreeRegressor(max_depth=2)
+    # Force split by setting high significance threshold
+    reg = GuideTreeRegressor(max_depth=1, significance_threshold=1.0)
     reg.fit(X, y)
     
-    # Confirm it's fitted
-    check_is_fitted(reg)
+    print(f"Is leaf: {reg.tree_.is_leaf}")
+    print(f"Split feature: {reg.tree_.split_feature}")
     
-    # Confirm prediction
-    y_pred = reg.predict(X)
-    print(f"Predictions: {y_pred}")
-    print(f"Shape: {y_pred.shape}")
-    
-    # Assertions for verification
-    expected_mean = np.mean(y)
-    assert np.allclose(y_pred, expected_mean), f"Expected mean {expected_mean}, got {y_pred}"
-    assert y_pred.shape == (3,), f"Expected shape (3,), got {y_pred.shape}"
-    print("Verification successful!")
+    assert reg.tree_.is_leaf is False
+    assert reg.tree_.split_feature == 0, f"Expected feature 0, got {reg.tree_.split_feature}"
+    print("Variable selection verification successful!")
 
 if __name__ == "__main__":
-    verify()
+    verify_selection()
