@@ -41,7 +41,7 @@ def test_regressor_variable_selection_integration():
     # z = [0, 0, 1, 1]
     # z is perfectly correlated with X0
     
-    reg = GuideTreeRegressor(max_depth=1)
+    reg = GuideTreeRegressor(max_depth=1, significance_threshold=1.0)
     reg.fit(X, y)
     
     # After implementation, reg.tree_ should not be a leaf with constant mean

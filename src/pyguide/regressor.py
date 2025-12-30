@@ -3,7 +3,10 @@ import pandas as pd
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
+from .interactions import calc_interaction_p_value
 from .node import GuideNode
+from .selection import select_split_variable
+from .splitting import find_best_split
 
 
 class GuideTreeRegressor(RegressorMixin, BaseEstimator):
@@ -48,11 +51,131 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         self.n_features_in_ = X.shape[1]
         self._categorical_mask = self._get_categorical_mask(X_orig, self.n_features_in_)
 
-        # Initial stub: Constant prediction (mean)
-        self.tree_ = GuideNode(depth=0, is_leaf=True, prediction=np.mean(y))
+        # Build the tree
+        self.tree_ = self._fit_node(X, y, depth=0)
 
         self.is_fitted_ = True
         return self
+
+    def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
+        """
+        Calculate total gain of splitting on split_feat, then splitting children on next_feat.
+        Using SSE criterion for regression.
+        """
+        is_cat = self._categorical_mask[split_feat]
+        threshold, gain1 = find_best_split(
+            X[:, split_feat], y, is_categorical=is_cat, criterion="mse"
+        )
+
+        if threshold is None:
+            return 0.0
+
+        if is_cat:
+            left_mask = X[:, split_feat] == threshold
+        else:
+            left_mask = X[:, split_feat] <= threshold
+
+        y_left = y[left_mask]
+        y_right = y[~left_mask]
+        X_left = X[left_mask]
+        X_right = X[~left_mask]
+
+        if len(y_left) == 0 or len(y_right) == 0:
+            return gain1
+
+        # Gain from second level (next_feat)
+        is_cat_next = self._categorical_mask[next_feat]
+        _, gain2_left = find_best_split(
+            X_left[:, next_feat], y_left, is_categorical=is_cat_next, criterion="mse"
+        )
+        _, gain2_right = find_best_split(
+            X_right[:, next_feat], y_right, is_categorical=is_cat_next, criterion="mse"
+        )
+
+        total_gain = gain1 + gain2_left + gain2_right
+        return total_gain
+
+    def _fit_node(self, X, y, depth):
+        """Recursive function to grow the tree for regression."""
+        n_samples = len(y)
+        prediction = np.mean(y)
+
+        # 1. Check stopping criteria
+        # Use a small tolerance for constant y
+        if (
+            (n_samples > 0 and np.all(np.abs(y - prediction) < 1e-9))
+            or n_samples < self.min_samples_split
+            or (self.max_depth is not None and depth >= self.max_depth)
+        ):
+            return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
+
+        # 2. Variable Selection (GUIDE step 1)
+        # Residual-based target for regression
+        z = (y > prediction).astype(int)
+
+        best_idx, p = select_split_variable(
+            X, z, categorical_features=self._categorical_mask
+        )
+
+        # Interaction Detection (Fallback)
+        interaction_split_override = False
+        if p > self.significance_threshold and self.interaction_depth > 0:
+            best_int_p = 1.0
+            best_int_pair = None
+            n_features = X.shape[1]
+
+            for i in range(n_features):
+                for j in range(i + 1, n_features):
+                    p_int = calc_interaction_p_value(
+                        X[:, i],
+                        X[:, j],
+                        z,
+                        is_cat1=self._categorical_mask[i],
+                        is_cat2=self._categorical_mask[j],
+                    )
+                    if p_int < best_int_p:
+                        best_int_p = p_int
+                        best_int_pair = (i, j)
+
+            if best_int_p < self.significance_threshold:
+                i, j = best_int_pair
+                gain_i_then_j = self._calculate_lookahead_gain(X, y, i, j)
+                gain_j_then_i = self._calculate_lookahead_gain(X, y, j, i)
+
+                if gain_i_then_j >= gain_j_then_i:
+                    best_idx = i
+                else:
+                    best_idx = j
+                interaction_split_override = True
+
+        # Check significance threshold
+        if not interaction_split_override and p > self.significance_threshold:
+            return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
+
+        # 3. Split Point Optimization (GUIDE step 2)
+        is_cat = self._categorical_mask[best_idx]
+        threshold, gain = find_best_split(
+            X[:, best_idx], y, is_categorical=is_cat, criterion="mse"
+        )
+
+        # 4. If no valid split found, return leaf
+        if threshold is None or (gain <= 0 and not interaction_split_override):
+            return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
+
+        # 5. Create node and recurse
+        node = GuideNode(
+            depth=depth, split_feature=best_idx, split_threshold=threshold
+        )
+
+        if is_cat:
+            left_mask = X[:, best_idx] == threshold
+        else:
+            left_mask = X[:, best_idx] <= threshold
+
+        node.left = self._fit_node(X[left_mask], y[left_mask], depth + 1)
+        node.right = self._fit_node(X[~left_mask], y[~left_mask], depth + 1)
+
+        return node
 
     def predict(self, X):
         """
@@ -65,5 +188,21 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 f"X has {X.shape[1]} features, but {self.__class__.__name__} is expecting {self.n_features_in_} features as input."
             )
 
-        # For now, just return the constant prediction
-        return np.full(X.shape[0], self.tree_.prediction)
+        return np.array([self._predict_single(x, self.tree_) for x in X])
+
+    def _predict_single(self, x, node):
+        """Predict for a single sample by traversing the tree."""
+        if node.is_leaf:
+            return node.prediction
+
+        is_cat = self._categorical_mask[node.split_feature]
+
+        if is_cat:
+            go_left = x[node.split_feature] == node.split_threshold
+        else:
+            go_left = x[node.split_feature] <= node.split_threshold
+
+        if go_left:
+            return self._predict_single(x, node.left)
+        else:
+            return self._predict_single(x, node.right)
