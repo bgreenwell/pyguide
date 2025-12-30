@@ -35,7 +35,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         tags = super().__sklearn_tags__()
         tags.input_tags.allow_nan = False
         # If categorical_features is not None, we expect categorical data
-        # However, check_estimator passes objects without warning, 
+        # However, check_estimator passes objects without warning,
         # so we must be careful.
         tags.input_tags.categorical = self.categorical_features is not None
         return tags
@@ -63,7 +63,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         # 1. Scikit-learn validation
         # We store the original format for categorical detection
         X_orig = X
-        
+
         # If user explicitly provided categorical features or X is obviously categorical
         # we allow non-numeric dtypes.
         if self.categorical_features is not None or isinstance(X, pd.DataFrame):
@@ -72,7 +72,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             dtype = None
         else:
             dtype = "numeric"
-            
+
         X, y = check_X_y(X, y, dtype=dtype)
         check_classification_targets(y)
 
@@ -237,11 +237,20 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         Predict class for X.
         """
         check_is_fitted(self)
-        
+
         # Use numeric by default unless categorical features were handled in fit
-        dtype = None if (self.categorical_features is not None or 
-                         (hasattr(self, "_categorical_mask") and np.any(self._categorical_mask))) else "numeric"
-        
+        dtype = (
+            None
+            if (
+                self.categorical_features is not None
+                or (
+                    hasattr(self, "_categorical_mask")
+                    and np.any(self._categorical_mask)
+                )
+            )
+            else "numeric"
+        )
+
         X = check_array(X, dtype=dtype)
         if X.shape[1] != self.n_features_in_:
             raise ValueError(
@@ -272,10 +281,19 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         Predict class probabilities for X.
         """
         check_is_fitted(self)
-        
-        dtype = None if (self.categorical_features is not None or 
-                         (hasattr(self, "_categorical_mask") and np.any(self._categorical_mask))) else "numeric"
-        
+
+        dtype = (
+            None
+            if (
+                self.categorical_features is not None
+                or (
+                    hasattr(self, "_categorical_mask")
+                    and np.any(self._categorical_mask)
+                )
+            )
+            else "numeric"
+        )
+
         X = check_array(X, dtype=dtype)
         if X.shape[1] != self.n_features_in_:
             raise ValueError(

@@ -54,14 +54,14 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         Build a GUIDE tree regressor from the training set (X, y).
         """
         X_orig = X
-        
+
         if self.categorical_features is not None or isinstance(X, pd.DataFrame):
             dtype = None
         elif hasattr(X, "dtype") and X.dtype.kind in ["U", "S"]:
             dtype = None
         else:
             dtype = "numeric"
-            
+
         X, y = check_X_y(X, y, dtype=dtype)
 
         self.n_features_in_ = X.shape[1]
@@ -179,9 +179,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             return GuideNode(depth=depth, is_leaf=True, prediction=prediction)
 
         # 5. Create node and recurse
-        node = GuideNode(
-            depth=depth, split_feature=best_idx, split_threshold=threshold
-        )
+        node = GuideNode(depth=depth, split_feature=best_idx, split_threshold=threshold)
 
         if is_cat:
             left_mask = X[:, best_idx] == threshold
@@ -198,10 +196,19 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         Predict regression target for X.
         """
         check_is_fitted(self)
-        
-        dtype = None if (self.categorical_features is not None or 
-                         (hasattr(self, "_categorical_mask") and np.any(self._categorical_mask))) else "numeric"
-        
+
+        dtype = (
+            None
+            if (
+                self.categorical_features is not None
+                or (
+                    hasattr(self, "_categorical_mask")
+                    and np.any(self._categorical_mask)
+                )
+            )
+            else "numeric"
+        )
+
         X = check_array(X, dtype=dtype)
         if X.shape[1] != self.n_features_in_:
             raise ValueError(

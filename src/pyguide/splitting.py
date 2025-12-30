@@ -23,14 +23,14 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
     """
     best_threshold = None
     best_gain = -1.0
-    
+
     if criterion == "gini":
         current_impurity = _gini(y)
         calc_impurity = _gini
     else:
         current_impurity = _sse(y)
         calc_impurity = _sse
-        
+
     n_samples = len(y)
 
     idx = np.argsort(x)
@@ -77,14 +77,14 @@ def _find_best_split_categorical(x, y, criterion="gini"):
     """
     best_category = None
     best_gain = -1.0
-    
+
     if criterion == "gini":
         current_impurity = _gini(y)
         calc_impurity = _gini
     else:
         current_impurity = _sse(y)
         calc_impurity = _sse
-        
+
     n_samples = len(y)
 
     unique_categories = np.unique(x)
