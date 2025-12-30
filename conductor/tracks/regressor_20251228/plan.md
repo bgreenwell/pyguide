@@ -1,9 +1,9 @@
 # Plan: Implement GuideTreeRegressor with residual-based selection
 
-## Phase 1: Regressor Foundation
+## Phase 1: Regressor Foundation [checkpoint: 4cfe7d4]
 - [x] Task: Write tests for `GuideTreeRegressor` interface (init, fit, predict) [7c154c3]
 - [x] Task: Implement `GuideTreeRegressor` shell with `RegressorMixin` and basic validation [7c154c3]
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Regressor Foundation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Regressor Foundation' (Protocol in workflow.md) [4cfe7d4]
 
 ## Phase 2: Regression Variable Selection
 - [ ] Task: Write tests for residual-to-class transformation logic
