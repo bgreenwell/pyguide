@@ -9,7 +9,7 @@
 ## Phase 2: Cost-Complexity Pruning
 - [x] Task: Create tests for `ccp_alpha` (verify tree depth reduction) [b364bbd]
 - [x] Task: Implement `ccp_alpha` parameter and `cost_complexity_pruning_path` stub [42175cd]
-- [ ] Task: Implement pruning logic (post-pruning) in `fit`
+- [x] Task: Implement pruning logic (post-pruning) in `fit` [8e14b9f]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Cost-Complexity Pruning' (Protocol in workflow.md)
 
 ## Phase 3: Performance Optimization
