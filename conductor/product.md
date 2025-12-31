@@ -32,6 +32,10 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Integrated support for Minimal Cost-Complexity Pruning via `ccp_alpha`.
   - Compatibility with scikit-learn visualization tools (e.g., `plot_tree`).
   - Highly optimized training path using vectorized contingency tables and cumulative statistics.
+- **Advanced Diagnostics and Parity:**
+  - Full structural parity with scikit-learn (e.g., `n_leaves_`, `max_depth_`).
+  - Variable importance scores (`feature_importances_`) based on weighted impurity reduction.
+  - Diagnostic methods for sample tracking (`apply`, `decision_path`).
 
 ## Roadmap
 - [Planned] Tree ensembles (Random Forest, Boosting) using GUIDE as the base learner.
