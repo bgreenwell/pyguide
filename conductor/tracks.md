@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Refining Interaction Detection
-*Link: [./conductor/tracks/interaction_refinement_20251230/](./conductor/tracks/interaction_refinement_20251230/)*
+## [ ] Track: Documentation & Examples
+*Link: [./conductor/tracks/docs_examples_20251230/](./conductor/tracks/docs_examples_20251230/)*
