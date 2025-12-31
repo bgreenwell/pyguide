@@ -4,37 +4,41 @@ from scipy.stats import chi2_contingency
 from .stats import _bin_continuous, _fast_contingency
 
 
-def calc_interaction_p_value(x1, x2, z, is_cat1=False, is_cat2=False):
+def calc_interaction_p_value(X_subset, z, categorical_mask=None):
     """
-    Calculate interaction p-value between x1 and x2 on target z.
+    Calculate interaction p-value between features in X_subset on target z.
+
+    Parameters
+    ----------
+    X_subset : array-like of shape (n_samples, n_vars)
+        The features to test for interaction.
+    z : array-like of shape (n_samples,)
+        The target values (class labels or residual signs).
+    categorical_mask : array-like of shape (n_vars,), optional
+        Boolean mask indicating which features in X_subset are categorical.
 
     GUIDE Strategy:
-    - If both numerical: Split into 4 quadrants based on medians.
-    - If categorical: Use categories.
-    - If mixed: Bin numerical part.
-
-    Then perform Chi-square test on the groups formed by (x1, x2) vs z.
+    - Bin numerical variables into 2 groups (median split).
+    - Combine all binned/categorical variables into unique groups.
+    - Perform Chi-square test on groups vs z.
     """
-    # 1. Discretize x1
-    if not is_cat1:
-        # Use median split (2 bins) for interaction test usually
-        # But _bin_continuous uses quartiles (4 bins) or 3.
-        # GUIDE interaction test typically uses 2 bins (median) to form 4 quadrants total.
-        x1_binned = _bin_continuous(x1, n_bins=2)
-    else:
-        x1_binned = x1
+    n_samples, n_vars = X_subset.shape
+    if categorical_mask is None:
+        categorical_mask = np.zeros(n_vars, dtype=bool)
 
-    # 2. Discretize x2
-    if not is_cat2:
-        x2_binned = _bin_continuous(x2, n_bins=2)
-    else:
-        x2_binned = x2
+    binned_vars = []
+    for i in range(n_vars):
+        x = X_subset[:, i]
+        is_cat = categorical_mask[i]
+        if not is_cat:
+            # GUIDE interaction test typically uses 2 bins (median)
+            binned_vars.append(_bin_continuous(x, n_bins=2))
+        else:
+            binned_vars.append(x)
 
     # 3. Create combined groups
-    # To combine x1_binned and x2_binned into unique pairs, we can use integer labels.
-    # We use return_inverse to get unique codes for each pair.
-    # Stack and find unique rows
-    combined = np.column_stack([x1_binned, x2_binned])
+    # To combine binned variables into unique groups, we use return_inverse on unique rows.
+    combined = np.column_stack(binned_vars)
     _, combined_idx = np.unique(combined, axis=0, return_inverse=True)
 
     try:

@@ -19,7 +19,8 @@ def test_interaction_xor_pattern():
     y = np.array([0, 1, 1, 0] * 10)
 
     # Check interaction between x1 and x2
-    p = calc_interaction_p_value(x1, x2, y, is_cat1=True, is_cat2=True)
+    X_sub = np.column_stack([x1, x2])
+    p = calc_interaction_p_value(X_sub, y, categorical_mask=np.array([True, True]))
     assert p < 0.05
 
 
@@ -30,7 +31,8 @@ def test_no_interaction():
     x2 = np.random.rand(100)
     y = np.random.randint(0, 2, 100)
 
-    p = calc_interaction_p_value(x1, x2, y, is_cat1=False, is_cat2=False)
+    X_sub = np.column_stack([x1, x2])
+    p = calc_interaction_p_value(X_sub, y, categorical_mask=np.array([False, False]))
     assert p > 0.05
 
 

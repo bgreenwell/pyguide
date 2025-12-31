@@ -1,3 +1,4 @@
+import itertools
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, RegressorMixin
@@ -374,7 +375,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         interaction_split_override = False
         if p > self.significance_threshold and self.interaction_depth > 0:
             best_int_p = 1.0
-            best_int_pair = None
+            best_int_group = None
             n_features = X.shape[1]
 
             # Determine candidates for interaction search
@@ -390,31 +391,39 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 candidates.sort(key=lambda idx: all_p_values[idx])
                 candidates = candidates[: self.max_interaction_candidates]
 
-            # Search pairs within candidates
-            for i_idx in range(len(candidates)):
-                i = candidates[i_idx]
-                for j_idx in range(i_idx + 1, len(candidates)):
-                    j = candidates[j_idx]
+            # Search interactions (groups of size 2 up to interaction_depth + 1)
+            for size in range(2, self.interaction_depth + 2):
+                for group in itertools.combinations(candidates, size):
                     p_int = calc_interaction_p_value(
-                        X[:, i],
-                        X[:, j],
+                        X[:, list(group)],
                         z,
-                        is_cat1=self._categorical_mask[i],
-                        is_cat2=self._categorical_mask[j],
+                        categorical_mask=self._categorical_mask[list(group)],
                     )
                     if p_int < best_int_p:
                         best_int_p = p_int
-                        best_int_pair = (i, j)
+                        best_int_group = group
 
             if best_int_p < self.significance_threshold:
-                i, j = best_int_pair
-                gain_i_then_j = self._calculate_lookahead_gain(X, y, i, j)
-                gain_j_then_i = self._calculate_lookahead_gain(X, y, j, i)
+                # Interaction found! Select the best variable from the group to split on.
+                if len(best_int_group) == 2:
+                    # For pairs, perform standard look-ahead
+                    i, j = best_int_group
+                    gain_i_then_j = self._calculate_lookahead_gain(X, y, i, j)
+                    gain_j_then_i = self._calculate_lookahead_gain(X, y, j, i)
 
-                if gain_i_then_j >= gain_j_then_i:
-                    best_idx = i
+                    if gain_i_then_j >= gain_j_then_i:
+                        best_idx = i
+                    else:
+                        best_idx = j
                 else:
-                    best_idx = j
+                    # For triplets+, pick the one with the smallest individual p-value
+                    best_idx = best_int_group[0]
+                    min_p = all_p_values[best_idx]
+                    for feat in best_int_group:
+                        if all_p_values[feat] < min_p:
+                            min_p = all_p_values[feat]
+                            best_idx = feat
+
                 interaction_split_override = True
 
         # Check significance threshold
