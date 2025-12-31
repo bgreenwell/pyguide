@@ -5,11 +5,11 @@
 - [x] Task: Create tests for structural attributes (verify counts on known tree structures) [4b95a82]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Structural Attributes' (Protocol in workflow.md) [ab2f006]
 
-## Phase 2: Variable Importance [checkpoint: 8cab993]
+## Phase 2: Variable Importance [checkpoint: eeb2764]
 - [x] Task: Implement `feature_importances_` based on weighted impurity reduction [8cab993]
 - [x] Task: Create tests for feature importance (verify that predictive features have higher scores) [8cab993]
 - [x] Task: Verify compatibility with `sklearn.feature_selection.SelectFromModel` [8cab993]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Variable Importance' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Variable Importance' (Protocol in workflow.md) [eeb2764]
 
 ## Phase 3: Diagnostic Methods
 - [ ] Task: Implement `apply(X)` to return leaf indices
