@@ -17,6 +17,7 @@ class GuideNode:
         n_samples=0,
         impurity=0.0,
         value_distribution=None,
+        node_id=None,
     ):
         self.depth = depth
         self.is_leaf = is_leaf
@@ -30,6 +31,7 @@ class GuideNode:
         self.n_samples = n_samples
         self.impurity = impurity
         self.value_distribution = value_distribution
+        self.node_id = node_id
 
     def is_leaf_node(self):
         return self.is_leaf

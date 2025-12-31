@@ -77,8 +77,55 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         if self.ccp_alpha > 0.0:
             self._prune_tree(self._root, len(y))
 
+        # Assign node IDs
+        self._assign_node_ids(self._root, 0)
+
         self.is_fitted_ = True
         return self
+
+    def _assign_node_ids(self, node, next_id):
+        """Recursively assign IDs to nodes."""
+        node.node_id = next_id
+        next_id += 1
+        if not node.is_leaf:
+            next_id = self._assign_node_ids(node.left, next_id)
+            next_id = self._assign_node_ids(node.right, next_id)
+        return next_id
+
+    def apply(self, X):
+        """
+        Return the index of the leaf that each sample is predicted as.
+        """
+        check_is_fitted(self)
+        X = check_array(X, dtype=None, ensure_all_finite="allow-nan")
+        return np.array([self._apply_single(x, self._root) for x in X])
+
+    def _apply_single(self, x, node):
+        if node.is_leaf:
+            return node.node_id
+
+        is_cat = self._categorical_mask[node.split_feature]
+        val = x[node.split_feature]
+        is_nan = False
+        if is_cat:
+            if val is None or (isinstance(val, float) and np.isnan(val)):
+                is_nan = True
+        else:
+            if np.isnan(val):
+                is_nan = True
+
+        if is_nan:
+            go_left = node.missing_go_left
+        else:
+            if is_cat:
+                go_left = val in node.split_threshold
+            else:
+                go_left = val <= node.split_threshold
+
+        if go_left:
+            return self._apply_single(x, node.left)
+        else:
+            return self._apply_single(x, node.right)
 
     def _prune_tree(self, node, n_total):
         """
@@ -168,11 +215,11 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         check_is_fitted(self)
         importances = np.zeros(self.n_features_in_)
         self._compute_feature_importances(self._root, importances)
-        
+
         sum_importances = importances.sum()
         if sum_importances > 0:
             importances /= sum_importances
-            
+
         return importances
 
     def _compute_feature_importances(self, node, importances):
@@ -182,13 +229,11 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         # Impurity reduction for regression (SSE)
         # Reduction = SSE(node) - (SSE(left) + SSE(right))
         # This is already what find_best_split calculates as 'gain'
-        
-        reduction = (node.impurity - 
-                     node.left.impurity - 
-                     node.right.impurity)
-        
-        importances[node.split_feature] += max(0, reduction) # Ensure non-negative
-        
+
+        reduction = node.impurity - node.left.impurity - node.right.impurity
+
+        importances[node.split_feature] += max(0, reduction)  # Ensure non-negative
+
         self._compute_feature_importances(node.left, importances)
         self._compute_feature_importances(node.right, importances)
 
@@ -211,9 +256,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             left_mask = X[:, split_feat] <= threshold
 
         # Handle NaNs
-        nan_mask = (
-            np.isnan(X[:, split_feat]) if not is_cat else pd.isna(X[:, split_feat])
-        )
+        nan_mask = np.isnan(X[:, split_feat]) if not is_cat else pd.isna(X[:, split_feat])
         if is_cat and X.dtype.kind == "O":
             nan_mask = np.array(
                 [
@@ -271,9 +314,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         # 2. Variable Selection (GUIDE step 1)
         z = (y > prediction).astype(int)
 
-        best_idx, p = select_split_variable(
-            X, z, categorical_features=self._categorical_mask
-        )
+        best_idx, p = select_split_variable(X, z, categorical_features=self._categorical_mask)
 
         # Interaction Detection (Fallback)
         interaction_split_override = False
@@ -380,10 +421,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             None
             if (
                 self.categorical_features is not None
-                or (
-                    hasattr(self, "_categorical_mask")
-                    and np.any(self._categorical_mask)
-                )
+                or (hasattr(self, "_categorical_mask") and np.any(self._categorical_mask))
             )
             else "numeric"
         )
