@@ -13,7 +13,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Cost-Complexity Pruning' (Protocol in workflow.md) [e4e8ad1]
 
 ## Phase 3: Performance Optimization
-- [ ] Task: Create a comprehensive performance benchmark (profiling baseline)
+- [x] Task: Create a comprehensive performance benchmark (profiling baseline) [285d1ec]
 - [ ] Task: Optimize `calc_curvature_p_value` (vectorize contingency table creation if possible)
 - [ ] Task: Optimize `find_best_split` (vectorize loop over thresholds)
 - [ ] Task: Verify performance improvements against baseline
