@@ -73,8 +73,42 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         # Build the tree
         self._root = self._fit_node(X, y, depth=0)
 
+        # Post-pruning
+        if self.ccp_alpha > 0.0:
+            self._prune_tree(self._root, len(y))
+
         self.is_fitted_ = True
         return self
+
+    def _prune_tree(self, node, n_total):
+        """
+        Recursively prune the tree using Minimal Cost-Complexity Pruning.
+        """
+        # For regressor, impurity is SSE. R(t) = SSE(t) / N
+        if node.is_leaf:
+            return (node.impurity / n_total), 1
+
+        # Recursive call
+        left_impurity, left_leaves = self._prune_tree(node.left, n_total)
+        right_impurity, right_leaves = self._prune_tree(node.right, n_total)
+
+        subtree_impurity = left_impurity + right_impurity
+        subtree_leaves = left_leaves + right_leaves
+
+        # Cost of current node as a leaf
+        node_impurity_scaled = node.impurity / n_total
+
+        # Pruning condition: R(t) - R(T_t) <= alpha * (|T_t| - 1)
+        if node_impurity_scaled - subtree_impurity <= self.ccp_alpha * (
+            subtree_leaves - 1
+        ):
+            # Prune!
+            node.is_leaf = True
+            node.left = None
+            node.right = None
+            return node_impurity_scaled, 1
+        else:
+            return subtree_impurity, subtree_leaves
 
     def cost_complexity_pruning_path(self, X, y, sample_weight=None):
         """
