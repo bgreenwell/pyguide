@@ -11,8 +11,8 @@
 - [x] Task: Verify compatibility with `sklearn.feature_selection.SelectFromModel` [8cab993]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Variable Importance' (Protocol in workflow.md) [eeb2764]
 
-## Phase 3: Diagnostic Methods
+## Phase 3: Diagnostic Methods [checkpoint: 9d1369f]
 - [x] Task: Implement `apply(X)` to return leaf indices [bf8e137]
 - [x] Task: Implement `decision_path(X)` using a CSR matrix [3fde1a5]
 - [x] Task: Create tests for `apply` and `decision_path` [3fde1a5]
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Diagnostic Methods' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Diagnostic Methods' (Protocol in workflow.md) [9d1369f]
