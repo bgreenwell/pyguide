@@ -144,6 +144,40 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             self._root, n_classes=self.n_classes_, is_classifier=True
         )
 
+    def get_depth(self):
+        """
+        Return the depth of the decision tree.
+        The depth of a tree is the maximum distance between the root
+        and any leaf.
+        """
+        check_is_fitted(self)
+        return self._get_depth(self._root)
+
+    def _get_depth(self, node):
+        if node.is_leaf:
+            return 0
+        return 1 + max(self._get_depth(node.left), self._get_depth(node.right))
+
+    def get_n_leaves(self):
+        """
+        Return the number of leaves of the decision tree.
+        """
+        check_is_fitted(self)
+        return self._get_n_leaves(self._root)
+
+    def _get_n_leaves(self, node):
+        if node.is_leaf:
+            return 1
+        return self._get_n_leaves(node.left) + self._get_n_leaves(node.right)
+
+    @property
+    def n_leaves_(self):
+        return self.get_n_leaves()
+
+    @property
+    def max_depth_(self):
+        return self.get_depth()
+
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """
         Calculate total gain of splitting on split_feat, then splitting children on next_feat.
