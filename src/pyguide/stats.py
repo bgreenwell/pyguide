@@ -34,6 +34,30 @@ def _bin_continuous(x, n_bins=None):
         return np.zeros_like(x, dtype=int)
 
 
+def _fast_contingency(x, z):
+    """
+    Fast contingency table creation using numpy.
+    x and z should be integer arrays.
+    Returns a 2D numpy array.
+    """
+    # 1. Map categories to [0, n_cats-1] and [0, n_classes-1]
+    # np.unique with return_inverse is still relatively slow,
+    # but we only call it once per variable selection.
+    ux, x_idx = np.unique(x, return_inverse=True)
+    uz, z_idx = np.unique(z, return_inverse=True)
+
+    n_x = len(ux)
+    n_z = len(uz)
+
+    if n_x < 2 or n_z < 2:
+        return None
+
+    # Use bincount for O(N) contingency table
+    # index = x_idx * n_z + z_idx
+    count = np.bincount(x_idx * n_z + z_idx, minlength=n_x * n_z)
+    return count.reshape(n_x, n_z)
+
+
 def calc_curvature_p_value(x, z, is_categorical=False):
     """
     Calculate the Chi-square p-value for the association between x and z.
@@ -53,34 +77,30 @@ def calc_curvature_p_value(x, z, is_categorical=False):
         else:
             x_processed = np.full(len(x), -1, dtype=int)
     else:
-        # Categorical x: ensure NaNs are represented (e.g., as 'MISSING' string)
-        if x.dtype.kind == "O" or x.dtype.kind == "U" or x.dtype.kind == "S":
-            # Use pandas to handle various missing representations
-            x_processed = pd.Series(x).fillna("MISSING")
+        # Categorical x: ensure NaNs are represented
+        if x.dtype.kind in ["O", "U", "S"]:
+            # Fill NaNs manually to avoid pandas Series creation
+            x_processed = x.copy()
+            mask = pd.isna(x)
+            if np.any(mask):
+                x_processed[mask] = "MISSING"
         else:
             nan_mask = np.isnan(x)
             x_processed = x.copy()
-            # Use a value that doesn't exist in x
             if len(x) > 0:
+                # Use a value that doesn't exist in x
                 missing_val = np.nanmin(x) - 1 if not np.all(np.isnan(x)) else -1
                 x_processed[nan_mask] = missing_val
-            else:
-                x_processed = x
 
     # 2. Create contingency table
+    contingency = _fast_contingency(x_processed, z)
+
+    if contingency is None:
+        return 1.0
+
+    # 3. Chi-square test
     try:
-        contingency = pd.crosstab(x_processed, z)
-
-        # 3. Chi-square test
-        # If the contingency table is too small (e.g., only one row/col), chi2 fails
-        if (
-            contingency.size == 0
-            or contingency.shape[0] < 2
-            or contingency.shape[1] < 2
-        ):
-            return 1.0
-
-        # Use Fisher's exact test for 2x2 tables (more robust for small samples)
+        # Use Fisher's exact test for 2x2 tables
         if contingency.shape == (2, 2):
             _, p = fisher_exact(contingency)
             return p

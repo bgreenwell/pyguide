@@ -1,7 +1,7 @@
-import pandas as pd
+import numpy as np
 from scipy.stats import chi2_contingency
 
-from .stats import _bin_continuous
+from .stats import _bin_continuous, _fast_contingency
 
 
 def calc_interaction_p_value(x1, x2, z, is_cat1=False, is_cat2=False):
@@ -31,16 +31,17 @@ def calc_interaction_p_value(x1, x2, z, is_cat1=False, is_cat2=False):
         x2_binned = x2
 
     # 3. Create combined groups
-    # We can encode (x1_bin, x2_bin) into a single integer code
-    # Or just use pandas crosstab on two arrays
+    # To combine x1_binned and x2_binned into unique pairs, we can use integer labels.
+    # We use return_inverse to get unique codes for each pair.
+    # Stack and find unique rows
+    combined = np.column_stack([x1_binned, x2_binned])
+    _, combined_idx = np.unique(combined, axis=0, return_inverse=True)
 
     try:
-        # Crosstab rows: (x1, x2) combinations
-        # Crosstab cols: z
-        contingency = pd.crosstab([x1_binned, x2_binned], z)
+        contingency = _fast_contingency(combined_idx, z)
 
         if (
-            contingency.size == 0
+            contingency is None
             or contingency.shape[0] < 2
             or contingency.shape[1] < 2
         ):
