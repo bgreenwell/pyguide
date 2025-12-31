@@ -78,7 +78,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             self._prune_tree(self._root, len(y))
 
         # Assign node IDs
-        self._assign_node_ids(self._root, 0)
+        self.n_nodes_ = self._assign_node_ids(self._root, 0)
 
         self.is_fitted_ = True
         return self
@@ -126,6 +126,56 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             return self._apply_single(x, node.left)
         else:
             return self._apply_single(x, node.right)
+
+    def decision_path(self, X):
+        """
+        Return the decision path in the tree.
+        """
+        check_is_fitted(self)
+        X = check_array(X, dtype=None, ensure_all_finite="allow-nan")
+
+        from scipy.sparse import csr_matrix
+
+        n_samples = X.shape[0]
+        indptr = [0]
+        indices = []
+
+        for x in X:
+            path = []
+            self._decision_path_single(x, self._root, path)
+            indices.extend(path)
+            indptr.append(len(indices))
+
+        data = np.ones(len(indices), dtype=int)
+        return csr_matrix((data, indices, indptr), shape=(n_samples, self.n_nodes_))
+
+    def _decision_path_single(self, x, node, path):
+        path.append(node.node_id)
+        if node.is_leaf:
+            return
+
+        is_cat = self._categorical_mask[node.split_feature]
+        val = x[node.split_feature]
+        is_nan = False
+        if is_cat:
+            if val is None or (isinstance(val, float) and np.isnan(val)):
+                is_nan = True
+        else:
+            if np.isnan(val):
+                is_nan = True
+
+        if is_nan:
+            go_left = node.missing_go_left
+        else:
+            if is_cat:
+                go_left = val in node.split_threshold
+            else:
+                go_left = val <= node.split_threshold
+
+        if go_left:
+            self._decision_path_single(x, node.left, path)
+        else:
+            self._decision_path_single(x, node.right, path)
 
     def _prune_tree(self, node, n_total):
         """
