@@ -1,8 +1,8 @@
 # Plan: Scikit-Learn Parity and Variable Importance
 
 ## Phase 1: Structural Attributes
-- [ ] Task: Implement `n_leaves_` and `get_depth()` (exposed as `max_depth_`)
-- [ ] Task: Create tests for structural attributes (verify counts on known tree structures)
+- [x] Task: Implement `n_leaves_` and `get_depth()` (exposed as `max_depth_`) [4b95a82]
+- [x] Task: Create tests for structural attributes (verify counts on known tree structures) [4b95a82]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Structural Attributes' (Protocol in workflow.md)
 
 ## Phase 2: Variable Importance
