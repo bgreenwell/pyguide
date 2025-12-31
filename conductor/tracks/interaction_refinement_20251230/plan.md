@@ -1,9 +1,9 @@
 # Plan: Refining Interaction Detection
 
 ## Phase 1: Constraints and Filtering
-- [ ] Task: Implement `interaction_features` and `max_interaction_candidates` parameters
-- [ ] Task: Update `_select_split_variable` to use the new filtering logic
-- [ ] Task: Create tests for interaction constraints (verify restricted search space)
+- [x] Task: Implement `interaction_features` and `max_interaction_candidates` parameters [106d42e]
+- [x] Task: Update `_select_split_variable` to use the new filtering logic [106d42e]
+- [x] Task: Create tests for interaction constraints (verify restricted search space) [106d42e]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Constraints and Filtering' (Protocol in workflow.md)
 
 ## Phase 2: Higher-Order Interactions
