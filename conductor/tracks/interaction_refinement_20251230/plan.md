@@ -7,9 +7,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Constraints and Filtering' (Protocol in workflow.md) [146d692]
 
 ## Phase 2: Higher-Order Interactions
-- [ ] Task: Generalize `calc_interaction_p_value` to support more than 2 variables (or implement recursive grouping)
-- [ ] Task: Update `_select_split_variable` to handle `interaction_depth > 1`
-- [ ] Task: Create tests for triplet interactions
+- [x] Task: Generalize `calc_interaction_p_value` to support more than 2 variables (or implement recursive grouping) [a5f1de5]
+- [x] Task: Update `_select_split_variable` to handle `interaction_depth > 1` [a5f1de5]
+- [x] Task: Create tests for triplet interactions [a5f1de5]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Higher-Order Interactions' (Protocol in workflow.md)
 
 ## Phase 3: Final Integration & Benchmarking
