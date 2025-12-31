@@ -28,6 +28,8 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         interaction_depth=1,
         categorical_features=None,
         ccp_alpha=0.0,
+        interaction_features=None,
+        max_interaction_candidates=None,
     ):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -36,6 +38,8 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         self.interaction_depth = interaction_depth
         self.categorical_features = categorical_features
         self.ccp_alpha = ccp_alpha
+        self.interaction_features = interaction_features
+        self.max_interaction_candidates = max_interaction_candidates
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
@@ -400,7 +404,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             )
 
         # 3. Variable Selection (GUIDE step 1)
-        best_idx, p = select_split_variable(
+        best_idx, p, all_p_values = select_split_variable(
             X, y, categorical_features=self._categorical_mask
         )
 
@@ -411,9 +415,24 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             best_int_pair = None
             n_features = X.shape[1]
 
-            # Exhaustive pair search
-            for i in range(n_features):
-                for j in range(i + 1, n_features):
+            # Determine candidates for interaction search
+            candidates = list(range(n_features))
+
+            # 1. Filter by interaction_features
+            if self.interaction_features is not None:
+                candidates = [c for c in candidates if c in self.interaction_features]
+
+            # 2. Filter by max_interaction_candidates
+            if self.max_interaction_candidates is not None:
+                # Sort candidates by their p-value (ascending)
+                candidates.sort(key=lambda idx: all_p_values[idx])
+                candidates = candidates[: self.max_interaction_candidates]
+
+            # Search pairs within candidates
+            for i_idx in range(len(candidates)):
+                i = candidates[i_idx]
+                for j_idx in range(i_idx + 1, len(candidates)):
+                    j = candidates[j_idx]
                     p_int = calc_interaction_p_value(
                         X[:, i],
                         X[:, j],

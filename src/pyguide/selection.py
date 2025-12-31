@@ -36,4 +36,4 @@ def select_split_variable(X, y, categorical_features=None):
     best_feature_idx = np.argmin(p_values)
     best_p = p_values[best_feature_idx]
 
-    return best_feature_idx, best_p
+    return best_feature_idx, best_p, p_values
