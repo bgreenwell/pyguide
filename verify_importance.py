@@ -1,11 +1,11 @@
 import numpy as np
 from pyguide import GuideTreeClassifier
-X = np.random.rand(100, 5)
-y = (X[:, 0] > 0.5).astype(int)
-clf = GuideTreeClassifier(max_depth=2).fit(X, y)
-print(f"Importances: {clf.feature_importances_}")
-print(f"Sum: {np.sum(clf.feature_importances_)}")
-assert np.isclose(np.sum(clf.feature_importances_), 1.0)
+X = np.array([[0], [1]]).reshape(-1, 1)
+y = np.array([0, 1])
+clf = GuideTreeClassifier(max_depth=1, significance_threshold=1.0).fit(X, y)
+dp = clf.decision_path(X)
+print(f"Decision Path Sparse Matrix:\n{dp.toarray()}")
+assert dp.shape == (2, 3) # root + 2 leaves
 # Confirm output:
-#      - The first feature should have high importance.
-#      - The sum should be exactly 1.0.
+#      - The matrix should show 1 for the root node (index 0) for both samples.
+#      - Each sample should have exactly two 1s in its row (one for root, one for leaf).
