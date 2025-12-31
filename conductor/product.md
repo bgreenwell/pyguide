@@ -28,6 +28,10 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
 - **Advanced Data Support:**
   - Native support for missing values (NaNs) using impurity-based routing.
   - Optimized categorical splitting using ordered categories for $O(K)$ search instead of $O(2^K)$.
+- **Model Management and Visualization:**
+  - Integrated support for Minimal Cost-Complexity Pruning via `ccp_alpha`.
+  - Compatibility with scikit-learn visualization tools (e.g., `plot_tree`).
+  - Highly optimized training path using vectorized contingency tables and cumulative statistics.
 
 ## Roadmap
-- **Phase 4:** Pruning and performance optimizations (Investigate sklearn visualization compatibility).
+- [Planned] Tree ensembles (Random Forest, Boosting) using GUIDE as the base learner.
