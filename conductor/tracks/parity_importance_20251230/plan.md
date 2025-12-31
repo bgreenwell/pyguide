@@ -13,6 +13,6 @@
 
 ## Phase 3: Diagnostic Methods
 - [x] Task: Implement `apply(X)` to return leaf indices [bf8e137]
-- [~] Task: Implement `decision_path(X)` using a CSR matrix
-- [ ] Task: Create tests for `apply` and `decision_path`
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Diagnostic Methods' (Protocol in workflow.md)
+- [x] Task: Implement `decision_path(X)` using a CSR matrix [3fde1a5]
+- [x] Task: Create tests for `apply` and `decision_path` [3fde1a5]
+- [~] Task: Conductor - User Manual Verification 'Phase 3: Diagnostic Methods' (Protocol in workflow.md)
