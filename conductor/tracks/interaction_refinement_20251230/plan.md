@@ -13,6 +13,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Higher-Order Interactions' (Protocol in workflow.md) [d29781f]
 
 ## Phase 3: Final Integration & Benchmarking
-- [~] Task: Benchmark the impact of candidate filtering on large feature sets
-- [ ] Task: Final code cleanup and documentation update
+- [x] Task: Benchmark the impact of candidate filtering on large feature sets [7785def]
+- [x] Task: Final code cleanup and documentation update [7785def]
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Integration & Benchmarking' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Integration & Benchmarking' (Protocol in workflow.md)
