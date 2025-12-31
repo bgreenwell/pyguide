@@ -178,6 +178,45 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
     def max_depth_(self):
         return self.get_depth()
 
+    @property
+    def feature_importances_(self):
+        """
+        Return the feature importances.
+        The importance of a feature is computed as the (normalized)
+        total reduction of the criterion brought by that feature.
+        """
+        check_is_fitted(self)
+        importances = np.zeros(self.n_features_in_)
+        self._compute_feature_importances(self._root, importances)
+        
+        sum_importances = importances.sum()
+        if sum_importances > 0:
+            importances /= sum_importances
+            
+        return importances
+
+    def _compute_feature_importances(self, node, importances):
+        if node.is_leaf:
+            return
+
+        # Weighted impurity reduction
+        # Gini reduction = n_node / n_total * (impurity - n_left/n_node * left_imp - n_right/n_node * right_imp)
+        # Which simplifies to:
+        # (n_node * impurity - n_left * left_imp - n_right * right_imp) / n_total
+        
+        n_node = node.n_samples
+        n_left = node.left.n_samples
+        n_right = node.right.n_samples
+        
+        reduction = (n_node * node.impurity - 
+                     n_left * node.left.impurity - 
+                     n_right * node.right.impurity)
+        
+        importances[node.split_feature] += reduction
+        
+        self._compute_feature_importances(node.left, importances)
+        self._compute_feature_importances(node.right, importances)
+
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """
         Calculate total gain of splitting on split_feat, then splitting children on next_feat.

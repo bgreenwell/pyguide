@@ -158,6 +158,40 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
     def max_depth_(self):
         return self.get_depth()
 
+    @property
+    def feature_importances_(self):
+        """
+        Return the feature importances.
+        The importance of a feature is computed as the (normalized)
+        total reduction of the criterion brought by that feature.
+        """
+        check_is_fitted(self)
+        importances = np.zeros(self.n_features_in_)
+        self._compute_feature_importances(self._root, importances)
+        
+        sum_importances = importances.sum()
+        if sum_importances > 0:
+            importances /= sum_importances
+            
+        return importances
+
+    def _compute_feature_importances(self, node, importances):
+        if node.is_leaf:
+            return
+
+        # Impurity reduction for regression (SSE)
+        # Reduction = SSE(node) - (SSE(left) + SSE(right))
+        # This is already what find_best_split calculates as 'gain'
+        
+        reduction = (node.impurity - 
+                     node.left.impurity - 
+                     node.right.impurity)
+        
+        importances[node.split_feature] += max(0, reduction) # Ensure non-negative
+        
+        self._compute_feature_importances(node.left, importances)
+        self._compute_feature_importances(node.right, importances)
+
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """
         Calculate total gain of splitting on split_feat, then splitting children on next_feat.
