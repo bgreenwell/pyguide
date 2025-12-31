@@ -6,11 +6,11 @@
 - [x] Task: Verify visualization with `sklearn.tree.plot_tree` using a manual script [5611cb4]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Visualization Compatibility' (Protocol in workflow.md) [d59ace6]
 
-## Phase 2: Cost-Complexity Pruning
+## Phase 2: Cost-Complexity Pruning [checkpoint: e4e8ad1]
 - [x] Task: Create tests for `ccp_alpha` (verify tree depth reduction) [b364bbd]
 - [x] Task: Implement `ccp_alpha` parameter and `cost_complexity_pruning_path` stub [42175cd]
 - [x] Task: Implement pruning logic (post-pruning) in `fit` [8e14b9f]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Cost-Complexity Pruning' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Cost-Complexity Pruning' (Protocol in workflow.md) [e4e8ad1]
 
 ## Phase 3: Performance Optimization
 - [ ] Task: Create a comprehensive performance benchmark (profiling baseline)
