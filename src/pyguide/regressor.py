@@ -14,6 +14,89 @@ from .visualization import build_mock_tree
 class GuideTreeRegressor(RegressorMixin, BaseEstimator):
     """
     GUIDE (Generalized, Unbiased, Interaction Detection and Estimation) Tree Regressor.
+
+    GUIDE is a decision tree algorithm that separates variable selection from
+    split point optimization. This approach prevents the variable selection
+    bias common in CART-like algorithms (which favor variables with many
+    unique values) and provides built-in interaction detection.
+
+    Parameters
+    ----------
+    max_depth : int, default=None
+        The maximum depth of the tree. If None, then nodes are expanded until
+        all leaves are pure or until all leaves contain less than
+        min_samples_split samples.
+
+    min_samples_split : int, default=2
+        The minimum number of samples required to split an internal node.
+
+    min_samples_leaf : int, default=1
+        The minimum number of samples required to be at a leaf node.
+        A split point at any depth will only be considered if it leaves at
+        least min_samples_leaf training samples in each of the left and
+        right branches.
+
+    significance_threshold : float, default=0.05
+        The p-value threshold for variable selection and interaction detection.
+        If no variable is individually significant at this level, the algorithm
+        searches for interactions. If no interaction is significant either,
+        splitting stops.
+
+    interaction_depth : int, default=1
+        The maximum order of interactions to search for.
+        - 0: No interaction detection.
+        - 1: Pairwise interactions.
+        - 2: Triplets, etc.
+
+    categorical_features : list of int, default=None
+        Indices of features to be treated as categorical. If None, the
+        algorithm attempts to identify categorical features automatically
+        based on input types (e.g., pandas object/category columns).
+
+    ccp_alpha : non-negative float, default=0.0
+        Complexity parameter used for Minimal Cost-Complexity Pruning. The
+        subtree with the largest cost complexity that is smaller than
+        ccp_alpha will be chosen.
+
+    interaction_features : list of int, default=None
+        Subset of feature indices to consider for interaction search.
+        If None, all features are considered (subject to candidate filtering).
+
+    max_interaction_candidates : int, default=None
+        If set, only the top K features (ranked by individual p-values) are
+        considered as candidates for interaction tests. This significantly
+        speeds up training on high-dimensional datasets.
+
+    Attributes
+    ----------
+    n_features_in_ : int
+        Number of features seen during :term:`fit`.
+
+    n_nodes_ : int
+        Total number of nodes in the fitted tree.
+
+    n_leaves_ : int
+        Number of leaf nodes in the fitted tree.
+
+    max_depth_ : int
+        The actual maximum depth of the fitted tree.
+
+    feature_importances_ : ndarray of shape (n_features_in_,)
+        The feature importances based on weighted impurity reduction (SSE).
+
+    Notes
+    -----
+    The algorithm follows a two-step process at each node:
+    1. Variable Selection: Calculate residuals from the current node mean and
+       use Chi-square tests on residual signs to identify the best splitting
+       variable.
+    2. Split Point Optimization: Given the selected variable, find the
+       threshold that minimizes the Sum of Squared Errors (SSE).
+
+    References
+    ----------
+    Loh, W.-Y. (2002). Regression trees with unbiased variable selection and
+    interaction detection. Statistica Sinica, 361-386.
     """
 
     def __init__(

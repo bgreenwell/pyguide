@@ -1,9 +1,9 @@
 # Plan: Documentation & Examples
 
 ## Phase 1: API Documentation and README
-- [ ] Task: Review and update docstrings for `GuideTreeClassifier` and `GuideTreeRegressor`
-- [ ] Task: Update main `README.md` with current features and Quick Start
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: API Documentation and README' (Protocol in workflow.md)
+- [x] Task: Review and update docstrings for `GuideTreeClassifier` and `GuideTreeRegressor` [7107623]
+- [x] Task: Update main `README.md` with current features and Quick Start [cb85406]
+- [~] Task: Conductor - User Manual Verification 'Phase 1: API Documentation and README' (Protocol in workflow.md)
 
 ## Phase 2: Usage Examples
 - [ ] Task: Create `examples/basic_usage.py` (Iris/Housing datasets)

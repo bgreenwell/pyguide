@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: Documentation & Examples
+## [~] Track: Documentation & Examples
 *Link: [./conductor/tracks/docs_examples_20251230/](./conductor/tracks/docs_examples_20251230/)*

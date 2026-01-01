@@ -14,12 +14,13 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
 ## Core Features (MVP - GuideTreeClassifier)
 - **Unbiased Variable Selection:** Employs Chi-square tests to rank and select variables independently of the split point optimization, preventing bias towards features with many unique values.
 - **Separated Splitting Process:** Implements a two-step process: first selecting the variable, then optimizing the cut-point.
-- **Interaction Detection:** Built-in support for detecting feature interactions with configurable depth, enhancing the model's predictive power and interpretability.
+- **Interaction Detection:** Advanced support for detecting multi-variable interactions with optimized search strategies.
 
 ## Current Capabilities
 - **GuideTreeClassifier:** Fully functional scikit-learn compatible classifier.
   - Unbiased variable selection via Chi-square and Fisher's Exact tests.
-  - Interaction detection using the full GUIDE look-ahead strategy.
+  - Advanced interaction detection supporting higher-order interactions (`interaction_depth > 1`).
+  - Scalable interaction search using candidate filtering (`max_interaction_candidates`) and feature constraints.
   - Support for numerical and categorical features.
 - **GuideTreeRegressor:** Fully functional scikit-learn compatible regressor.
   - Residual-based variable selection for unbiased feature ranking.
