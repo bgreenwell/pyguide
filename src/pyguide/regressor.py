@@ -299,10 +299,76 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
     def cost_complexity_pruning_path(self, X, y, sample_weight=None):
         """
         Compute the pruning path during Minimal Cost-Complexity Pruning.
-        Currently a stub for scikit-learn compatibility.
         """
-        # TODO: Implement actual pruning path calculation
-        return {"ccp_alphas": np.array([0.0]), "impurities": np.array([0.0])}
+        # 1. Fit a full tree
+        est = self.__class__(
+            max_depth=self.max_depth,
+            min_samples_split=self.min_samples_split,
+            min_samples_leaf=self.min_samples_leaf,
+            significance_threshold=self.significance_threshold,
+            interaction_depth=self.interaction_depth,
+            categorical_features=self.categorical_features,
+            ccp_alpha=0.0,  # Full tree
+            interaction_features=self.interaction_features,
+            max_interaction_candidates=self.max_interaction_candidates,
+        )
+        est.fit(X, y)
+
+        n_total = len(y)
+
+        # 2. Compute path
+        ccp_alphas = [0.0]
+        impurities = [self._calculate_total_impurity(est._root, n_total)]
+
+        while not est._root.is_leaf:
+            candidates = []
+            self._collect_pruning_candidates(est._root, n_total, candidates)
+
+            if not candidates:
+                break
+
+            min_alpha = min(c[1] for c in candidates)
+            
+            nodes_to_prune = [c[0] for c in candidates if abs(c[1] - min_alpha) < 1e-9]
+            
+            for node in nodes_to_prune:
+                node.is_leaf = True
+                node.left = None
+                node.right = None
+
+            ccp_alphas.append(min_alpha)
+            impurities.append(self._calculate_total_impurity(est._root, n_total))
+
+        return {"ccp_alphas": np.array(ccp_alphas), "impurities": np.array(impurities)}
+
+    def _calculate_total_impurity(self, node, n_total):
+        if node.is_leaf:
+            return node.impurity / n_total
+        return self._calculate_total_impurity(node.left, n_total) + self._calculate_total_impurity(node.right, n_total)
+
+    def _collect_pruning_candidates(self, node, n_total, candidates):
+        """
+        Recursive helper to find alpha_eff for all internal nodes.
+        Returns (R_subtree, n_leaves_subtree) for the node.
+        """
+        if node.is_leaf:
+            R_leaf = node.impurity / n_total
+            return R_leaf, 1
+
+        R_left, leaves_left = self._collect_pruning_candidates(node.left, n_total, candidates)
+        R_right, leaves_right = self._collect_pruning_candidates(node.right, n_total, candidates)
+
+        R_Tt = R_left + R_right
+        leaves_Tt = leaves_left + leaves_right
+
+        R_t = node.impurity / n_total
+
+        if leaves_Tt > 1:
+            alpha_eff = (R_t - R_Tt) / (leaves_Tt - 1)
+            alpha_eff = max(0.0, alpha_eff)
+            candidates.append((node, alpha_eff))
+
+        return R_Tt, leaves_Tt
 
     @property
     def tree_(self):

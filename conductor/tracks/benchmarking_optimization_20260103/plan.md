@@ -1,8 +1,8 @@
 # Plan: Benchmarking & Optimization
 
 ## Phase 1: Feature Completeness
-- [ ] Task: Implement `cost_complexity_pruning_path` for Classifier and Regressor
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Feature Completeness' (Protocol in workflow.md)
+- [x] Task: Implement `cost_complexity_pruning_path` for Classifier and Regressor [cc1a2b3]
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Feature Completeness' (Protocol in workflow.md)
 
 ## Phase 2: Benchmark Suite
 - [ ] Task: Create `benchmarks/` directory and `main_benchmark.py`

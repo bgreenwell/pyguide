@@ -73,7 +73,7 @@ print(f"R2 Score: {reg.score(X, y):.4f}")
 
 ### Scalable Interaction Search
 
-For datasets with hundreds or thousands of features, exhaustive interaction search is slow. Use `max_interaction_candidates` to restrict the search to the most promising features:
+For data sets with hundreds or thousands of features, exhaustive interaction search is slow. Use `max_interaction_candidates` to restrict the search to the most promising features:
 
 ```python
 clf = GuideTreeClassifier(
