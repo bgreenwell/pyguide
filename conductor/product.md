@@ -21,7 +21,11 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Unbiased variable selection via Chi-square and Fisher's Exact tests.
   - Advanced interaction detection supporting higher-order interactions (`interaction_depth > 1`).
   - Scalable interaction search using candidate filtering (`max_interaction_candidates`) and feature constraints.
+  - Support for `max_features` to enable random feature subsetting at each split.
   - Support for numerical and categorical features.
+- **Tree Ensembles:**
+  - `GuideRandomForestClassifier` and `GuideRandomForestRegressor`.
+  - Leveraging GUIDE's unbiased trees as base learners for superior ensemble performance.
 - **GuideTreeRegressor:** Fully functional scikit-learn compatible regressor.
   - Residual-based variable selection for unbiased feature ranking.
   - SSE (Sum of Squared Errors) split optimization.
@@ -50,7 +54,7 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Standardized MIT licensing and professional project metadata.
 
 ## Roadmap
-- [Planned] Tree ensembles (Random Forest, Boosting) using GUIDE as the base learner.
+- [Planned] Gradient Boosting using GUIDE as the base learner.
 - [Planned] Dedicated Variable Importance mode for advanced feature diagnostics.
 - [Planned] Performance optimization via Rust/C extensions for core compute loops.
 - [Planned] Extended interaction support for arbitrary-depth search with optimized pruning.

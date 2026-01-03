@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Tree Ensembles: Random Forest
+## [x] Track: Tree Ensembles: Random Forest
 *Link: [./conductor/tracks/ensembles_random_forest_20260103/](./conductor/tracks/ensembles_random_forest_20260103/)*
