@@ -12,6 +12,7 @@ pyguide documentation
 
    user_guide
    interactions
+   ensembles
 
 .. toctree::
    :maxdepth: 2

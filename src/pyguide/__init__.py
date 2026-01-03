@@ -1,15 +1,12 @@
 from .classifier import GuideTreeClassifier
 from .regressor import GuideTreeRegressor
-from .selection import select_split_variable
-from .splitting import find_best_split
-from .stats import calc_curvature_p_value
+from .ensemble import GuideRandomForestClassifier, GuideRandomForestRegressor
 from .visualization import plot_tree
 
 __all__ = [
     "GuideTreeClassifier",
     "GuideTreeRegressor",
-    "calc_curvature_p_value",
-    "select_split_variable",
-    "find_best_split",
+    "GuideRandomForestClassifier",
+    "GuideRandomForestRegressor",
     "plot_tree",
 ]

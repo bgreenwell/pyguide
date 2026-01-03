@@ -4,7 +4,8 @@ import pandas as pd
 from sklearn.datasets import load_iris, load_digits, load_diabetes
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-from pyguide import GuideTreeClassifier, GuideTreeRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from pyguide import GuideTreeClassifier, GuideTreeRegressor, GuideRandomForestClassifier, GuideRandomForestRegressor
 
 def benchmark_classifier(name, X, y):
     print(f"--- Benchmarking Classifier: {name} ({X.shape[0]} samples, {X.shape[1]} features) ---")
@@ -44,6 +45,40 @@ def benchmark_classifier(name, X, y):
         "Train Time (s)": train_time_guide,
         "Test Time (s)": test_time_guide,
         "Accuracy": score_guide
+    })
+
+    # 3. Scikit-learn Random Forest
+    rf_sklearn = RandomForestClassifier(n_estimators=20, max_depth=5, random_state=42)
+    start = time.time()
+    rf_sklearn.fit(X_train, y_train)
+    train_time_rf = time.time() - start
+    
+    start = time.time()
+    score_rf = rf_sklearn.score(X_test, y_test)
+    test_time_rf = time.time() - start
+    
+    results.append({
+        "Model": "sklearn (Random Forest)",
+        "Train Time (s)": train_time_rf,
+        "Test Time (s)": test_time_rf,
+        "Accuracy": score_rf
+    })
+
+    # 4. pyguide Random Forest
+    rf_guide = GuideRandomForestClassifier(n_estimators=20, max_depth=5, random_state=42)
+    start = time.time()
+    rf_guide.fit(X_train, y_train)
+    train_time_rf_guide = time.time() - start
+    
+    start = time.time()
+    score_rf_guide = rf_guide.score(X_test, y_test)
+    test_time_rf_guide = time.time() - start
+    
+    results.append({
+        "Model": "pyguide (Random Forest)",
+        "Train Time (s)": train_time_rf_guide,
+        "Test Time (s)": test_time_rf_guide,
+        "Accuracy": score_rf_guide
     })
     
     df = pd.DataFrame(results)
@@ -89,6 +124,40 @@ def benchmark_regressor(name, X, y):
         "Train Time (s)": train_time_guide,
         "Test Time (s)": test_time_guide,
         "R2 Score": score_guide
+    })
+
+    # 3. Scikit-learn Random Forest
+    rf_sklearn = RandomForestRegressor(n_estimators=20, max_depth=5, random_state=42)
+    start = time.time()
+    rf_sklearn.fit(X_train, y_train)
+    train_time_rf = time.time() - start
+    
+    start = time.time()
+    score_rf = rf_sklearn.score(X_test, y_test)
+    test_time_rf = time.time() - start
+    
+    results.append({
+        "Model": "sklearn (Random Forest)",
+        "Train Time (s)": train_time_rf,
+        "Test Time (s)": test_time_rf,
+        "R2 Score": score_rf
+    })
+
+    # 4. pyguide Random Forest
+    rf_guide = GuideRandomForestRegressor(n_estimators=20, max_depth=5, random_state=42)
+    start = time.time()
+    rf_guide.fit(X_train, y_train)
+    train_time_rf_guide = time.time() - start
+    
+    start = time.time()
+    score_rf_guide = rf_guide.score(X_test, y_test)
+    test_time_rf_guide = time.time() - start
+    
+    results.append({
+        "Model": "pyguide (Random Forest)",
+        "Train Time (s)": train_time_rf_guide,
+        "Test Time (s)": test_time_rf_guide,
+        "R2 Score": score_rf_guide
     })
     
     df = pd.DataFrame(results)
