@@ -95,6 +95,31 @@ plot_guide_tree(clf, feature_names=iris.feature_names)
 plt.show()
 ```
 
+## Benchmarks
+
+Some (very) preliminary benchmarks are shown below:
+
+```bash
+❯ uv run python benchmarks/main_benchmark.py
+--- Benchmarking Classifier: Iris (150 samples, 4 features) ---
+| Model           |   Train Time (s) |   Test Time (s) |   Accuracy |
+|:----------------|-----------------:|----------------:|-----------:|
+| sklearn (CART)  |      0.000397921 |     0.000174999 |          1 |
+| pyguide (GUIDE) |      0.00795794  |     0.000167847 |          1 |
+
+--- Benchmarking Classifier: Digits (1797 samples, 64 features) ---
+| Model           |   Train Time (s) |   Test Time (s) |   Accuracy |
+|:----------------|-----------------:|----------------:|-----------:|
+| sklearn (CART)  |       0.00498199 |     0.000174999 |   0.663889 |
+| pyguide (GUIDE) |       0.307156   |     0.000809908 |   0.675    |
+
+--- Benchmarking Regressor: Diabetes (442 samples, 10 features) ---
+| Model           |   Train Time (s) |   Test Time (s) |   R2 Score |
+|:----------------|-----------------:|----------------:|-----------:|
+| sklearn (CART)  |      0.000672102 |     0.000138044 |   0.334482 |
+| pyguide (GUIDE) |      0.0498252   |     0.000261068 |   0.373033 |
+```
+
 ## References
 
 - Loh, W.-Y. (2002). *Regression trees with unbiased variable selection and interaction detection*. Statistica Sinica, 361-386.

@@ -30,7 +30,7 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Native support for missing values (NaNs) using impurity-based routing.
   - Optimized categorical splitting using ordered categories for $O(K)$ search instead of $O(2^K)$.
 - **Model Management and Visualization:**
-  - Integrated support for Minimal Cost-Complexity Pruning via `ccp_alpha`.
+  - Integrated support for Minimal Cost-Complexity Pruning via `ccp_alpha` and full pruning path analysis.
   - Compatibility with scikit-learn visualization tools (e.g., `plot_tree`).
   - Highly optimized training path using vectorized contingency tables and cumulative statistics.
 - **Advanced Diagnostics and Parity:**
@@ -41,6 +41,9 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Detailed API reference generated with Sphinx.
   - User guides for core algorithms and interaction detection.
   - Working examples for common use cases (bias detection, interactions).
+- **Performance and Benchmarking:**
+  - Rigorous benchmarking suite comparing GUIDE against standard CART implementations.
+  - Highly optimized Python/NumPy core compute loops for curvature and splitting tests.
 - **Professional Release Readiness:**
   - Full compliance with modern Python packaging standards (`pyproject.toml`).
   - Automated CI/CD pipeline via GitHub Actions (Linting, Tests, Docs).
