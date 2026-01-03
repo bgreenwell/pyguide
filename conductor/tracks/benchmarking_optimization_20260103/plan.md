@@ -9,8 +9,8 @@
 - [x] Task: Implement comparison logic (GUIDE vs CART) on standard datasets [cc1a2b3]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Benchmark Suite' (Protocol in workflow.md) [240b909]
 
-## Phase 3: Profiling & Optimization
+## Phase 3: Profiling & Optimization [checkpoint: c631541]
 - [x] Task: Profile the benchmark run to identify hotspots [aed0696]
 - [x] Task: Apply optimizations to the identified hotspots [aed0696]
 - [x] Task: Re-run benchmarks to verify speedup [aed0696]
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Profiling & Optimization' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Profiling & Optimization' (Protocol in workflow.md) [c631541]
