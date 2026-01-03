@@ -12,6 +12,6 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Usage Examples' (Protocol in workflow.md) [7c8b024]
 
 ## Phase 3: User Guides
-- [ ] Task: Create `docs/user_guide.md` (Algorithm overview)
-- [ ] Task: Create `docs/interactions.md` (Advanced interaction features)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: User Guides' (Protocol in workflow.md)
+- [x] Task: Create `docs/user_guide.md` (Algorithm overview) [7107623]
+- [x] Task: Create `docs/interactions.md` (Advanced interaction features) [7107623]
+- [~] Task: Conductor - User Manual Verification 'Phase 3: User Guides' (Protocol in workflow.md)

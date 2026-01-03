@@ -15,3 +15,5 @@
 - **Ruff**: For high-performance linting and code formatting.
 - **Pytest**: The primary testing framework.
 - **Coverage.py**: To ensure high test coverage as defined in the workflow.
+- **Sphinx**: For generating high-quality documentation.
+- **MyST-Parser**: To enable Markdown support within Sphinx.
