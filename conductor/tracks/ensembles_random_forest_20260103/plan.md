@@ -1,10 +1,10 @@
 # Plan: Tree Ensembles: Random Forest
 
 ## Phase 1: Implement `max_features`
-- [ ] Task: Add `max_features` parameter to `GuideTreeClassifier` and `GuideTreeRegressor`
-- [ ] Task: Update `select_split_variable` to handle feature subsetting
-- [ ] Task: Verify `max_features` logic with unit tests
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Implement max_features' (Protocol in workflow.md)
+- [x] Task: Add `max_features` parameter to `GuideTreeClassifier` and `GuideTreeRegressor` [9b66157]
+- [x] Task: Update `select_split_variable` to handle feature subsetting [9b66157]
+- [x] Task: Verify `max_features` logic with unit tests
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Implement max_features' (Protocol in workflow.md)
 
 ## Phase 2: Implement Ensemble Classes
 - [ ] Task: Create `src/pyguide/ensemble.py`

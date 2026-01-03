@@ -3,6 +3,7 @@ import itertools
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
 from .interactions import calc_interaction_p_value
@@ -68,6 +69,22 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         considered as candidates for interaction tests. This significantly
         speeds up training on high-dimensional datasets.
 
+    max_features : int, float, str or None, default=None
+        The number of features to consider when looking for the best split:
+        - If int, then consider `max_features` features at each split.
+        - If float, then `max_features` is a fraction and
+          `max(1, int(max_features * n_features_in_))` features are considered at each split.
+        - If "sqrt", then `max_features=sqrt(n_features_in_)`.
+        - If "log2", then `max_features=log2(n_features_in_)`.
+        - If None, then `max_features=n_features_in_`.
+
+    random_state : int, RandomState instance or None, default=None
+        Controls the randomness of the estimator. The features are always
+        randomly permuted at each split. When ``max_features < n_features``, the algorithm will
+        select ``max_features`` at random at each split before finding the best
+        split among them. To obtain a deterministic behaviour during fitting,
+        ``random_state`` has to be fixed to an integer.
+
     Attributes
     ----------
     n_features_in_ : int
@@ -111,6 +128,8 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         ccp_alpha=0.0,
         interaction_features=None,
         max_interaction_candidates=None,
+        max_features=None,
+        random_state=None,
     ):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -121,6 +140,8 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         self.ccp_alpha = ccp_alpha
         self.interaction_features = interaction_features
         self.max_interaction_candidates = max_interaction_candidates
+        self.max_features = max_features
+        self.random_state = random_state
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
@@ -159,6 +180,9 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         self.n_features_in_ = X.shape[1]
         self._categorical_mask = self._get_categorical_mask(X_orig, self.n_features_in_)
 
+        self.rng_ = check_random_state(self.random_state)
+        self.max_features_ = self._resolve_max_features(self.n_features_in_)
+
         # Build the tree
         self._root = self._fit_node(X, y, depth=0)
 
@@ -171,6 +195,19 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
 
         self.is_fitted_ = True
         return self
+
+    def _resolve_max_features(self, n_features):
+        if self.max_features is None:
+            return n_features
+        if isinstance(self.max_features, (int, np.integer)):
+            return min(n_features, int(self.max_features))
+        if isinstance(self.max_features, float):
+            return max(1, int(self.max_features * n_features))
+        if self.max_features == "sqrt":
+            return max(1, int(np.sqrt(n_features)))
+        if self.max_features == "log2":
+            return max(1, int(np.log2(n_features)))
+        raise ValueError(f"Invalid max_features: {self.max_features}")
 
     def _assign_node_ids(self, node, next_id):
         """Recursively assign IDs to nodes."""
@@ -519,7 +556,16 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         # 2. Variable Selection (GUIDE step 1)
         z = (y > prediction).astype(int)
 
-        best_idx, p, all_p_values = select_split_variable(X, z, categorical_features=self._categorical_mask)
+        if self.max_features_ < self.n_features_in_:
+            feature_indices = self.rng_.choice(
+                self.n_features_in_, self.max_features_, replace=False
+            )
+        else:
+            feature_indices = None
+
+        best_idx, p, all_p_values = select_split_variable(
+            X, z, categorical_features=self._categorical_mask, feature_indices=feature_indices
+        )
 
         # Interaction Detection (Fallback)
         interaction_split_override = False
@@ -529,7 +575,10 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             n_features = X.shape[1]
 
             # Determine candidates for interaction search
-            candidates = list(range(n_features))
+            if feature_indices is not None:
+                candidates = list(feature_indices)
+            else:
+                candidates = list(range(n_features))
 
             # 1. Filter by interaction_features
             if self.interaction_features is not None:
