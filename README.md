@@ -1,6 +1,13 @@
 # pyguide
 
-An open-source, scikit-learn compatible Python implementation of the **GUIDE** (Generalized, Unbiased, Interaction Detection and Estimation) decision tree algorithm.
+[![CI](https://github.com/bgreenwell/pyguide/actions/workflows/ci.yml/badge.svg)](https://github.com/bgreenwell/pyguide/actions/workflows/ci.yml)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Python Version](https://img.shields.io/pypi/pyversions/pyguide.svg)](https://pypi.org/project/pyguide/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> **Disclaimer:** `pyguide` is currently a **work in progress** and is not yet production-ready. The current implementation is written in pure Python/NumPy for clarity and algorithm verification. Future versions will identify performance bottlenecks and replace them with optimized, compiled code (Rust or C).
+
+A high-quality, scikit-learn compatible Python implementation of the **GUIDE** (Generalized, Unbiased, Interaction Detection and Estimation) algorithm.
 
 ## Why GUIDE?
 
@@ -92,3 +99,10 @@ plt.show()
 
 - Loh, W.-Y. (2002). *Regression trees with unbiased variable selection and interaction detection*. Statistica Sinica, 361-386.
 - Loh, W.-Y. (2009). *Improving the precision of classification trees*. Annals of Applied Statistics, 3(4), 1710-1737.
+
+## Roadmap
+
+- [ ] **Tree Ensembles:** Random Forest and Gradient Boosting wrappers using GUIDE as the base learner.
+- [ ] **Variable Importance Mode:** Enhanced diagnostics and standalone importance scores.
+- [ ] **Performance Optimization:** Porting core splitting and selection logic to Rust/C for production-scale performance.
+- [ ] **Extended Interaction Support:** Automated search for arbitrary-depth interactions with better pruning.

@@ -43,4 +43,9 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Working examples for common use cases (bias detection, interactions).
 
 ## Roadmap
+
 - [Planned] Tree ensembles (Random Forest, Boosting) using GUIDE as the base learner.
+
+- [Planned] Dedicated Variable Importance mode for advanced feature diagnostics.
+
+- [Planned] Performance optimization via Rust/C extensions for core compute loops.

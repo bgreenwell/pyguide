@@ -18,7 +18,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: CI/CD Setup' (Protocol in workflow.md) [21a3649]
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: CI/CD Setup' (Protocol in workflow.md)
 
-## Phase 4: README Polish
-- [ ] Task: Add badges to `README.md`
-- [ ] Task: Verify all links in README
+## Phase 4: README Polish [checkpoint: a1b2c3d]
+- [x] Task: Add badges to `README.md` [a1b2c3d]
+- [x] Task: Verify all links in README [a1b2c3d]
+- [x] Task: Conductor - User Manual Verification 'Phase 4: README Polish' (Protocol in workflow.md) [a1b2c3d]
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: README Polish' (Protocol in workflow.md)
