@@ -119,29 +119,30 @@ Some (very) preliminary benchmarks are shown below:
 ```bash
 uv run python benchmarks/main_benchmark.py
 ```
+
 --- Benchmarking Classifier: Iris (150 samples, 4 features) ---
 | Model                   |   Train Time (s) |   Test Time (s) |   Accuracy |
 |:------------------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)          |      0.000517845 |     0.000192165 |          1 |
-| pyguide (GUIDE)         |      0.00367522  |     0.000226736 |          1 |
-| sklearn (Random Forest) |      0.00647712  |     0.000497103 |          1 |
-| pyguide (Random Forest) |      0.0485291   |     0.00116897  |          1 |
+| sklearn (CART)          |           0.0005 |          0.0002 |     1.0000 |
+| pyguide (GUIDE)         |           0.0037 |          0.0002 |     1.0000 |
+| sklearn (Random Forest) |           0.0065 |          0.0005 |     1.0000 |
+| pyguide (Random Forest) |           0.0485 |          0.0012 |     1.0000 |
 
 --- Benchmarking Classifier: Digits (1797 samples, 64 features) ---
 | Model                   |   Train Time (s) |   Test Time (s) |   Accuracy |
 |:------------------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)          |       0.00516319 |     0.000202894 |   0.663889 |
-| pyguide (GUIDE)         |       0.114297   |     0.000897169 |   0.708333 |
-| sklearn (Random Forest) |       0.016053   |     0.000716925 |   0.938889 |
-| pyguide (Random Forest) |       0.484214   |     0.016434    |   0.925    |
+| sklearn (CART)          |           0.0052 |          0.0002 |     0.6639 |
+| pyguide (GUIDE)         |           0.1143 |          0.0009 |     0.7083 |
+| sklearn (Random Forest) |           0.0161 |          0.0007 |     0.9389 |
+| pyguide (Random Forest) |           0.4842 |          0.0164 |     0.9250 |
 
 --- Benchmarking Regressor: Diabetes (442 samples, 10 features) ---
 | Model                   |   Train Time (s) |   Test Time (s) |   R2 Score |
 |:------------------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)          |      0.000707626 |     0.000153303 |   0.334482 |
-| pyguide (GUIDE)         |      0.015404    |     0.00028801  |   0.314395 |
-| sklearn (Random Forest) |      0.010715    |     0.000582933 |   0.429393 |
-| pyguide (Random Forest) |      0.95311     |     0.00401402  |   0.46877  |
+| sklearn (CART)          |           0.0007 |          0.0002 |     0.3345 |
+| pyguide (GUIDE)         |           0.0154 |          0.0003 |     0.3144 |
+| sklearn (Random Forest) |           0.0107 |          0.0006 |     0.4294 |
+| pyguide (Random Forest) |           0.9531 |          0.0040 |     0.4688 |
 
 
 ## References
