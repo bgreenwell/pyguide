@@ -12,9 +12,8 @@
 - [x] Task: Implement `GuideRandomForestRegressor` wrapping `BaggingRegressor` [07d2190]
 - [x] Task: Verify ensembles with unit tests and check_estimator [07d2190]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Implement Ensemble Classes' (Protocol in workflow.md) [a6dc1ed]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Implement Ensemble Classes' (Protocol in workflow.md)
 
 ## Phase 3: Benchmarking & Docs
 - [x] Task: Add Random Forest benchmark to `benchmarks/main_benchmark.py` [a1b2c3d]
-- [~] Task: Update documentation to include Ensembles
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Benchmarking & Docs' (Protocol in workflow.md)
+- [x] Task: Update documentation to include Ensembles [a1b2c3d]
+- [~] Task: Conductor - User Manual Verification 'Phase 3: Benchmarking & Docs' (Protocol in workflow.md)

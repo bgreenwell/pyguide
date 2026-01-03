@@ -21,6 +21,7 @@ Standard decision tree implementations (like CART or scikit-learn's `DecisionTre
 ## Key Features
 
 - **Unbiased Variable Selection:** Prevents bias towards high-cardinality features.
+- **Tree Ensembles:** Random Forest implementation using GUIDE trees for improved accuracy and robustness.
 - **Advanced Interaction Detection:** Configure `interaction_depth` to find complex relationships.
 - **Scalable Search:** Use `max_interaction_candidates` to speed up training on high-dimensional data by orders of magnitude.
 - **Handling Missing Values:** Native support for NaNs using impurity-based routing.
@@ -35,7 +36,23 @@ pip install pyguide  # Note: Replace with actual install command when published
 
 ## Quick Start
 
-### Classification
+### Classification (Random Forest)
+
+```python
+from pyguide import GuideRandomForestClassifier
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+
+X, y = load_digits(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+clf = GuideRandomForestClassifier(n_estimators=100, max_features="sqrt")
+clf.fit(X_train, y_train)
+
+print(f"Accuracy: {clf.score(X_test, y_test):.4f}")
+```
+
+### Classification (Single Tree)
 
 ```python
 from pyguide import GuideTreeClassifier
@@ -103,22 +120,28 @@ Some (very) preliminary benchmarks are shown below:
 uv run python benchmarks/main_benchmark.py
 ```
 --- Benchmarking Classifier: Iris (150 samples, 4 features) ---
-| Model           |   Train Time (s) |   Test Time (s) |   Accuracy |
-|:----------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)  |      0.000397921 |     0.000174999 |          1 |
-| pyguide (GUIDE) |      0.00795794  |     0.000167847 |          1 |
+| Model                   |   Train Time (s) |   Test Time (s) |   Accuracy |
+|:------------------------|-----------------:|----------------:|-----------:|
+| sklearn (CART)          |      0.000517845 |     0.000192165 |          1 |
+| pyguide (GUIDE)         |      0.00367522  |     0.000226736 |          1 |
+| sklearn (Random Forest) |      0.00647712  |     0.000497103 |          1 |
+| pyguide (Random Forest) |      0.0485291   |     0.00116897  |          1 |
 
 --- Benchmarking Classifier: Digits (1797 samples, 64 features) ---
-| Model           |   Train Time (s) |   Test Time (s) |   Accuracy |
-|:----------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)  |       0.00498199 |     0.000174999 |   0.663889 |
-| pyguide (GUIDE) |       0.307156   |     0.000809908 |   0.675    |
+| Model                   |   Train Time (s) |   Test Time (s) |   Accuracy |
+|:------------------------|-----------------:|----------------:|-----------:|
+| sklearn (CART)          |       0.00516319 |     0.000202894 |   0.663889 |
+| pyguide (GUIDE)         |       0.114297   |     0.000897169 |   0.708333 |
+| sklearn (Random Forest) |       0.016053   |     0.000716925 |   0.938889 |
+| pyguide (Random Forest) |       0.484214   |     0.016434    |   0.925    |
 
 --- Benchmarking Regressor: Diabetes (442 samples, 10 features) ---
-| Model           |   Train Time (s) |   Test Time (s) |   R2 Score |
-|:----------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)  |      0.000672102 |     0.000138044 |   0.334482 |
-| pyguide (GUIDE) |      0.0498252   |     0.000261068 |   0.373033 |
+| Model                   |   Train Time (s) |   Test Time (s) |   R2 Score |
+|:------------------------|-----------------:|----------------:|-----------:|
+| sklearn (CART)          |      0.000707626 |     0.000153303 |   0.334482 |
+| pyguide (GUIDE)         |      0.015404    |     0.00028801  |   0.314395 |
+| sklearn (Random Forest) |      0.010715    |     0.000582933 |   0.429393 |
+| pyguide (Random Forest) |      0.95311     |     0.00401402  |   0.46877  |
 
 
 ## References
