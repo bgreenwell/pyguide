@@ -11,7 +11,15 @@
 - [x] Task: Create `examples/bias_demo.py` (High cardinality bias demonstration) [7107623]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Usage Examples' (Protocol in workflow.md) [7c8b024]
 
-## Phase 3: User Guides
+## Phase 3: User Guides [checkpoint: 285d1ef]
 - [x] Task: Create `docs/user_guide.md` (Algorithm overview) [7107623]
 - [x] Task: Create `docs/interactions.md` (Advanced interaction features) [7107623]
-- [~] Task: Conductor - User Manual Verification 'Phase 3: User Guides' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: User Guides' (Protocol in workflow.md) [285d1ef]
+
+## Phase 4: Sphinx Integration
+- [ ] Task: Install Sphinx and MyST-Parser
+- [ ] Task: Initialize Sphinx configuration in `docs/`
+- [ ] Task: Configure Sphinx to use MyST-Parser and point to source code
+- [ ] Task: Integrate existing markdown guides into the Sphinx toctree
+- [ ] Task: Build documentation and verify output
+- [ ] Task: Conductor - User Manual Verification 'Phase 4: Sphinx Integration' (Protocol in workflow.md)
