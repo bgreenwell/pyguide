@@ -1,5 +1,7 @@
 import numpy as np
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
+
 
 def test_structure_classifier():
     # Linearly separable dataset

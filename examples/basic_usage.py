@@ -1,9 +1,11 @@
 """
 Basic usage example for pyguide showing Classification and Regression.
 """
-from sklearn.datasets import load_iris, load_diabetes
+from sklearn.datasets import load_diabetes, load_iris
 from sklearn.model_selection import train_test_split
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
+
 
 def classification_demo():
     print("--- Classification Demo (Iris Dataset) ---")

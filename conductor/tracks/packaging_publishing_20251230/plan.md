@@ -13,8 +13,9 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Metadata and Configuration' (Protocol in workflow.md)
 
 ## Phase 3: CI/CD Setup
-- [ ] Task: Create `.github/workflows/ci.yml`
-- [ ] Task: Create `.github/workflows/publish.yml` (draft)
+- [x] Task: Create `.github/workflows/ci.yml` [d4e5f6a]
+- [x] Task: Create `.github/workflows/publish.yml` (draft) [d4e5f6a]
+- [~] Task: Conductor - User Manual Verification 'Phase 3: CI/CD Setup' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: CI/CD Setup' (Protocol in workflow.md)
 
 ## Phase 4: README Polish

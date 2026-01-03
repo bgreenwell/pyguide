@@ -1,7 +1,7 @@
-import numpy as np
-import pytest
 from sklearn.datasets import load_iris, make_regression
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
+
 
 def test_ccp_alpha_classifier():
     iris = load_iris()

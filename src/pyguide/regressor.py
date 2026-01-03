@@ -1,4 +1,5 @@
 import itertools
+
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, RegressorMixin
@@ -7,7 +8,7 @@ from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 from .interactions import calc_interaction_p_value
 from .node import GuideNode
 from .selection import select_split_variable
-from .splitting import find_best_split, _sse
+from .splitting import _sse, find_best_split
 from .visualization import build_mock_tree
 
 

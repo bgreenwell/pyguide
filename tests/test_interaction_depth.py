@@ -1,6 +1,7 @@
 import numpy as np
-import pytest
+
 from pyguide import GuideTreeClassifier
+
 
 def test_triplet_interaction():
     """

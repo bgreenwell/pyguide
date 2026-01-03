@@ -1,6 +1,6 @@
 # pyguide
 
-A high-quality, scikit-learn compatible Python implementation of the **GUIDE** (Generalized, Unbiased, Interaction Detection and Estimation) algorithm.
+An open-source, scikit-learn compatible Python implementation of the **GUIDE** (Generalized, Unbiased, Interaction Detection and Estimation) decision tree algorithm.
 
 ## Why GUIDE?
 

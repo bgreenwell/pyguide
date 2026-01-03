@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class MockTree:
     """
     A class that mocks the interface of sklearn.tree._tree.Tree.
@@ -92,8 +93,8 @@ def plot_tree(decision_tree, **kwargs):
     Plot a GUIDE decision tree.
     This is a wrapper around sklearn.tree.plot_tree.
     """
-    from sklearn.tree import plot_tree as sklearn_plot_tree
     from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+    from sklearn.tree import plot_tree as sklearn_plot_tree
 
     # To bypass sklearn's strict type checking, we use a proxy that
     # inherits from the appropriate base class.

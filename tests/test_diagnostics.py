@@ -1,6 +1,7 @@
 import numpy as np
-import pytest
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
+
 
 def test_apply_classifier():
     X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])

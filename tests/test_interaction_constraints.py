@@ -1,6 +1,7 @@
 import numpy as np
-import pytest
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
+
 
 def test_interaction_features_constraint():
     """

@@ -3,9 +3,10 @@ Demonstration of GUIDE's unbiased variable selection.
 Compares GUIDE against standard CART (scikit-learn) on high-cardinality noise.
 """
 import numpy as np
-import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
+
 from pyguide import GuideTreeClassifier
+
 
 def bias_demo():
     print("--- Variable Selection Bias Demo ---")

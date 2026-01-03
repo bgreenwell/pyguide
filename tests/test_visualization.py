@@ -1,7 +1,8 @@
 import numpy as np
-import pytest
+
 from pyguide import GuideTreeClassifier, plot_tree
-from pyguide.visualization import build_mock_tree, MockTree
+from pyguide.visualization import MockTree, build_mock_tree
+
 
 def test_mock_tree_initialization():
     children_left = np.array([1, -1, -1])

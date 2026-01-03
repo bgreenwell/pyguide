@@ -3,7 +3,9 @@ Demonstration of GUIDE's interaction detection capabilities.
 Shows how GUIDE can solve a 3-way XOR problem that requires higher-order search.
 """
 import numpy as np
+
 from pyguide import GuideTreeClassifier
+
 
 def interaction_demo():
     print("--- Interaction Detection Demo (3-way XOR) ---")

@@ -1,4 +1,5 @@
 import itertools
+
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, ClassifierMixin
@@ -9,8 +10,8 @@ from .interactions import calc_interaction_p_value
 from .node import GuideNode
 from .selection import select_split_variable
 from .splitting import (
-    find_best_split,
     _gini,
+    find_best_split,
 )
 from .visualization import build_mock_tree
 
