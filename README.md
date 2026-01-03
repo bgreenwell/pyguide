@@ -100,7 +100,8 @@ plt.show()
 Some (very) preliminary benchmarks are shown below:
 
 ```bash
-❯ uv run python benchmarks/main_benchmark.py
+uv run python benchmarks/main_benchmark.py
+```
 --- Benchmarking Classifier: Iris (150 samples, 4 features) ---
 | Model           |   Train Time (s) |   Test Time (s) |   Accuracy |
 |:----------------|-----------------:|----------------:|-----------:|
@@ -118,7 +119,7 @@ Some (very) preliminary benchmarks are shown below:
 |:----------------|-----------------:|----------------:|-----------:|
 | sklearn (CART)  |      0.000672102 |     0.000138044 |   0.334482 |
 | pyguide (GUIDE) |      0.0498252   |     0.000261068 |   0.373033 |
-```
+
 
 ## References
 
