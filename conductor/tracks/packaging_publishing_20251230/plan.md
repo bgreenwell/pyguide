@@ -7,8 +7,9 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Repository Cleanup' (Protocol in workflow.md)
 
 ## Phase 2: Metadata and Configuration
-- [ ] Task: Finalize `pyproject.toml` metadata
-- [ ] Task: Create `LICENSE` file (MIT)
+- [x] Task: Finalize `pyproject.toml` metadata [0f1a2b3]
+- [x] Task: Create `LICENSE` file (MIT) [0f1a2b3]
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Metadata and Configuration' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Metadata and Configuration' (Protocol in workflow.md)
 
 ## Phase 3: CI/CD Setup
