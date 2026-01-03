@@ -6,12 +6,12 @@
 - [x] Task: Verify `max_features` logic with unit tests [9b66157]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Implement max_features' (Protocol in workflow.md) [9859363]
 
-## Phase 2: Implement Ensemble Classes
+## Phase 2: Implement Ensemble Classes [checkpoint: a6dc1ed]
 - [x] Task: Create `src/pyguide/ensemble.py` [07d2190]
 - [x] Task: Implement `GuideRandomForestClassifier` wrapping `BaggingClassifier` [07d2190]
 - [x] Task: Implement `GuideRandomForestRegressor` wrapping `BaggingRegressor` [07d2190]
 - [x] Task: Verify ensembles with unit tests and check_estimator [07d2190]
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Implement Ensemble Classes' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Implement Ensemble Classes' (Protocol in workflow.md) [a6dc1ed]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Implement Ensemble Classes' (Protocol in workflow.md)
 
 ## Phase 3: Benchmarking & Docs
