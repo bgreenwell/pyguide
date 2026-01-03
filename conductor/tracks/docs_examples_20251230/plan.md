@@ -6,10 +6,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: API Documentation and README' (Protocol in workflow.md) [07844fe]
 
 ## Phase 2: Usage Examples
-- [ ] Task: Create `examples/basic_usage.py` (Iris/Housing datasets)
-- [ ] Task: Create `examples/interaction_demo.py` (XOR / synthetic interactions)
-- [ ] Task: Create `examples/bias_demo.py` (High cardinality bias demonstration)
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Usage Examples' (Protocol in workflow.md)
+- [x] Task: Create `examples/basic_usage.py` (Iris/Housing datasets) [7107623]
+- [x] Task: Create `examples/interaction_demo.py` (XOR / synthetic interactions) [7107623]
+- [x] Task: Create `examples/bias_demo.py` (High cardinality bias demonstration) [7107623]
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Usage Examples' (Protocol in workflow.md)
 
 ## Phase 3: User Guides
 - [ ] Task: Create `docs/user_guide.md` (Algorithm overview)
