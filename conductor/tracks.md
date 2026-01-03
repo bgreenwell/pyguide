@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: Benchmarking & Optimization
+## [~] Track: Benchmarking & Optimization
 *Link: [./conductor/tracks/benchmarking_optimization_20260103/](./conductor/tracks/benchmarking_optimization_20260103/)*

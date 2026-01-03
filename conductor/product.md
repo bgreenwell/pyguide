@@ -41,11 +41,14 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Detailed API reference generated with Sphinx.
   - User guides for core algorithms and interaction detection.
   - Working examples for common use cases (bias detection, interactions).
+- **Professional Release Readiness:**
+  - Full compliance with modern Python packaging standards (`pyproject.toml`).
+  - Automated CI/CD pipeline via GitHub Actions (Linting, Tests, Docs).
+  - Standardized MIT licensing and professional project metadata.
 
 ## Roadmap
-
 - [Planned] Tree ensembles (Random Forest, Boosting) using GUIDE as the base learner.
-
 - [Planned] Dedicated Variable Importance mode for advanced feature diagnostics.
-
 - [Planned] Performance optimization via Rust/C extensions for core compute loops.
+- [Planned] Extended interaction support for arbitrary-depth search with optimized pruning.
+
