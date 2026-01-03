@@ -5,11 +5,11 @@
 - [x] Task: Update main `README.md` with current features and Quick Start [cb85406]
 - [x] Task: Conductor - User Manual Verification 'Phase 1: API Documentation and README' (Protocol in workflow.md) [07844fe]
 
-## Phase 2: Usage Examples
+## Phase 2: Usage Examples [checkpoint: 7c8b024]
 - [x] Task: Create `examples/basic_usage.py` (Iris/Housing datasets) [7107623]
 - [x] Task: Create `examples/interaction_demo.py` (XOR / synthetic interactions) [7107623]
 - [x] Task: Create `examples/bias_demo.py` (High cardinality bias demonstration) [7107623]
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Usage Examples' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Usage Examples' (Protocol in workflow.md) [7c8b024]
 
 ## Phase 3: User Guides
 - [ ] Task: Create `docs/user_guide.md` (Algorithm overview)
