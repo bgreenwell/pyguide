@@ -13,7 +13,7 @@
 - [x] Task: Verify ensembles with unit tests and check_estimator [07d2190]
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Implement Ensemble Classes' (Protocol in workflow.md) [a6dc1ed]
 
-## Phase 3: Benchmarking & Docs
+## Phase 3: Benchmarking & Docs [checkpoint: bed4b58]
 - [x] Task: Add Random Forest benchmark to `benchmarks/main_benchmark.py` [a1b2c3d]
 - [x] Task: Update documentation to include Ensembles [a1b2c3d]
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Benchmarking & Docs' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Benchmarking & Docs' (Protocol in workflow.md) [bed4b58]
