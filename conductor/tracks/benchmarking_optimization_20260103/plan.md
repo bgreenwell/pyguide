@@ -5,9 +5,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Feature Completeness' (Protocol in workflow.md) [897c5d7]
 
 ## Phase 2: Benchmark Suite
-- [ ] Task: Create `benchmarks/` directory and `main_benchmark.py`
-- [ ] Task: Implement comparison logic (GUIDE vs CART) on standard datasets
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Benchmark Suite' (Protocol in workflow.md)
+- [x] Task: Create `benchmarks/` directory and `main_benchmark.py` [cc1a2b3]
+- [x] Task: Implement comparison logic (GUIDE vs CART) on standard datasets [cc1a2b3]
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Benchmark Suite' (Protocol in workflow.md)
 
 ## Phase 3: Profiling & Optimization
 - [ ] Task: Profile the benchmark run to identify hotspots
