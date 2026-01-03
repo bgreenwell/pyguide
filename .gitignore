@@ -37,7 +37,7 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# unit test / coverage reports
 htmlcov/
 .tox/
 .nox/
@@ -50,6 +50,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.ruff_cache/
 cover/
 
 # Translations
@@ -71,6 +72,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/build/
 
 # PyBuilder
 target/

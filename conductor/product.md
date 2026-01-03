@@ -37,6 +37,10 @@ To provide a high-quality, scikit-learn compatible Python implementation of the 
   - Full structural parity with scikit-learn (e.g., `n_leaves_`, `max_depth_`).
   - Variable importance scores (`feature_importances_`) based on weighted impurity reduction.
   - Diagnostic methods for sample tracking (`apply`, `decision_path`).
+- **Comprehensive Documentation:**
+  - Detailed API reference generated with Sphinx.
+  - User guides for core algorithms and interaction detection.
+  - Working examples for common use cases (bias detection, interactions).
 
 ## Roadmap
 - [Planned] Tree ensembles (Random Forest, Boosting) using GUIDE as the base learner.
