@@ -17,9 +17,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: User Guides' (Protocol in workflow.md) [285d1ef]
 
 ## Phase 4: Sphinx Integration
-- [ ] Task: Install Sphinx and MyST-Parser
-- [ ] Task: Initialize Sphinx configuration in `docs/`
-- [ ] Task: Configure Sphinx to use MyST-Parser and point to source code
-- [ ] Task: Integrate existing markdown guides into the Sphinx toctree
-- [ ] Task: Build documentation and verify output
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Sphinx Integration' (Protocol in workflow.md)
+- [x] Task: Install Sphinx and MyST-Parser [8771ed8]
+- [x] Task: Initialize Sphinx configuration in `docs/` [a963570]
+- [x] Task: Configure Sphinx to use MyST-Parser and point to source code [82a778c]
+- [x] Task: Integrate existing markdown guides into the Sphinx toctree [90f2558]
+- [x] Task: Build documentation and verify output [82a778c]
+- [~] Task: Conductor - User Manual Verification 'Phase 4: Sphinx Integration' (Protocol in workflow.md)
