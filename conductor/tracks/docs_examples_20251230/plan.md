@@ -16,10 +16,10 @@
 - [x] Task: Create `docs/interactions.md` (Advanced interaction features) [7107623]
 - [x] Task: Conductor - User Manual Verification 'Phase 3: User Guides' (Protocol in workflow.md) [285d1ef]
 
-## Phase 4: Sphinx Integration
+## Phase 4: Sphinx Integration [checkpoint: 07271b4]
 - [x] Task: Install Sphinx and MyST-Parser [8771ed8]
 - [x] Task: Initialize Sphinx configuration in `docs/` [a963570]
 - [x] Task: Configure Sphinx to use MyST-Parser and point to source code [82a778c]
 - [x] Task: Integrate existing markdown guides into the Sphinx toctree [90f2558]
 - [x] Task: Build documentation and verify output [82a778c]
-- [~] Task: Conductor - User Manual Verification 'Phase 4: Sphinx Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Sphinx Integration' (Protocol in workflow.md) [07271b4]
