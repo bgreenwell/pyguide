@@ -1,9 +1,9 @@
 # Plan: Variable Importance Mode
 
-## Phase 1: Metadata Tracking
+## Phase 1: Metadata Tracking [checkpoint: 35fa5b6]
 - [x] Task: Update `GuideNode` to store `split_type` and `interaction_group` fb624fc
 - [x] Task: Update `_fit_node` in `Classifier` and `Regressor` to populate this metadata 393d00c
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Metadata Tracking' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Metadata Tracking' (Protocol in workflow.md) 35fa5b6
 
 ## Phase 2: Importance Calculation
 - [ ] Task: Implement `interaction_importances_` calculation logic
