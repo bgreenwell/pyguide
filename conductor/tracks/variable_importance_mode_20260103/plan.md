@@ -7,8 +7,8 @@
 
 ## Phase 2: Importance Calculation
 - [x] Task: Implement `interaction_importances_` calculation logic 1588b7b
-- [~] Task: Expose `interaction_importances_` property in estimators 1588b7b
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Importance Calculation' (Protocol in workflow.md)
+- [x] Task: Expose `interaction_importances_` property in estimators 1588b7b
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Importance Calculation' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Importance Calculation' (Protocol in workflow.md)
 
 ## Phase 3: Reporting & Docs
