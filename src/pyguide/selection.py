@@ -1,6 +1,6 @@
 import numpy as np
 
-from .stats import calc_curvature_p_value
+from .stats import calc_curvature_test
 
 
 def select_split_variable(X, y, categorical_features=None, feature_indices=None):
@@ -24,9 +24,14 @@ def select_split_variable(X, y, categorical_features=None, feature_indices=None)
         The index of the selected feature.
     best_p : float
         The p-value of the selected feature.
+    chi2_stats : ndarray
+        The Chi-square statistics for all features.
     """
     n_features = X.shape[1]
-    p_values = np.ones(n_features)
+    chi2_stats = np.zeros(n_features)
+    # We track best p-value separately because we need it for thresholding
+    best_p = 1.0
+    best_feature_idx = 0
 
     if categorical_features is None:
         categorical_features = np.zeros(n_features, dtype=bool)
@@ -35,9 +40,15 @@ def select_split_variable(X, y, categorical_features=None, feature_indices=None)
 
     for i in loop_indices:
         is_cat = categorical_features[i]
-        p_values[i] = calc_curvature_p_value(X[:, i], y, is_categorical=is_cat)
+        stat, p = calc_curvature_test(X[:, i], y, is_categorical=is_cat)
+        chi2_stats[i] = stat
+        
+        if p < best_p:
+            best_p = p
+            best_feature_idx = i
+        elif p == best_p:
+            # Tie-breaking logic (optional, currently first wins or random?)
+            # Here first wins.
+            pass
 
-    best_feature_idx = np.argmin(p_values)
-    best_p = p_values[best_feature_idx]
-
-    return best_feature_idx, best_p, p_values
+    return best_feature_idx, best_p, chi2_stats

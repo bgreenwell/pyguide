@@ -573,20 +573,13 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             return
 
         # Add contribution from this node
-        # v(X_k) += sqrt(n_t) * chi2.ppf(1 - p_value(k), df=1)
-        if node.curvature_p_values is not None:
+        # v(X_k) += sqrt(n_t) * chi2_stat(k)
+        if node.curvature_stats is not None:
             n_sqrt = np.sqrt(node.n_samples)
             for k in range(self.n_features_in_):
-                p_val = node.curvature_p_values[k]
-                # If p is close to 1, 1-p is close to 0, ppf is 0.
-                # If p is close to 0, 1-p is close to 1, ppf is large.
-                val = 1.0 - p_val
-                # Clip to avoid domain errors
-                val = np.clip(val, 0.0, 1.0)
-                score = n_sqrt * chi2.ppf(val, df=1)
-                
-                if np.isfinite(score):
-                    importances[k] += score
+                stat = node.curvature_stats[k]
+                if np.isfinite(stat):
+                    importances[k] += n_sqrt * stat
 
         self._compute_guide_importances(node.left, importances)
         self._compute_guide_importances(node.right, importances)
@@ -677,7 +670,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 value_distribution=counts,
                 split_type=None,
                 interaction_group=None,
-                curvature_p_values=None,
+                curvature_stats=None,
             )
 
         # 3. Variable Selection (GUIDE step 1)
@@ -689,7 +682,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         else:
             feature_indices = None
 
-        best_idx, p, all_p_values = select_split_variable(
+        best_idx, p, all_stats = select_split_variable(
             X, y, categorical_features=self._categorical_mask, feature_indices=feature_indices
         )
 
@@ -712,8 +705,8 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
 
             # 2. Filter by max_interaction_candidates
             if self.max_interaction_candidates is not None:
-                # Sort candidates by their p-value (ascending)
-                candidates.sort(key=lambda idx: all_p_values[idx])
+                # Sort candidates by their statistic (descending)
+                candidates.sort(key=lambda idx: all_stats[idx], reverse=True)
                 candidates = candidates[: self.max_interaction_candidates]
 
             # Search interactions (groups of size 2 up to interaction_depth + 1)
@@ -742,12 +735,12 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                     else:
                         best_idx = j
                 else:
-                    # For triplets+, pick the one with the smallest individual p-value
+                    # For triplets+, pick the one with the largest individual statistic
                     best_idx = best_int_group[0]
-                    min_p = all_p_values[best_idx]
+                    max_stat = all_stats[best_idx]
                     for feat in best_int_group:
-                        if all_p_values[feat] < min_p:
-                            min_p = all_p_values[feat]
+                        if all_stats[feat] > max_stat:
+                            max_stat = all_stats[feat]
                             best_idx = feat
 
                 interaction_split_override = True
@@ -764,7 +757,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 value_distribution=counts,
                 split_type=None,
                 interaction_group=None,
-                curvature_p_values=all_p_values,
+                curvature_stats=all_stats,
             )
 
         # 4. Split Point Optimization (GUIDE step 2)
@@ -786,7 +779,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 value_distribution=counts,
                 split_type=None,
                 interaction_group=None,
-                curvature_p_values=all_p_values,
+                curvature_stats=all_stats,
             )
 
         # 6. Create node and recurse
@@ -801,7 +794,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             value_distribution=counts,
             split_type="interaction" if interaction_split_override else "main",
             interaction_group=best_int_group if interaction_split_override else None,
-            curvature_p_values=all_p_values,
+            curvature_stats=all_stats,
         )
 
         if is_cat:

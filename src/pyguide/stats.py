@@ -65,238 +65,92 @@ def _fast_contingency(x, z):
 
 
 def _chi2_test(contingency):
-
-
     """
-
-
     Fast chi-square test using numpy.
-
-
+    Returns (chi2_statistic, p_value).
     """
-
-
     row_sums = contingency.sum(axis=1)
-
-
     col_sums = contingency.sum(axis=0)
-
-
     total = row_sums.sum()
 
-
-
-
-
     if total == 0:
-
-
-        return 1.0
-
-
-
-
+        return 0.0, 1.0
 
     expected = np.outer(row_sums, col_sums) / total
-
-
     
-
-
-    # Avoid division by zero and handle small expected values
-
-
-    # Standard Chi-square is only valid if expected >= 5 in most cells.
-
-
-    # We use a small epsilon to avoid NaN.
-
-
     mask = expected > 0
-
-
-    chi2 = np.sum((contingency[mask] - expected[mask]) ** 2 / expected[mask])
-
-
+    chi2_stat = np.sum((contingency[mask] - expected[mask]) ** 2 / expected[mask])
     
-
-
     dof = (contingency.shape[0] - 1) * (contingency.shape[1] - 1)
-
-
     
-
-
     if dof <= 0:
-
-
-        return 1.0
-
-
+        return 0.0, 1.0
         
-
-
     from scipy.stats import chi2 as scipy_chi2
+    return chi2_stat, scipy_chi2.sf(chi2_stat, dof)
 
 
-    return scipy_chi2.sf(chi2, dof)
-
-
-
-
-
-
-
-
-def calc_curvature_p_value(x, z, is_categorical=False):
-
-
+def calc_curvature_test(x, z, is_categorical=False):
     """
-
-
-    Calculate the Chi-square p-value for the association between x and z.
-
-
-    Missing values in x are treated as a separate category.
-
-
+    Calculate the Chi-square statistic and p-value for the association between x and z.
+    Returns (chi2_stat, p_value).
     """
-
-
     # 1. Prepare binned/categorical x
-
-
     if not is_categorical:
-
-
         # Separate NaNs from continuous values for binning
-
-
         nan_mask = np.isnan(x)
-
-
         x_non_nan = x[~nan_mask]
 
-
-
-
-
         if len(x_non_nan) > 0:
-
-
             x_binned = _bin_continuous(x_non_nan)
-
-
             # Reconstruct x_processed with NaNs as a separate bin (e.g., -1)
-
-
             x_processed = np.full(len(x), -1, dtype=int)
-
-
             x_processed[~nan_mask] = x_binned
-
-
         else:
-
-
             x_processed = np.full(len(x), -1, dtype=int)
-
-
     else:
-
-
         # Categorical x: ensure NaNs are represented
-
-
-        if x.dtype.kind in ["O", "U", "S"]:
-
-
+        if hasattr(x, "dtype") and x.dtype.kind in ["O", "U", "S"]:
             # Fill NaNs manually to avoid pandas Series creation
-
-
             x_processed = x.copy()
-
-
             mask = pd.isna(x)
-
-
             if np.any(mask):
-
-
                 x_processed[mask] = "MISSING"
-
-
         else:
-
-
             nan_mask = np.isnan(x)
-
-
             x_processed = x.copy()
-
-
             if len(x) > 0:
-
-
                 # Use a value that doesn't exist in x
-
-
                 missing_val = np.nanmin(x) - 1 if not np.all(np.isnan(x)) else -1
-
-
                 x_processed[nan_mask] = missing_val
 
-
-
-
-
     # 2. Create contingency table
-
-
     contingency = _fast_contingency(x_processed, z)
 
-
-
-
-
     if contingency is None:
-
-
-        return 1.0
-
-
-
-
+        return 0.0, 1.0
 
     # 3. Chi-square test
-
-
     try:
-
-
         # Use Fisher's exact test for 2x2 tables
-
-
         if contingency.shape == (2, 2):
-
-
             _, p = fisher_exact(contingency)
-
-
-            return p
-
-
-
-
+            # Convert p-value to equivalent Chi-square statistic (1 df)
+            # If p is extremely small, use a large cap? 
+            # Or use isf? isf is safer.
+            from scipy.stats import chi2 as scipy_chi2
+            # Handle p=0 case or very small p
+            if p == 0:
+                stat = np.inf # Or a very large number
+            else:
+                stat = scipy_chi2.isf(p, df=1)
+            return stat, p
 
         # Use fast numpy implementation
-
-
         return _chi2_test(contingency)
-
-
     except Exception:
+        return 0.0, 1.0
 
-
-        return 1.0
+# Legacy alias for backward compatibility if needed, but we will update callers.
+calc_curvature_p_value = lambda x, z, **kwargs: calc_curvature_test(x, z, **kwargs)[1]
 

@@ -526,16 +526,12 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         if node.is_leaf:
             return
 
-        if node.curvature_p_values is not None:
+        if node.curvature_stats is not None:
             n_sqrt = np.sqrt(node.n_samples)
             for k in range(self.n_features_in_):
-                p_val = node.curvature_p_values[k]
-                val = 1.0 - p_val
-                val = np.clip(val, 0.0, 1.0)
-                score = n_sqrt * chi2.ppf(val, df=1)
-                
-                if np.isfinite(score):
-                    importances[k] += score
+                stat = node.curvature_stats[k]
+                if np.isfinite(stat):
+                    importances[k] += n_sqrt * stat
 
         self._compute_guide_importances(node.left, importances)
         self._compute_guide_importances(node.right, importances)
@@ -614,7 +610,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 value_distribution=np.array([[prediction]]),
                 split_type=None,
                 interaction_group=None,
-                curvature_p_values=None,
+                curvature_stats=None,
             )
 
         # 2. Variable Selection (GUIDE step 1)
@@ -627,7 +623,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         else:
             feature_indices = None
 
-        best_idx, p, all_p_values = select_split_variable(
+        best_idx, p, all_stats = select_split_variable(
             X, z, categorical_features=self._categorical_mask, feature_indices=feature_indices
         )
 
@@ -650,8 +646,8 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
 
             # 2. Filter by max_interaction_candidates
             if self.max_interaction_candidates is not None:
-                # Sort candidates by their p-value (ascending)
-                candidates.sort(key=lambda idx: all_p_values[idx])
+                # Sort candidates by their statistic (descending)
+                candidates.sort(key=lambda idx: all_stats[idx], reverse=True)
                 candidates = candidates[: self.max_interaction_candidates]
 
             # Search interactions (groups of size 2 up to interaction_depth + 1)
@@ -679,12 +675,12 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                     else:
                         best_idx = j
                 else:
-                    # For triplets+, pick the one with the smallest individual p-value
+                    # For triplets+, pick the one with the largest individual statistic
                     best_idx = best_int_group[0]
-                    min_p = all_p_values[best_idx]
+                    max_stat = all_stats[best_idx]
                     for feat in best_int_group:
-                        if all_p_values[feat] < min_p:
-                            min_p = all_p_values[feat]
+                        if all_stats[feat] > max_stat:
+                            max_stat = all_stats[feat]
                             best_idx = feat
 
                 interaction_split_override = True
@@ -700,7 +696,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 value_distribution=np.array([[prediction]]),
                 split_type=None,
                 interaction_group=None,
-                curvature_p_values=all_p_values,
+                curvature_stats=all_stats,
             )
 
         # 3. Split Point Optimization (GUIDE step 2)
@@ -720,7 +716,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 value_distribution=np.array([[prediction]]),
                 split_type=None,
                 interaction_group=None,
-                curvature_p_values=all_p_values,
+                curvature_stats=all_stats,
             )
 
         # 5. Create node and recurse
@@ -734,7 +730,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             value_distribution=np.array([[prediction]]),
             split_type="interaction" if interaction_split_override else "main",
             interaction_group=best_int_group if interaction_split_override else None,
-            curvature_p_values=all_p_values,
+            curvature_stats=all_stats,
         )
 
         if is_cat:

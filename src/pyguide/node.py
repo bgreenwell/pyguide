@@ -20,6 +20,7 @@ class GuideNode:
         node_id=None,
         split_type=None,
         interaction_group=None,
+        curvature_stats=None,
     ):
         self.depth = depth
         self.is_leaf = is_leaf
@@ -36,6 +37,7 @@ class GuideNode:
         self.node_id = node_id
         self.split_type = split_type
         self.interaction_group = interaction_group
+        self.curvature_stats = curvature_stats
 
     def is_leaf_node(self):
         return self.is_leaf
