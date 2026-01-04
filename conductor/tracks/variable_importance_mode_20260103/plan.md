@@ -6,8 +6,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Metadata Tracking' (Protocol in workflow.md) 35fa5b6
 
 ## Phase 2: Importance Calculation
-- [ ] Task: Implement `interaction_importances_` calculation logic
-- [ ] Task: Expose `interaction_importances_` property in estimators
+- [x] Task: Implement `interaction_importances_` calculation logic 1588b7b
+- [~] Task: Expose `interaction_importances_` property in estimators 1588b7b
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: Importance Calculation' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Importance Calculation' (Protocol in workflow.md)
 
 ## Phase 3: Reporting & Docs
