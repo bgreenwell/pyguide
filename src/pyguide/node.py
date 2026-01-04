@@ -18,6 +18,8 @@ class GuideNode:
         impurity=0.0,
         value_distribution=None,
         node_id=None,
+        split_type=None,
+        interaction_group=None,
     ):
         self.depth = depth
         self.is_leaf = is_leaf
@@ -32,6 +34,8 @@ class GuideNode:
         self.impurity = impurity
         self.value_distribution = value_distribution
         self.node_id = node_id
+        self.split_type = split_type
+        self.interaction_group = interaction_group
 
     def is_leaf_node(self):
         return self.is_leaf
