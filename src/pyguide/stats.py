@@ -7,6 +7,16 @@ def _bin_continuous(x, n_bins=None):
     """
     Bin a continuous variable into groups based on quartiles (GUIDE style).
     """
+    # Ensure numeric for binning (handles object arrays from mixed DataFrames)
+    if x.dtype.kind == "O":
+        try:
+            x = x.astype(float)
+        except (ValueError, TypeError):
+            # Fallback for truly non-numeric data that slipped through
+            # Return ranks to preserve some structure
+            _, idx = np.unique(x, return_inverse=True)
+            return idx
+
     unique_values = np.unique(x)
 
     if n_bins is None:
@@ -98,10 +108,17 @@ def calc_curvature_test(x, z, is_categorical=False):
     # 1. Prepare binned/categorical x
     if not is_categorical:
         # Separate NaNs from continuous values for binning
-        nan_mask = np.isnan(x)
+        nan_mask = pd.isna(x)
         x_non_nan = x[~nan_mask]
 
         if len(x_non_nan) > 0:
+            # Ensure numeric for binning
+            try:
+                x_non_nan = x_non_nan.astype(float)
+            except (ValueError, TypeError):
+                # If it contains strings but wasn't marked categorical,
+                # we have a selection problem, but we'll try to proceed.
+                pass
             x_binned = _bin_continuous(x_non_nan)
             # Reconstruct x_processed with NaNs as a separate bin (e.g., -1)
             x_processed = np.full(len(x), -1, dtype=int)
@@ -117,11 +134,14 @@ def calc_curvature_test(x, z, is_categorical=False):
             if np.any(mask):
                 x_processed[mask] = "MISSING"
         else:
-            nan_mask = np.isnan(x)
+            nan_mask = pd.isna(x)
             x_processed = x.copy()
             if len(x) > 0:
                 # Use a value that doesn't exist in x
-                missing_val = np.nanmin(x) - 1 if not np.all(np.isnan(x)) else -1
+                try:
+                    missing_val = np.nanmin(x) - 1 if not np.all(nan_mask) else -1
+                except (TypeError, ValueError):
+                    missing_val = "MISSING"
                 x_processed[nan_mask] = missing_val
 
     # 2. Create contingency table

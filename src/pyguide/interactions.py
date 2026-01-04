@@ -37,9 +37,12 @@ def calc_interaction_p_value(X_subset, z, categorical_mask=None):
             binned_vars.append(x)
 
     # 3. Create combined groups
-    # To combine binned variables into unique groups, we use return_inverse on unique rows.
+    # To combine binned variables into unique groups, we use factorize on tuples.
+    import pandas as pd
+
     combined = np.column_stack(binned_vars)
-    _, combined_idx = np.unique(combined, axis=0, return_inverse=True)
+    combined_tuples = [tuple(row) for row in combined]
+    combined_idx = pd.factorize(pd.Index(combined_tuples))[0]
 
     try:
         contingency = _fast_contingency(combined_idx, z)

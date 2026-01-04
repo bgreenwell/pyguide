@@ -68,11 +68,22 @@ Unlike impurity-based metrics, GUIDE importance:
 - Is **associative**: It captures the potential of every variable at every node, even if the variable was not chosen for the split.
 - Uses **raw statistics**: Does not depend on the specific split point or threshold chosen.
 
+### 4. Strict GUIDE Variable Importance (`compute_guide_importance`)
+
+The `compute_guide_importance` method implements the "Strict" version of the algorithm described in **Loh & Zhou (2021)**. This is the recommended method for feature selection and importance ranking.
+
+**Key Features:**
+- **Standalone API:** Can be called on an unfitted estimator: `scores = GuideTreeClassifier().compute_guide_importance(X, y)`.
+- **Auxiliary Trees:** Grows a short (depth 4) unpruned tree to capture robust associations without overfitting.
+- **Bias Correction:** Performs 300 permutations of the target variable to normalize scores. A score of **1.0** represents the expected importance of a random noise variable.
+- **Strict Interaction Capture:** Automatically incorporates interaction signals into the scores of the involved features.
+
 ```python
-# Accessing the different scores
-print("Standard:", clf.feature_importances_)
-print("Interaction-Aware:", clf.interaction_importances_)
-print("True GUIDE scores:", clf.guide_importances_)
+# Standard way to get unbiased, calibrated importance
+clf = GuideTreeClassifier(interaction_depth=1)
+scores = clf.compute_guide_importance(X, y)
+
+# scores[i] > 1.0 indicates a variable more important than noise.
 ```
 
 ## Visualization

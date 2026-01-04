@@ -44,7 +44,7 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
     Find the best split threshold for a numerical feature x to separate y.
     Optimized O(N log N) implementation using cumulative stats.
     """
-    nan_mask = np.isnan(x)
+    nan_mask = pd.isna(x)
     x_non_nan = x[~nan_mask]
     y_non_nan = y[~nan_mask]
     y_nan = y[nan_mask]
@@ -196,7 +196,7 @@ def _find_best_split_categorical(x, y, criterion="gini"):
         # Need to be careful with pd.isna on object arrays containing various types
         nan_mask = pd.isna(x)
     else:
-        nan_mask = np.isnan(x)
+        nan_mask = pd.isna(x)
 
     y_nan = y[nan_mask]
     x_non_nan = x[~nan_mask]

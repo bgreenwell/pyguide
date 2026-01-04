@@ -153,10 +153,13 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
     def _get_categorical_mask(self, X, n_features):
         """Identify categorical features."""
         if self.categorical_features is None:
+            # Simple heuristic: if it's a DataFrame, check dtypes
             if isinstance(X, pd.DataFrame):
-                return X.dtypes.isin(["object", "category"]).values
+                return np.array([not pd.api.types.is_numeric_dtype(dt) for dt in X.dtypes])
+            # If it's a numpy array or something else, check for object/string types
             if hasattr(X, "dtype") and X.dtype.kind in ["O", "U", "S"]:
                 return np.ones(n_features, dtype=bool)
+            # Assume all numerical
             return np.zeros(n_features, dtype=bool)
 
         mask = np.zeros(n_features, dtype=bool)
@@ -216,14 +219,15 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         y,
         max_depth=4,
         bias_correction=True,
-        n_permutations=100,
+        n_permutations=300,
         random_state=None,
     ):
-        """
+        r"""
         Calculate GUIDE variable importance scores using an auxiliary shallow tree.
 
         Following Loh & Zhou (2021), this method grows a short unpruned tree
-        to calculate unbiased associative importance scores.
+        to calculate unbiased associative importance scores. It includes
+        permutation-based bias correction and interaction detection.
 
         Parameters
         ----------
@@ -232,11 +236,13 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         y : array-like of shape (n_samples,)
             The target values.
         max_depth : int, default=4
-            The depth of the auxiliary tree used for scoring.
+            The depth of the auxiliary tree used for scoring. The paper
+            recommends a depth of 4 for stable associative scores.
         bias_correction : bool, default=True
             Whether to perform permutation-based bias correction.
-        n_permutations : int, default=100
-            Number of permutations for bias correction.
+        n_permutations : int, default=300
+            Number of permutations for bias correction. The paper uses 300
+            for high stability in simulations.
         random_state : int, RandomState instance or None, default=None
             Controls the randomness of permutations and tree growth.
 
@@ -244,7 +250,22 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         -------
         importances : ndarray of shape (n_features,)
             The calculated importance scores. If bias_correction=True,
-            these are the normalized VI scores.
+            these are the normalized VI scores, where a score of 1.0
+            represents the expected importance of a noise variable.
+
+        Notes
+        -----
+        The importance score $v(X_k)$ for variable $X_k$ is defined as:
+        $v(X_k) = \sum_{t} \sqrt{n_t} \chi^2_1(k, t)$
+        where the sum is over intermediate nodes $t$, $n_t$ is the sample size
+        at node $t$, and $\chi^2_1(k, t)$ is the 1-degree-of-freedom
+        chi-square statistic for the association between $X_k$ and the
+        response at that node.
+
+        References
+        ----------
+        Loh, W.-Y. and Zhou, P. (2021). Variable Importance Scores.
+        Journal of Data Science, 19(4), 569-592.
         """
         rng = check_random_state(random_state)
 
@@ -307,10 +328,10 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         val = x[node.split_feature]
         is_nan = False
         if is_cat:
-            if val is None or (isinstance(val, float) and np.isnan(val)):
+            if val is None or (isinstance(val, float) and pd.isna(val)):
                 is_nan = True
         else:
-            if np.isnan(val):
+            if pd.isna(val):
                 is_nan = True
 
         if is_nan:
@@ -357,10 +378,10 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         val = x[node.split_feature]
         is_nan = False
         if is_cat:
-            if val is None or (isinstance(val, float) and np.isnan(val)):
+            if val is None or (isinstance(val, float) and pd.isna(val)):
                 is_nan = True
         else:
-            if np.isnan(val):
+            if pd.isna(val):
                 is_nan = True
 
         if is_nan:
@@ -627,11 +648,11 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             left_mask = X[:, split_feat] <= threshold
 
         # Handle NaNs
-        nan_mask = np.isnan(X[:, split_feat]) if not is_cat else pd.isna(X[:, split_feat])
+        nan_mask = pd.isna(X[:, split_feat]) if not is_cat else pd.isna(X[:, split_feat])
         if is_cat and X.dtype.kind == "O":
             nan_mask = np.array(
                 [
-                    (v is None or (isinstance(v, float) and np.isnan(v)))
+                    (v is None or (isinstance(v, float) and pd.isna(v)))
                     for v in X[:, split_feat]
                 ]
             )
@@ -735,6 +756,20 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                         best_int_group = group
 
             if best_int_p < self.significance_threshold:
+                # Interaction found! Update stats for all variables in the group
+                # to reflect the associative signal (Loh & Zhou, 2021 Step 7c).
+                from scipy.stats import chi2 as scipy_chi2
+
+                if best_int_p <= 0:
+                    int_stat = 100.0
+                elif best_int_p >= 1:
+                    int_stat = 0.0
+                else:
+                    int_stat = float(scipy_chi2.isf(best_int_p, df=1))
+
+                for feat in best_int_group:
+                    all_stats[feat] = max(all_stats[feat], int_stat)
+
                 # Interaction found! Select the best variable from the group to split on.
                 if len(best_int_group) == 2:
                     # For pairs, perform standard look-ahead
@@ -811,11 +846,11 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             left_mask = X[:, best_idx] <= threshold
 
         # Handle NaNs
-        nan_mask = np.isnan(X[:, best_idx]) if not is_cat else pd.isna(X[:, best_idx])
+        nan_mask = pd.isna(X[:, best_idx]) if not is_cat else pd.isna(X[:, best_idx])
         if is_cat and X.dtype.kind == "O":
             nan_mask = np.array(
                 [
-                    (v is None or (isinstance(v, float) and np.isnan(v)))
+                    (v is None or (isinstance(v, float) and pd.isna(v)))
                     for v in X[:, best_idx]
                 ]
             )
@@ -864,10 +899,10 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         # Handle missing values
         is_nan = False
         if is_cat:
-            if val is None or (isinstance(val, float) and np.isnan(val)):
+            if val is None or (isinstance(val, float) and pd.isna(val)):
                 is_nan = True
         else:
-            if np.isnan(val):
+            if pd.isna(val):
                 is_nan = True
 
         if is_nan:

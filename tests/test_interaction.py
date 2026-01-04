@@ -63,3 +63,24 @@ def test_classifier_interaction_xor():
     # First split one variable, then the other.
     acc = clf.score(X, y)
     assert acc > 0.9
+
+
+def test_interaction_importance():
+    # Pure interaction: y = XOR(X0 > 0.5, X1 > 0.5)
+    # Neither X0 nor X1 have a main effect, only an interaction.
+    np.random.seed(42)
+    X = np.random.rand(500, 5)
+    y = ((X[:, 0] > 0.5) ^ (X[:, 1] > 0.5)).astype(int)
+
+    # We MUST enable interaction detection
+    clf = GuideTreeClassifier(interaction_depth=1)
+
+    # Using bias correction
+    scores = clf.compute_guide_importance(X, y, n_permutations=20, random_state=42)
+
+    # X0 and X1 should be the most important
+    assert scores[0] > 2.0
+    assert scores[1] > 2.0
+    # They should be much more important than noise X2-X4
+    assert scores[0] > scores[2] * 2
+    assert scores[1] > scores[3] * 2
