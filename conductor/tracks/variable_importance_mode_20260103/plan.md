@@ -14,8 +14,8 @@
 ## Phase 3: True GUIDE Scoring
 - [x] Task: Update `GuideNode` to store `curvature_p_values` from variable selection 8424e51
 - [x] Task: Update `_fit_node` to save these p-values 7efd63c
-- [~] Task: Implement `guide_importances_` (Eq 1 from paper)
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: True GUIDE Scoring' (Protocol in workflow.md)
+- [x] Task: Implement `guide_importances_` (Eq 1 from paper) 30c1902
+- [~] Task: Conductor - User Manual Verification 'Phase 3: True GUIDE Scoring' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: True GUIDE Scoring' (Protocol in workflow.md)
 
 ## Phase 4: Reporting & Docs
