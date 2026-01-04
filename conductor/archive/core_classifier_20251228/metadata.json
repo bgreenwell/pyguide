@@ -1,8 +1,0 @@
-{
-  "track_id": "core_classifier_20251228",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2025-12-28T10:00:00Z",
-  "updated_at": "2025-12-28T10:00:00Z",
-  "description": "Build the core GuideTreeClassifier infrastructure, including scikit-learn compatibility, the two-step split logic (Chi-square variable selection followed by split point optimization), and a basic recursive tree growing algorithm."
-}

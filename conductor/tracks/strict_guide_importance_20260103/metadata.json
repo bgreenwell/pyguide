@@ -1,8 +1,0 @@
-{
-  "track_id": "strict_guide_importance_20260103",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-01-03T20:00:00Z",
-  "updated_at": "2026-01-03T20:00:00Z",
-  "description": "Implement the formal GUIDE variable importance methodology from Loh & Zhou (2021), including auxiliary 4-level trees and permutation-based bias correction."
-}

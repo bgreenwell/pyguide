@@ -147,7 +147,18 @@ def calc_curvature_test(x, z, is_categorical=False):
             return stat, p
 
         # Use fast numpy implementation
-        return _chi2_test(contingency)
+        stat, p = _chi2_test(contingency)
+        
+        # Transform to 1-df chi-square for consistency (Loh & Zhou, 2021)
+        if p <= 0:
+            stat = 100.0  # Cap at a high value for p=0
+        elif p >= 1:
+            stat = 0.0
+        else:
+            from scipy.stats import chi2 as scipy_chi2
+            stat = float(scipy_chi2.isf(p, df=1))
+        
+        return stat, p
     except Exception:
         return 0.0, 1.0
 

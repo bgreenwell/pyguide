@@ -1,8 +1,0 @@
-{
-  "track_id": "variable_importance_mode_20260103",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-01-03T19:00:00Z",
-  "updated_at": "2026-01-03T19:00:00Z",
-  "description": "Implement advanced variable importance scoring, specifically separating main effects from interaction effects."
-}

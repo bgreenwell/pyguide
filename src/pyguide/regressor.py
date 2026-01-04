@@ -210,6 +210,78 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             return max(1, int(np.log2(n_features)))
         raise ValueError(f"Invalid max_features: {self.max_features}")
 
+    def compute_guide_importance(
+        self,
+        X,
+        y,
+        max_depth=4,
+        bias_correction=True,
+        n_permutations=100,
+        random_state=None,
+    ):
+        """
+        Calculate GUIDE variable importance scores using an auxiliary shallow tree.
+
+        Following Loh & Zhou (2021), this method grows a short unpruned tree
+        to calculate unbiased associative importance scores.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            The training input samples.
+        y : array-like of shape (n_samples,)
+            The target values.
+        max_depth : int, default=4
+            The depth of the auxiliary tree used for scoring.
+        bias_correction : bool, default=True
+            Whether to perform permutation-based bias correction.
+        n_permutations : int, default=100
+            Number of permutations for bias correction.
+        random_state : int, RandomState instance or None, default=None
+            Controls the randomness of permutations and tree growth.
+
+        Returns
+        -------
+        importances : ndarray of shape (n_features,)
+            The calculated importance scores. If bias_correction=True,
+            these are the normalized VI scores.
+        """
+        rng = check_random_state(random_state)
+
+        # 1. Unadjusted importance v(X_k)
+        # We create a new estimator instance to avoid modifying the current one
+        # and to ensure it uses the specified max_depth and no pruning.
+        params = self.get_params()
+        params["max_depth"] = max_depth
+        params["ccp_alpha"] = 0.0
+        params["random_state"] = random_state
+
+        est = self.__class__(**params)
+        est.fit(X, y)
+        v = est.guide_importances_
+
+        if not bias_correction:
+            return v
+
+        # 2. Bias correction (permutation tests)
+        # v_bar(X_k) = mean of v*(X_k) over B permutations of y
+        v_sum = np.zeros_like(v)
+        for _ in range(n_permutations):
+            y_perm = rng.permutation(y)
+            # Use random_state=None for permutations to allow diverse tree growth
+            params["random_state"] = None
+            est_perm = self.__class__(**params)
+            est_perm.fit(X, y_perm)
+            v_sum += est_perm.guide_importances_
+
+        v_bar = v_sum / n_permutations
+
+        # Avoid division by zero: if mean importance is 0, we can't reliably
+        # calculate VI. We use a small epsilon.
+        v_bar = np.where(v_bar <= 0, 1e-9, v_bar)
+
+        return v / v_bar
+
     def _assign_node_ids(self, node, next_id):
         """Recursively assign IDs to nodes."""
         node.node_id = next_id
