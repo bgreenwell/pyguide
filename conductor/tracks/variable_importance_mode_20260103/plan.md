@@ -11,7 +11,14 @@
 - [~] Task: Conductor - User Manual Verification 'Phase 2: Importance Calculation' (Protocol in workflow.md)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Importance Calculation' (Protocol in workflow.md)
 
-## Phase 3: Reporting & Docs
+## Phase 3: True GUIDE Scoring
+- [x] Task: Update `GuideNode` to store `curvature_p_values` from variable selection 8424e51
+- [x] Task: Update `_fit_node` to save these p-values 7efd63c
+- [~] Task: Implement `guide_importances_` (Eq 1 from paper)
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: True GUIDE Scoring' (Protocol in workflow.md)
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: True GUIDE Scoring' (Protocol in workflow.md)
+
+## Phase 4: Reporting & Docs
 - [ ] Task: Create `examples/importance_demo.py` showcasing the new metrics on interaction datasets
-- [ ] Task: Update documentation to explain the difference between main and interaction importance
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Reporting & Docs' (Protocol in workflow.md)
+- [ ] Task: Update documentation to explain the difference between main, interaction, and GUIDE importance
+- [ ] Task: Conductor - User Manual Verification 'Phase 4: Reporting & Docs' (Protocol in workflow.md)
