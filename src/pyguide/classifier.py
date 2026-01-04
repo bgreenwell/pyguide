@@ -642,6 +642,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 value_distribution=counts,
                 split_type=None,
                 interaction_group=None,
+                curvature_p_values=None,
             )
 
         # 3. Variable Selection (GUIDE step 1)
@@ -728,6 +729,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 value_distribution=counts,
                 split_type=None,
                 interaction_group=None,
+                curvature_p_values=all_p_values,
             )
 
         # 4. Split Point Optimization (GUIDE step 2)
@@ -749,6 +751,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 value_distribution=counts,
                 split_type=None,
                 interaction_group=None,
+                curvature_p_values=all_p_values,
             )
 
         # 6. Create node and recurse
@@ -763,6 +766,7 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             value_distribution=counts,
             split_type="interaction" if interaction_split_override else "main",
             interaction_group=best_int_group if interaction_split_override else None,
+            curvature_p_values=all_p_values,
         )
 
         if is_cat:
