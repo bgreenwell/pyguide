@@ -39,5 +39,41 @@ Once a variable is selected, GUIDE finds the split point $s$ that minimizes the 
 - `interaction_depth`: Controls the maximum order of interaction search (1 for pairs, 2 for triplets).
 - `max_interaction_candidates`: Limits interaction search to the top $K$ features to improve performance on wide datasets.
 
-## Handling Missing Values (NaNs)
-GUIDE has a native, elegant way to handle missing values. During variable selection, "missingness" is treated as a separate category in the Chi-square tests. During splitting, if a variable has NaNs, GUIDE evaluates whether sending them to the left or right child results in lower total impurity.
+`pyguide` trees naturally handle missing values by routing observations based on the impurity reduction of the non-missing data. No imputation is required.
+
+## Variable Importance
+
+`pyguide` provides three distinct ways to measure the importance of predictor variables, each offering a different perspective on the model.
+
+### 1. Standard Impurity Importance (`feature_importances_`)
+
+This is the standard scikit-learn compatible importance. It measures the total weighted reduction of the impurity criterion (Gini index or SSE) brought by each feature. 
+
+**Note:** In GUIDE, only one variable is used for the physical split at each node. This metric only credits that single variable.
+
+### 2. Interaction-Aware Importance (`interaction_importances_`)
+
+When a split is identified via interaction detection (e.g., between $X_i$ and $X_j$), both variables contribute to the discovery of the split. This metric distributes the impurity reduction of such a split equally among all members of the interaction group.
+
+This is often more robust than standard importance for detecting variables that primarily act through interactions.
+
+### 3. GUIDE Importance Scores (`guide_importances_`)
+
+Following the methodology in **Loh & Zhou (2021)**, these scores are calculated by summing the statistical significance (Chi-square statistics) of all features across all intermediate nodes in the tree.
+
+$v(X_k) = \sum_{t} \sqrt{n_t} \chi_1^2(k, t)$
+
+Unlike impurity-based metrics, GUIDE importance:
+- Is **unbiased**: It doesn't favor variables with many unique values.
+- Is **associative**: It captures the potential of every variable at every node, even if the variable was not chosen for the split.
+- Uses **raw statistics**: Does not depend on the specific split point or threshold chosen.
+
+```python
+# Accessing the different scores
+print("Standard:", clf.feature_importances_)
+print("Interaction-Aware:", clf.interaction_importances_)
+print("True GUIDE scores:", clf.guide_importances_)
+```
+
+## Visualization
+
