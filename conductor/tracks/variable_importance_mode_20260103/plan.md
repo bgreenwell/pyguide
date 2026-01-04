@@ -18,7 +18,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3: True GUIDE Scoring' (Protocol in workflow.md) cb5d785
 - [x] Task: Conductor - User Manual Verification 'Phase 3: True GUIDE Scoring' (Protocol in workflow.md)
 
-## Phase 4: Reporting & Docs
+## Phase 4: Reporting & Docs [checkpoint: 61dc76f]
 - [x] Task: Create `examples/importance_demo.py` showcasing the new metrics on interaction datasets cb5d785
-- [~] Task: Update documentation to explain the difference between main, interaction, and GUIDE importance
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Reporting & Docs' (Protocol in workflow.md)
+- [x] Task: Update documentation to explain the difference between main, interaction, and GUIDE importance 61dc76f
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Reporting & Docs' (Protocol in workflow.md) 61dc76f
