@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Variable Importance Mode
-*Link: [./conductor/tracks/variable_importance_mode_20260103/](./conductor/tracks/variable_importance_mode_20260103/)*
+## [ ] Track: Strict GUIDE Variable Importance
+*Link: [./conductor/tracks/strict_guide_importance_20260103/](./conductor/tracks/strict_guide_importance_20260103/)*
