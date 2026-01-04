@@ -2,6 +2,7 @@ import itertools
 
 import numpy as np
 import pandas as pd
+from scipy.stats import chi2
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
@@ -509,6 +510,35 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
 
         self._compute_interaction_importances(node.left, importances)
         self._compute_interaction_importances(node.right, importances)
+
+    @property
+    def guide_importances_(self):
+        """
+        Return the GUIDE importance scores (Loh & Zhou, 2021).
+        Score is the sum over intermediate nodes of sqrt(n_t) * chi2_quantile(1-p).
+        """
+        check_is_fitted(self)
+        importances = np.zeros(self.n_features_in_)
+        self._compute_guide_importances(self._root, importances)
+        return importances
+
+    def _compute_guide_importances(self, node, importances):
+        if node.is_leaf:
+            return
+
+        if node.curvature_p_values is not None:
+            n_sqrt = np.sqrt(node.n_samples)
+            for k in range(self.n_features_in_):
+                p_val = node.curvature_p_values[k]
+                val = 1.0 - p_val
+                val = np.clip(val, 0.0, 1.0)
+                score = n_sqrt * chi2.ppf(val, df=1)
+                
+                if np.isfinite(score):
+                    importances[k] += score
+
+        self._compute_guide_importances(node.left, importances)
+        self._compute_guide_importances(node.right, importances)
 
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """

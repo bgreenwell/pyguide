@@ -2,6 +2,7 @@ import itertools
 
 import numpy as np
 import pandas as pd
+from scipy.stats import chi2
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils import check_random_state
 from sklearn.utils.multiclass import check_classification_targets
@@ -555,6 +556,40 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
 
         self._compute_interaction_importances(node.left, importances)
         self._compute_interaction_importances(node.right, importances)
+
+    @property
+    def guide_importances_(self):
+        """
+        Return the GUIDE importance scores (Loh & Zhou, 2021).
+        Score is the sum over intermediate nodes of sqrt(n_t) * chi2_quantile(1-p).
+        """
+        check_is_fitted(self)
+        importances = np.zeros(self.n_features_in_)
+        self._compute_guide_importances(self._root, importances)
+        return importances
+
+    def _compute_guide_importances(self, node, importances):
+        if node.is_leaf:
+            return
+
+        # Add contribution from this node
+        # v(X_k) += sqrt(n_t) * chi2.ppf(1 - p_value(k), df=1)
+        if node.curvature_p_values is not None:
+            n_sqrt = np.sqrt(node.n_samples)
+            for k in range(self.n_features_in_):
+                p_val = node.curvature_p_values[k]
+                # If p is close to 1, 1-p is close to 0, ppf is 0.
+                # If p is close to 0, 1-p is close to 1, ppf is large.
+                val = 1.0 - p_val
+                # Clip to avoid domain errors
+                val = np.clip(val, 0.0, 1.0)
+                score = n_sqrt * chi2.ppf(val, df=1)
+                
+                if np.isfinite(score):
+                    importances[k] += score
+
+        self._compute_guide_importances(node.left, importances)
+        self._compute_guide_importances(node.right, importances)
 
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """
