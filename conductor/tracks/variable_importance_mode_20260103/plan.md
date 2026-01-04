@@ -2,8 +2,8 @@
 
 ## Phase 1: Metadata Tracking
 - [x] Task: Update `GuideNode` to store `split_type` and `interaction_group` fb624fc
-- [~] Task: Update `_fit_node` in `Classifier` and `Regressor` to populate this metadata
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Metadata Tracking' (Protocol in workflow.md)
+- [x] Task: Update `_fit_node` in `Classifier` and `Regressor` to populate this metadata 393d00c
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Metadata Tracking' (Protocol in workflow.md)
 
 ## Phase 2: Importance Calculation
 - [ ] Task: Implement `interaction_importances_` calculation logic
