@@ -490,11 +490,11 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
         check_is_fitted(self)
         importances = np.zeros(self.n_features_in_)
         self._compute_feature_importances(self._root, importances)
-        
+
         sum_importances = importances.sum()
         if sum_importances > 0:
             importances /= sum_importances
-            
+
         return importances
 
     def _compute_feature_importances(self, node, importances):
@@ -502,22 +502,59 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             return
 
         # Weighted impurity reduction
-        # Gini reduction = n_node / n_total * (impurity - n_left/n_node * left_imp - n_right/n_node * right_imp)
-        # Which simplifies to:
-        # (n_node * impurity - n_left * left_imp - n_right * right_imp) / n_total
-        
         n_node = node.n_samples
         n_left = node.left.n_samples
         n_right = node.right.n_samples
-        
-        reduction = (n_node * node.impurity - 
-                     n_left * node.left.impurity - 
+
+        reduction = (n_node * node.impurity -
+                     n_left * node.left.impurity -
                      n_right * node.right.impurity)
-        
+
         importances[node.split_feature] += reduction
-        
+
         self._compute_feature_importances(node.left, importances)
         self._compute_feature_importances(node.right, importances)
+
+    @property
+    def interaction_importances_(self):
+        """
+        Return the interaction-aware feature importances.
+        If a split was chosen via interaction detection, the reduction
+        is distributed equally among all interacting features.
+        """
+        check_is_fitted(self)
+        importances = np.zeros(self.n_features_in_)
+        self._compute_interaction_importances(self._root, importances)
+
+        sum_importances = importances.sum()
+        if sum_importances > 0:
+            importances /= sum_importances
+
+        return importances
+
+    def _compute_interaction_importances(self, node, importances):
+        if node.is_leaf:
+            return
+
+        n_node = node.n_samples
+        n_left = node.left.n_samples
+        n_right = node.right.n_samples
+
+        reduction = (n_node * node.impurity -
+                     n_left * node.left.impurity -
+                     n_right * node.right.impurity)
+
+        if node.split_type == "interaction" and node.interaction_group is not None:
+            # Distribute reduction among interaction group
+            weight = reduction / len(node.interaction_group)
+            for feat_idx in node.interaction_group:
+                importances[feat_idx] += weight
+        else:
+            # Standard attribution
+            importances[node.split_feature] += reduction
+
+        self._compute_interaction_importances(node.left, importances)
+        self._compute_interaction_importances(node.right, importances)
 
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """

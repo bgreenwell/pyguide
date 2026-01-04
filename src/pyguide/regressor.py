@@ -468,16 +468,47 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
         if node.is_leaf:
             return
 
-        # Impurity reduction for regression (SSE)
-        # Reduction = SSE(node) - (SSE(left) + SSE(right))
-        # This is already what find_best_split calculates as 'gain'
-
         reduction = node.impurity - node.left.impurity - node.right.impurity
-
-        importances[node.split_feature] += max(0, reduction)  # Ensure non-negative
+        importances[node.split_feature] += max(0, reduction)
 
         self._compute_feature_importances(node.left, importances)
         self._compute_feature_importances(node.right, importances)
+
+    @property
+    def interaction_importances_(self):
+        """
+        Return the interaction-aware feature importances.
+        If a split was chosen via interaction detection, the reduction
+        is distributed equally among all interacting features.
+        """
+        check_is_fitted(self)
+        importances = np.zeros(self.n_features_in_)
+        self._compute_interaction_importances(self._root, importances)
+
+        sum_importances = importances.sum()
+        if sum_importances > 0:
+            importances /= sum_importances
+
+        return importances
+
+    def _compute_interaction_importances(self, node, importances):
+        if node.is_leaf:
+            return
+
+        reduction = node.impurity - node.left.impurity - node.right.impurity
+        reduction = max(0, reduction)
+
+        if node.split_type == "interaction" and node.interaction_group is not None:
+            # Distribute reduction among interaction group
+            weight = reduction / len(node.interaction_group)
+            for feat_idx in node.interaction_group:
+                importances[feat_idx] += weight
+        else:
+            # Standard attribution
+            importances[node.split_feature] += reduction
+
+        self._compute_interaction_importances(node.left, importances)
+        self._compute_interaction_importances(node.right, importances)
 
     def _calculate_lookahead_gain(self, X, y, split_feat, next_feat):
         """
