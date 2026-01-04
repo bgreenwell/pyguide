@@ -551,6 +551,8 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 n_samples=n_samples,
                 impurity=current_impurity,
                 value_distribution=np.array([[prediction]]),
+                split_type=None,
+                interaction_group=None,
             )
 
         # 2. Variable Selection (GUIDE step 1)
@@ -634,6 +636,8 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 n_samples=n_samples,
                 impurity=current_impurity,
                 value_distribution=np.array([[prediction]]),
+                split_type=None,
+                interaction_group=None,
             )
 
         # 3. Split Point Optimization (GUIDE step 2)
@@ -651,6 +655,8 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
                 n_samples=n_samples,
                 impurity=current_impurity,
                 value_distribution=np.array([[prediction]]),
+                split_type=None,
+                interaction_group=None,
             )
 
         # 5. Create node and recurse
@@ -662,6 +668,8 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
             n_samples=n_samples,
             impurity=current_impurity,
             value_distribution=np.array([[prediction]]),
+            split_type="interaction" if interaction_split_override else "main",
+            interaction_group=best_int_group if interaction_split_override else None,
         )
 
         if is_cat:

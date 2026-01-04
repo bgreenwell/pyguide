@@ -603,6 +603,8 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 n_samples=n_samples,
                 impurity=current_impurity,
                 value_distribution=counts,
+                split_type=None,
+                interaction_group=None,
             )
 
         # 3. Variable Selection (GUIDE step 1)
@@ -687,6 +689,8 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 n_samples=n_samples,
                 impurity=current_impurity,
                 value_distribution=counts,
+                split_type=None,
+                interaction_group=None,
             )
 
         # 4. Split Point Optimization (GUIDE step 2)
@@ -706,6 +710,8 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
                 n_samples=n_samples,
                 impurity=current_impurity,
                 value_distribution=counts,
+                split_type=None,
+                interaction_group=None,
             )
 
         # 6. Create node and recurse
@@ -718,6 +724,8 @@ class GuideTreeClassifier(ClassifierMixin, BaseEstimator):
             n_samples=n_samples,
             impurity=current_impurity,
             value_distribution=counts,
+            split_type="interaction" if interaction_split_override else "main",
+            interaction_group=best_int_group if interaction_split_override else None,
         )
 
         if is_cat:
