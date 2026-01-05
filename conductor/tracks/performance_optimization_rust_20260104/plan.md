@@ -1,10 +1,10 @@
 # Plan: Performance Optimization (Rust)
 
-## Phase 1: Profiling & Setup
+## Phase 1: Profiling & Setup [checkpoint: b75b772]
 - [x] Task: Profile current benchmarks to identify top 3 hotspots (Hotspots: `calc_curvature_test`, `_bin_continuous`, `_chi2_test`)
 - [x] Task: Add `maturin` to `pyproject.toml` and configure build system
 - [x] Task: Initialize Rust crate structure
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Setup' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Setup' (Protocol in workflow.md)
 
 ## Phase 2: Core Kernels
 - [ ] Task: Port `calc_curvature_test` (Chi-square stats) to Rust
