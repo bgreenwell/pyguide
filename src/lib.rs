@@ -1,7 +1,6 @@
 use pyo3::prelude::*;
 use numpy::{PyArrayMethods, PyArray1, PyArray2};
 use ndarray::{Array1, Array2};
-use statrs::distribution::{ChiSquared, ContinuousCDF};
 use std::collections::BTreeSet;
 
 #[pymodule]
@@ -186,7 +185,7 @@ fn find_best_threshold_numerical(
 
     if criterion == "gini" {
         // Gini logic
-        let mut y_int: Vec<usize> = y_view.iter().map(|&yi| yi as usize).collect();
+        let y_int: Vec<usize> = y_view.iter().map(|&yi| yi as usize).collect();
         let n_classes = y_int.iter().max().map_or(0, |&m| m + 1);
         
         let mut total_counts = vec![0.0; n_classes];
@@ -203,7 +202,7 @@ fn find_best_threshold_numerical(
         
         let mut left_counts = vec![0.0; n_classes];
         let n_nan = nan_y.len() as f64;
-        let n_total_f = n_total as f64;
+        let _n_total_f = n_total as f64;
 
         for i in 0..non_nan_data.len() - 1 {
             let (_, yi) = non_nan_data[i];
@@ -222,7 +221,7 @@ fn find_best_threshold_numerical(
                         .map(|(&lc, &nc)| ((lc + nc) / n_l).powi(2)).sum::<f64>();
                     let imp_r = 1.0 - total_counts.iter().zip(&left_counts).zip(&nan_counts)
                         .map(|((&tc, &lc), &nc)| ((tc - lc - nc) / n_r).powi(2)).sum::<f64>();
-                    let gain = current_impurity - (n_l/n_total_f * imp_l + n_r/n_total_f * imp_r);
+                    let gain = current_impurity - (n_l/ _n_total_f * imp_l + n_r/ _n_total_f * imp_r);
                     if gain > best_gain {
                         best_gain = gain;
                         best_missing_go_left = true;
@@ -237,7 +236,7 @@ fn find_best_threshold_numerical(
                     let imp_l = 1.0 - left_counts.iter().map(|&lc| (lc / n_l).powi(2)).sum::<f64>();
                     let imp_r = 1.0 - total_counts.iter().zip(&left_counts)
                         .map(|(&tc, &lc)| ((tc - lc) / n_r).powi(2)).sum::<f64>();
-                    let gain = current_impurity - (n_l/n_total_f * imp_l + n_r/n_total_f * imp_r);
+                    let gain = current_impurity - (n_l/ _n_total_f * imp_l + n_r/ _n_total_f * imp_r);
                     if gain > best_gain {
                         best_gain = gain;
                         best_missing_go_left = false;
@@ -257,9 +256,7 @@ fn find_best_threshold_numerical(
         
         let mut sum_y_l_nn = 0.0;
         let mut sum_y2_l_nn = 0.0;
-        let n_nan = nan_y.len() as f64;
-        let n_total_f = n_total as f64;
-
+        
         for i in 0..non_nan_data.len() - 1 {
             let (_, yi) = non_nan_data[i];
             sum_y_l_nn += yi;
@@ -273,7 +270,7 @@ fn find_best_threshold_numerical(
                 let sum_y2_r_nn = sum_y2_total - sum_y2_nan - sum_y2_l_nn;
 
                 // Option 1: Missing go left
-                let n_l = n_l_nn + n_nan;
+                let n_l = n_l_nn + nan_y.len() as f64;
                 let n_r = n_r_nn;
                 if n_l > 0.0 && n_r > 0.0 {
                     let imp_l = (sum_y2_l_nn + sum_y2_nan) - (sum_y_l_nn + sum_y_nan).powi(2) / n_l;
@@ -288,7 +285,7 @@ fn find_best_threshold_numerical(
 
                 // Option 2: Missing go right
                 let n_l = n_l_nn;
-                let n_r = n_r_nn + n_nan;
+                let n_r = n_r_nn + nan_y.len() as f64;
                 if n_l > 0.0 && n_r > 0.0 {
                     let imp_l = sum_y2_l_nn - sum_y_l_nn.powi(2) / n_l;
                     let imp_r = (sum_y2_r_nn + sum_y2_nan) - (sum_y_r_nn + sum_y_nan).powi(2) / n_r;

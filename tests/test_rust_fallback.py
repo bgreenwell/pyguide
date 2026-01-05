@@ -1,8 +1,10 @@
-import numpy as np
-import pytest
 from unittest.mock import patch
-import pyguide.stats as stats
+
+import numpy as np
+
 import pyguide.splitting as splitting
+import pyguide.stats as stats
+
 
 def test_stats_python_fallback():
     # Force HAS_RUST to False for this test

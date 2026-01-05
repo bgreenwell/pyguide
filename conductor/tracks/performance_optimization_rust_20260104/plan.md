@@ -13,6 +13,6 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Kernels' (Protocol in workflow.md)
 
 ## Phase 3: Benchmarking & Finalization
-- [ ] Task: Run benchmarks comparing Pure Python vs Rust
-- [ ] Task: Ensure CI/CD builds wheels correctly
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Benchmarking' (Protocol in workflow.md)
+- [x] Task: Run benchmarks comparing Pure Python vs Rust
+- [x] Task: Ensure CI/CD builds wheels correctly
+- [~] Task: Conductor - User Manual Verification 'Phase 3: Benchmarking' (Protocol in workflow.md)
