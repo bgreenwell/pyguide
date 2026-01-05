@@ -5,8 +5,6 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/pyguide.svg)](https://pypi.org/project/pyguide/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Disclaimer:** `pyguide` is currently a **work in progress** and is not yet production-ready. The current implementation is written in pure Python/NumPy for clarity and algorithm verification. Future versions will identify performance bottlenecks and replace them with optimized, compiled code (Rust or C).
-
 A high-quality, scikit-learn compatible Python implementation of the **GUIDE** (Generalized, Unbiased, Interaction Detection and Estimation) algorithm.
 
 ## Why GUIDE?
@@ -17,6 +15,7 @@ Standard decision tree implementations (like CART or scikit-learn's `DecisionTre
 - **Unbiased Selection:** Separating variable selection from split optimization using Chi-square tests.
 - **Built-in Interaction Detection:** Explicitly searching for multi-variable interactions (pairs, triplets, etc.).
 - **Scikit-learn Compatibility:** Full parity with the scikit-learn estimator API, including structural attributes (`n_leaves_`, `max_depth_`) and diagnostic methods (`apply`, `decision_path`).
+- **High Performance:** Core algorithms are implemented in Rust for speed and efficiency.
 
 ## Key Features
 
@@ -33,6 +32,22 @@ Standard decision tree implementations (like CART or scikit-learn's `DecisionTre
 
 ```bash
 pip install pyguide  # Note: Replace with actual install command when published
+```
+
+### Building from Source
+
+To build from source, you will need the Rust toolchain installed (e.g., via `rustup`).
+
+```bash
+# Clone the repository
+git clone https://github.com/bgreenwell/pyguide.git
+cd pyguide
+
+# Install maturin
+pip install maturin
+
+# Build and install
+maturin develop --release
 ```
 
 ## Quick Start
@@ -173,5 +188,5 @@ uv run python benchmarks/main_benchmark.py
 - [x] **Tree Ensembles:** Random Forest wrappers using GUIDE as the base learner.
 - [x] **Variable Importance Mode:** Enhanced diagnostics and standalone importance scores (Strict GUIDE).
 - [ ] **Gradient Boosting:** Boosting wrappers using GUIDE as the base learner.
-- [ ] **Performance Optimization:** Porting core splitting and selection logic to Rust/C for production-scale performance.
+- [x] **Performance Optimization:** Porting core splitting and selection logic to Rust/C for production-scale performance.
 - [ ] **Extended Interaction Support:** Automated search for arbitrary-depth interactions with better pruning.
