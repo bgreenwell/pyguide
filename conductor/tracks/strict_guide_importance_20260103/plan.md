@@ -11,7 +11,7 @@
 - [x] Task: Verify that noise variables get normalized scores near 1.0
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Verification & Benchmarking' (Protocol in workflow.md)
 
-## Phase 3: Documentation
+## Phase 3: Documentation [checkpoint: 996d5ab]
 - [x] Task: Update API documentation for the new method
 - [x] Task: Update User Guide with details from the Loh & Zhou (2021) paper
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Documentation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Documentation' (Protocol in workflow.md)
