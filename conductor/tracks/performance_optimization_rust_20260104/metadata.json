@@ -1,7 +1,0 @@
-{
-  "track_id": "performance_optimization_rust_20260104",
-  "title": "Performance Optimization (Rust)",
-  "created_at": "2026-01-04",
-  "status": "pending",
-  "description": "Optimization of core algorithms using Rust and PyO3."
-}
