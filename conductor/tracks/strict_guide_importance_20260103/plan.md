@@ -6,10 +6,10 @@
 - [x] Task: Implement permutation loop for bias correction
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Core Algorithm' (Protocol in workflow.md)
 
-## Phase 2: Verification & Benchmarking
+## Phase 2: Verification & Benchmarking [checkpoint: 55bc031]
 - [x] Task: Create `examples/strict_importance_demo.py` comparing adjusted vs unadjusted scores
 - [x] Task: Verify that noise variables get normalized scores near 1.0
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Verification & Benchmarking' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Verification & Benchmarking' (Protocol in workflow.md)
 
 ## Phase 3: Documentation
 - [ ] Task: Update API documentation for the new method
