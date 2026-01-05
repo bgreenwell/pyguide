@@ -1,6 +1,7 @@
 import numpy as np
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
-from scipy.stats import chi2
+
 
 def test_classifier_guide_scoring_basic():
     X = np.random.rand(50, 5)

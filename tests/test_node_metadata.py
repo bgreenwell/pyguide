@@ -1,5 +1,6 @@
 from pyguide.node import GuideNode
 
+
 def test_node_metadata():
     node = GuideNode(
         depth=0,

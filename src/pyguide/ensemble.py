@@ -1,11 +1,13 @@
 """
 Ensemble models based on GUIDE trees.
 """
+from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from sklearn.ensemble import BaggingClassifier, BaggingRegressor
-from sklearn.base import ClassifierMixin, RegressorMixin, BaseEstimator
-from sklearn.utils.validation import check_is_fitted, check_X_y, check_array
+from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
+
 from .classifier import GuideTreeClassifier
 from .regressor import GuideTreeRegressor
+
 
 class GuideRandomForestClassifier(ClassifierMixin, BaseEstimator):
     """

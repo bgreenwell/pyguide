@@ -2,7 +2,6 @@ import itertools
 
 import numpy as np
 import pandas as pd
-from scipy.stats import chi2
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y

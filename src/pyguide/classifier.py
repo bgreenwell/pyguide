@@ -2,7 +2,6 @@ import itertools
 
 import numpy as np
 import pandas as pd
-from scipy.stats import chi2
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils import check_random_state
 from sklearn.utils.multiclass import check_classification_targets

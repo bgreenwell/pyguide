@@ -3,7 +3,9 @@ Comparison of different variable importance metrics in pyguide.
 """
 import numpy as np
 import pandas as pd
+
 from pyguide import GuideTreeClassifier
+
 
 def importance_demo():
     print("--- pyguide Variable Importance Demo ---")

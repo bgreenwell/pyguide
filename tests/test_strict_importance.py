@@ -1,7 +1,8 @@
 import numpy as np
-import pytest
 from sklearn.datasets import load_iris
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
+
 
 def test_compute_guide_importance_exists():
     X, y = load_iris(return_X_y=True)

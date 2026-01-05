@@ -1,5 +1,7 @@
 import numpy as np
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
+
 
 def test_classifier_split_metadata():
     X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]] * 10)

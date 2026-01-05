@@ -1,7 +1,8 @@
 import numpy as np
-import pytest
 from sklearn.datasets import load_iris, make_regression
+
 from pyguide import GuideTreeClassifier, GuideTreeRegressor
+
 
 def test_pruning_path_classifier():
     X, y = load_iris(return_X_y=True)

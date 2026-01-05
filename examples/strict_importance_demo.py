@@ -8,7 +8,9 @@ This example shows how GUIDE's importance scores handle:
 """
 import numpy as np
 import pandas as pd
+
 from pyguide import GuideTreeClassifier
+
 
 def generate_biased_data(n_samples=1000, seed=42):
     rng = np.random.default_rng(seed)

@@ -1,0 +1,19 @@
+# Plan: Refining Interaction Detection
+
+## Phase 1: Constraints and Filtering [checkpoint: 146d692]
+- [x] Task: Implement `interaction_features` and `max_interaction_candidates` parameters [106d42e]
+- [x] Task: Update `_select_split_variable` to use the new filtering logic [106d42e]
+- [x] Task: Create tests for interaction constraints (verify restricted search space) [106d42e]
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Constraints and Filtering' (Protocol in workflow.md) [146d692]
+
+## Phase 2: Higher-Order Interactions [checkpoint: d29781f]
+- [x] Task: Generalize `calc_interaction_p_value` to support more than 2 variables (or implement recursive grouping) [a5f1de5]
+- [x] Task: Update `_select_split_variable` to handle `interaction_depth > 1` [a5f1de5]
+- [x] Task: Create tests for triplet interactions [a5f1de5]
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Higher-Order Interactions' (Protocol in workflow.md) [d29781f]
+
+## Phase 3: Final Integration & Benchmarking [checkpoint: cb85406]
+- [x] Task: Benchmark the impact of candidate filtering on large feature sets [7785def]
+- [x] Task: Final code cleanup and documentation update [7785def]
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Final Integration & Benchmarking' (Protocol in workflow.md) [cb85406]
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Integration & Benchmarking' (Protocol in workflow.md)

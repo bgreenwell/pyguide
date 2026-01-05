@@ -1,0 +1,7 @@
+{
+  "track_id": "gradient_boosting_20260104",
+  "title": "Gradient Boosting",
+  "created_at": "2026-01-04",
+  "status": "active",
+  "description": "Implementation of Gradient Boosting wrapper classes using GUIDE trees as base learners."
+}

@@ -1,11 +1,18 @@
 import time
-import numpy as np
+
 import pandas as pd
-from sklearn.datasets import load_iris, load_digits, load_diabetes
+from sklearn.datasets import load_diabetes, load_digits, load_iris
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from pyguide import GuideTreeClassifier, GuideTreeRegressor, GuideRandomForestClassifier, GuideRandomForestRegressor
+
+from pyguide import (
+    GuideRandomForestClassifier,
+    GuideRandomForestRegressor,
+    GuideTreeClassifier,
+    GuideTreeRegressor,
+)
+
 
 def benchmark_classifier(name, X, y):
     print(f"--- Benchmarking Classifier: {name} ({X.shape[0]} samples, {X.shape[1]} features) ---")

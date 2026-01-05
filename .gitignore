@@ -156,4 +156,6 @@ cython_debug/
 
 # MacOS
 .DS_Store  
-\n# Conductor\nconductor/
+\n# Conductor
+# conductor/
+conductor/setup_state.json

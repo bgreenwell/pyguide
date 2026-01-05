@@ -1,8 +1,10 @@
 import numpy as np
 import pytest
-from sklearn.datasets import load_iris, make_regression, load_digits
+from sklearn.datasets import load_digits, load_iris, make_regression
 from sklearn.utils.estimator_checks import check_estimator
+
 from pyguide import GuideRandomForestClassifier, GuideRandomForestRegressor
+
 
 def test_rf_classifier_basic():
     X, y = load_iris(return_X_y=True)

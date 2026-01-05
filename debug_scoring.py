@@ -1,6 +1,8 @@
 import numpy as np
+
 from pyguide.selection import select_split_variable
 from pyguide.stats import calc_curvature_p_value
+
 
 def debug_scoring():
     print("--- Debugging Scoring ---")
