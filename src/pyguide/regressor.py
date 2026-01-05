@@ -47,6 +47,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
 
     interaction_depth : int, default=1
         The maximum order of interactions to search for.
+
         - 0: No interaction detection.
         - 1: Pairwise interactions.
         - 2: Triplets, etc.
@@ -72,6 +73,7 @@ class GuideTreeRegressor(RegressorMixin, BaseEstimator):
 
     max_features : int, float, str or None, default=None
         The number of features to consider when looking for the best split:
+
         - If int, then consider `max_features` features at each split.
         - If float, then `max_features` is a fraction and
           `max(1, int(max_features * n_features_in_))` features are considered at each split.

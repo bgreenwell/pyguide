@@ -12,6 +12,6 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Verification & Benchmarking' (Protocol in workflow.md)
 
 ## Phase 3: Documentation
-- [ ] Task: Update API documentation for the new method
-- [ ] Task: Update User Guide with details from the Loh & Zhou (2021) paper
+- [x] Task: Update API documentation for the new method
+- [x] Task: Update User Guide with details from the Loh & Zhou (2021) paper
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Documentation' (Protocol in workflow.md)

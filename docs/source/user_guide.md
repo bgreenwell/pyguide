@@ -70,21 +70,56 @@ Unlike impurity-based metrics, GUIDE importance:
 
 ### 4. Strict GUIDE Variable Importance (`compute_guide_importance`)
 
-The `compute_guide_importance` method implements the "Strict" version of the algorithm described in **Loh & Zhou (2021)**. This is the recommended method for feature selection and importance ranking.
+The `compute_guide_importance` method implements the "Strict" variable importance algorithm as detailed in **Loh & Zhou (2021)**. This approach is designed to be the gold standard for unbiased feature ranking and selection.
 
-**Key Features:**
-- **Standalone API:** Can be called on an unfitted estimator: `scores = GuideTreeClassifier().compute_guide_importance(X, y)`.
-- **Auxiliary Trees:** Grows a short (depth 4) unpruned tree to capture robust associations without overfitting.
-- **Bias Correction:** Performs 300 permutations of the target variable to normalize scores. A score of **1.0** represents the expected importance of a random noise variable.
-- **Strict Interaction Capture:** Automatically incorporates interaction signals into the scores of the involved features.
+#### Why "Strict"?
+Standard impurity-based importance scores (like those in Random Forest or CART) often suffer from two main issues:
+1.  **Bias towards high-cardinality:** Variables with many unique values or categories can appear artificially important.
+2.  **Lack of a null distribution:** It is difficult to know if a score of "0.05" is significant or just noise.
+
+Strict GUIDE Importance addresses these by using:
+- **Unbiased Chi-Square Statistics:** Importance is derived from the statistical strength of association, not impurity reduction.
+- **Normalization via Permutation:** Scores are calibrated such that a score of **1.0** represents the expected importance of a random noise variable.
+
+#### Algorithm Details
+1.  **Auxiliary Tree:** An unpruned, depth-limited (default `max_depth=4`) GUIDE tree is grown on the data.
+2.  **Raw Importance Calculation:** At each node $t$, the association between every feature $X_k$ and the target $Y$ is measured using a 1-degree-of-freedom Chi-square statistic, $\chi^2_1(k, t)$. The raw importance $v(X_k)$ is the sum of these statistics weighted by the square root of the sample size at each node:
+    $$v(X_k) = \sum_{t} \sqrt{n_t} \chi^2_1(k, t)$$
+3.  **Interaction Handling:** If an interaction is detected at a node, the high Chi-square statistic of the interaction is attributed to all participating variables, ensuring associative signals are not lost.
+4.  **Bias Correction (Normalization):** The target variable $Y$ is permuted $B$ times (default 300). For each permutation, the raw importance scores are recalculated. The final **Strict Importance Score** ($VI$) is the ratio of the original score to the average score from the permuted runs:
+    $$VI(X_k) = \frac{v(X_k)}{\bar{v}_{perm}(X_k)}$$
+
+#### Interpretation
+- **$VI(X_k) \approx 1.0$:** The variable behaves like noise.
+- **$VI(X_k) \gg 1.0$:** The variable has a significant association with the target.
+- **$VI(X_k) < 1.0$:** The variable performs worse than random noise (rare, but possible due to sampling variance).
+
+#### Usage Example
 
 ```python
-# Standard way to get unbiased, calibrated importance
-clf = GuideTreeClassifier(interaction_depth=1)
-scores = clf.compute_guide_importance(X, y)
+from pyguide import GuideTreeClassifier
 
-# scores[i] > 1.0 indicates a variable more important than noise.
+# Initialize a clean estimator
+clf = GuideTreeClassifier(interaction_depth=1)
+
+# Compute Strict Importance (computationally intensive due to permutations)
+vi_scores = clf.compute_guide_importance(
+    X, y,
+    max_depth=4,            # Recommended depth from paper
+    bias_correction=True,   # Enable permutation normalization
+    n_permutations=300      # Recommended number of permutations
+)
+
+# Filter for significant features
+significant_features = [
+    feature_names[i] 
+    for i, score in enumerate(vi_scores) 
+    if score > 1.2  # A conservative threshold above noise
+]
 ```
+
+**Reference:**
+Loh, W.-Y. and Zhou, P. (2021). "Variable Importance Scores." *Journal of Data Science*, 19(4), 569-592.
 
 ## Visualization
 
