@@ -1,6 +1,12 @@
 import numpy as np
 import pandas as pd
 
+try:
+    from . import _core
+    HAS_RUST = True
+except ImportError:
+    HAS_RUST = False
+
 
 def _gini(y):
     """Calculate Gini impurity of a vector of class labels."""
@@ -44,6 +50,14 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
     Find the best split threshold for a numerical feature x to separate y.
     Optimized O(N log N) implementation using cumulative stats.
     """
+    if HAS_RUST:
+        try:
+            return _core.find_best_threshold_numerical(
+                x.astype(float), y.astype(float), criterion
+            )
+        except Exception:
+            pass
+
     nan_mask = pd.isna(x)
     x_non_nan = x[~nan_mask]
     y_non_nan = y[~nan_mask]
@@ -75,15 +89,17 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
         # Precompute class counts
         n_classes = np.max(y) + 1 if len(y) > 0 else 0
         total_counts = np.bincount(y, minlength=n_classes)
-        nan_counts = np.bincount(y_nan, minlength=n_classes) if n_nan > 0 else np.zeros(n_classes)
-        
+        nan_counts = (
+            np.bincount(y_nan, minlength=n_classes) if n_nan > 0 else np.zeros(n_classes)
+        )
+
         # Cumulative counts from the left
         # We need counts for each split point
         # y_sorted is (N_non_nan,)
         y_one_hot = np.zeros((len(y_sorted), n_classes))
         y_one_hot[np.arange(len(y_sorted)), y_sorted] = 1
         cum_counts = np.cumsum(y_one_hot, axis=0)
-        
+
         for split_idx in split_indices:
             left_counts_non_nan = cum_counts[split_idx - 1]
             right_counts_non_nan = total_counts - nan_counts - left_counts_non_nan
@@ -96,11 +112,13 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
             if n_left > 0 and n_right > 0:
                 imp_left = _gini_from_counts(left_counts_non_nan + nan_counts, n_left)
                 imp_right = _gini_from_counts(right_counts_non_nan, n_right)
-                gain = current_impurity - (n_left/n_total * imp_left + n_right/n_total * imp_right)
+                gain = current_impurity - (
+                    n_left / n_total * imp_left + n_right / n_total * imp_right
+                )
                 if gain > best_gain:
                     best_gain = gain
                     best_missing_go_left = True
-                    best_threshold = (x_sorted[split_idx] + x_sorted[split_idx-1]) / 2.0
+                    best_threshold = (x_sorted[split_idx] + x_sorted[split_idx - 1]) / 2.0
 
             # Option 2: Missing go right
             n_left = n_left_non_nan
@@ -108,11 +126,13 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
             if n_left > 0 and n_right > 0:
                 imp_left = _gini_from_counts(left_counts_non_nan, n_left)
                 imp_right = _gini_from_counts(right_counts_non_nan + nan_counts, n_right)
-                gain = current_impurity - (n_left/n_total * imp_left + n_right/n_total * imp_right)
+                gain = current_impurity - (
+                    n_left / n_total * imp_left + n_right / n_total * imp_right
+                )
                 if gain > best_gain:
                     best_gain = gain
                     best_missing_go_left = False
-                    best_threshold = (x_sorted[split_idx] + x_sorted[split_idx-1]) / 2.0
+                    best_threshold = (x_sorted[split_idx] + x_sorted[split_idx - 1]) / 2.0
     else:
         # SSE Optimization
         current_impurity = _sse(y)
@@ -120,16 +140,16 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
         sum_y2_total = np.sum(y**2)
         sum_y_nan = np.sum(y_nan)
         sum_y2_nan = np.sum(y_nan**2)
-        
+
         cum_sum_y = np.cumsum(y_sorted)
         cum_sum_y2 = np.cumsum(y_sorted**2)
-        
+
         for split_idx in split_indices:
             sum_y_l_nn = cum_sum_y[split_idx - 1]
             sum_y2_l_nn = cum_sum_y2[split_idx - 1]
             sum_y_r_nn = sum_y_total - sum_y_nan - sum_y_l_nn
             sum_y2_r_nn = sum_y2_total - sum_y2_nan - sum_y2_l_nn
-            
+
             n_l_nn = split_idx
             n_r_nn = n_total - n_nan - split_idx
 
@@ -137,25 +157,29 @@ def _find_best_threshold_numerical(x, y, criterion="gini"):
             n_l = n_l_nn + n_nan
             n_r = n_r_nn
             if n_l > 0 and n_r > 0:
-                imp_l = _sse_from_stats(sum_y_l_nn + sum_y_nan, sum_y2_l_nn + sum_y2_nan, n_l)
+                imp_l = _sse_from_stats(
+                    sum_y_l_nn + sum_y_nan, sum_y2_l_nn + sum_y2_nan, n_l
+                )
                 imp_r = _sse_from_stats(sum_y_r_nn, sum_y2_r_nn, n_r)
                 gain = current_impurity - (imp_l + imp_r)
                 if gain > best_gain:
                     best_gain = gain
                     best_missing_go_left = True
-                    best_threshold = (x_sorted[split_idx] + x_sorted[split_idx-1]) / 2.0
+                    best_threshold = (x_sorted[split_idx] + x_sorted[split_idx - 1]) / 2.0
 
             # Option 2: Missing go right
             n_l = n_l_nn
             n_r = n_r_nn + n_nan
             if n_l > 0 and n_r > 0:
                 imp_l = _sse_from_stats(sum_y_l_nn, sum_y2_l_nn, n_l)
-                imp_r = _sse_from_stats(sum_y_r_nn + sum_y_nan, sum_y2_r_nn + sum_y2_nan, n_r)
+                imp_r = _sse_from_stats(
+                    sum_y_r_nn + sum_y_nan, sum_y2_r_nn + sum_y2_nan, n_r
+                )
                 gain = current_impurity - (imp_l + imp_r)
                 if gain > best_gain:
                     best_gain = gain
                     best_missing_go_left = False
-                    best_threshold = (x_sorted[split_idx] + x_sorted[split_idx-1]) / 2.0
+                    best_threshold = (x_sorted[split_idx] + x_sorted[split_idx - 1]) / 2.0
 
     return best_threshold, best_missing_go_left, best_gain
 

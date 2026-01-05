@@ -2,6 +2,12 @@ import numpy as np
 import pandas as pd
 from scipy.stats import fisher_exact
 
+try:
+    from . import _core
+    HAS_RUST = True
+except ImportError:
+    HAS_RUST = False
+
 
 def _bin_continuous(x, n_bins=None):
     """
@@ -17,8 +23,6 @@ def _bin_continuous(x, n_bins=None):
             _, idx = np.unique(x, return_inverse=True)
             return idx
 
-    unique_values = np.unique(x)
-
     if n_bins is None:
         if len(x) >= 40:
             n_bins = 4
@@ -27,6 +31,14 @@ def _bin_continuous(x, n_bins=None):
         else:
             # Too few samples to bin effectively, return ranks to preserve order
             return np.argsort(np.argsort(x))
+
+    if HAS_RUST:
+        try:
+            return _core.bin_continuous(x.astype(float), n_bins)
+        except Exception:
+            pass
+
+    unique_values = np.unique(x)
 
     # If the feature has very few unique values, don't bin it using quartiles
     # as it might collapse into a single bin. Instead, map to unique ranks.
@@ -56,6 +68,16 @@ def _fast_contingency(x, z):
     x and z should be integer arrays.
     Returns a 2D numpy array.
     """
+    if HAS_RUST:
+        try:
+            ux, x_idx = np.unique(x, return_inverse=True)
+            uz, z_idx = np.unique(z, return_inverse=True)
+            return _core.compute_contingency_table(
+                x_idx.astype(np.int64), z_idx.astype(np.int64), len(ux), len(uz)
+            )
+        except Exception:
+            pass
+
     # 1. Map categories to [0, n_cats-1] and [0, n_classes-1]
     # np.unique with return_inverse is still relatively slow,
     # but we only call it once per variable selection.
@@ -76,9 +98,20 @@ def _fast_contingency(x, z):
 
 def _chi2_test(contingency):
     """
-    Fast chi-square test using numpy.
+    Fast chi-square test using numpy or Rust.
     Returns (chi2_statistic, p_value).
     """
+    if HAS_RUST:
+        try:
+            stat, dof = _core.calculate_chi2(contingency.astype(float))
+            if dof <= 0:
+                return 0.0, 1.0
+            from scipy.stats import chi2 as scipy_chi2
+
+            return stat, scipy_chi2.sf(stat, dof)
+        except Exception:
+            pass
+
     row_sums = contingency.sum(axis=1)
     col_sums = contingency.sum(axis=0)
     total = row_sums.sum()
@@ -87,16 +120,17 @@ def _chi2_test(contingency):
         return 0.0, 1.0
 
     expected = np.outer(row_sums, col_sums) / total
-    
+
     mask = expected > 0
     chi2_stat = np.sum((contingency[mask] - expected[mask]) ** 2 / expected[mask])
-    
+
     dof = (contingency.shape[0] - 1) * (contingency.shape[1] - 1)
-    
+
     if dof <= 0:
         return 0.0, 1.0
-        
+
     from scipy.stats import chi2 as scipy_chi2
+
     return chi2_stat, scipy_chi2.sf(chi2_stat, dof)
 
 
@@ -156,19 +190,20 @@ def calc_curvature_test(x, z, is_categorical=False):
         if contingency.shape == (2, 2):
             _, p = fisher_exact(contingency)
             # Convert p-value to equivalent Chi-square statistic (1 df)
-            # If p is extremely small, use a large cap? 
+            # If p is extremely small, use a large cap?
             # Or use isf? isf is safer.
             from scipy.stats import chi2 as scipy_chi2
+
             # Handle p=0 case or very small p
             if p == 0:
-                stat = np.inf # Or a very large number
+                stat = np.inf  # Or a very large number
             else:
                 stat = scipy_chi2.isf(p, df=1)
             return stat, p
 
         # Use fast numpy implementation
         stat, p = _chi2_test(contingency)
-        
+
         # Transform to 1-df chi-square for consistency (Loh & Zhou, 2021)
         if p <= 0:
             stat = 100.0  # Cap at a high value for p=0
@@ -176,13 +211,14 @@ def calc_curvature_test(x, z, is_categorical=False):
             stat = 0.0
         else:
             from scipy.stats import chi2 as scipy_chi2
+
             stat = float(scipy_chi2.isf(p, df=1))
-        
+
         return stat, p
     except Exception:
         return 0.0, 1.0
 
+
 # Legacy alias for backward compatibility if needed, but we will update callers.
 def calc_curvature_p_value(x, z, **kwargs):
     return calc_curvature_test(x, z, **kwargs)[1]
-
