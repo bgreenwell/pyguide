@@ -1,6 +1,7 @@
 from .classifier import GuideTreeClassifier
-from .ensemble import GuideRandomForestClassifier, GuideRandomForestRegressor
 from .regressor import GuideTreeRegressor
+from .ensemble import GuideRandomForestClassifier, GuideRandomForestRegressor
+from .boosting import GuideGradientBoostingRegressor
 from .visualization import plot_tree
 
 __all__ = [
@@ -8,5 +9,6 @@ __all__ = [
     "GuideTreeRegressor",
     "GuideRandomForestClassifier",
     "GuideRandomForestRegressor",
+    "GuideGradientBoostingRegressor",
     "plot_tree",
 ]

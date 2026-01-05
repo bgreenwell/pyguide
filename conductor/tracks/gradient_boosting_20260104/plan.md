@@ -1,9 +1,9 @@
 # Plan: Gradient Boosting
 
 ## Phase 1: Gradient Boosting Regressor
-- [ ] Task: Implement `GuideGradientBoostingRegressor` skeleton and parameters
-- [ ] Task: Implement Least Squares boosting loop using `GuideTreeRegressor`
-- [ ] Task: Add support for `subsample` (Stochastic Gradient Boosting)
+- [x] Task: Implement `GuideGradientBoostingRegressor` skeleton and parameters
+- [x] Task: Implement Least Squares boosting loop using `GuideTreeRegressor`
+- [x] Task: Add support for `subsample` (Stochastic Gradient Boosting)
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Regressor' (Protocol in workflow.md)
 
 ## Phase 2: Gradient Boosting Classifier (Binary)
