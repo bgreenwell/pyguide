@@ -21,6 +21,7 @@ Standard decision tree implementations (like CART or scikit-learn's `DecisionTre
 ## Key Features
 
 - **Unbiased Variable Selection:** Prevents bias towards high-cardinality features.
+- **Strict GUIDE Importance:** Implementation of Loh & Zhou (2021) unbiased importance scores with bias correction.
 - **Tree Ensembles:** Random Forest implementation using GUIDE trees for improved accuracy and robustness.
 - **Advanced Interaction Detection:** Configure `interaction_depth` to find complex relationships.
 - **Scalable Search:** Use `max_interaction_candidates` to speed up training on high-dimensional data by orders of magnitude.
@@ -67,6 +68,22 @@ clf.fit(X_train, y_train)
 
 print(f"Accuracy: {clf.score(X_test, y_test):.4f}")
 print(f"Number of leaves: {clf.n_leaves_}")
+```
+
+### Strict Variable Importance
+
+```python
+from pyguide import GuideTreeClassifier
+from sklearn.datasets import load_iris
+
+X, y = load_iris(return_X_y=True)
+
+# Calculate unbiased importance scores (Loh & Zhou, 2021)
+clf = GuideTreeClassifier(interaction_depth=1)
+scores = clf.compute_guide_importance(X, y, bias_correction=True)
+
+# scores[i] > 1.0 indicates importance greater than noise
+print("Feature Importances:", scores)
 ```
 
 ### Regression
@@ -149,10 +166,12 @@ uv run python benchmarks/main_benchmark.py
 
 - Loh, W.-Y. (2002). *Regression trees with unbiased variable selection and interaction detection*. Statistica Sinica, 361-386.
 - Loh, W.-Y. (2009). *Improving the precision of classification trees*. Annals of Applied Statistics, 3(4), 1710-1737.
+- Loh, W.-Y. and Zhou, P. (2021). *Variable Importance Scores*. Journal of Data Science, 19(4), 569-592.
 
 ## Roadmap
 
-- [ ] **Tree Ensembles:** Random Forest and Gradient Boosting wrappers using GUIDE as the base learner.
-- [ ] **Variable Importance Mode:** Enhanced diagnostics and standalone importance scores.
+- [x] **Tree Ensembles:** Random Forest wrappers using GUIDE as the base learner.
+- [x] **Variable Importance Mode:** Enhanced diagnostics and standalone importance scores (Strict GUIDE).
+- [ ] **Gradient Boosting:** Boosting wrappers using GUIDE as the base learner.
 - [ ] **Performance Optimization:** Porting core splitting and selection logic to Rust/C for production-scale performance.
 - [ ] **Extended Interaction Support:** Automated search for arbitrary-depth interactions with better pruning.

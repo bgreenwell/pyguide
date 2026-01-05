@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from scipy.stats import chi2_contingency, fisher_exact
+from scipy.stats import fisher_exact
 
 
 def _bin_continuous(x, n_bins=None):
@@ -183,5 +183,6 @@ def calc_curvature_test(x, z, is_categorical=False):
         return 0.0, 1.0
 
 # Legacy alias for backward compatibility if needed, but we will update callers.
-calc_curvature_p_value = lambda x, z, **kwargs: calc_curvature_test(x, z, **kwargs)[1]
+def calc_curvature_p_value(x, z, **kwargs):
+    return calc_curvature_test(x, z, **kwargs)[1]
 
