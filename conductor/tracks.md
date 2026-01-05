@@ -7,7 +7,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [ ] Track: Gradient Boosting
 *Link: [./conductor/tracks/gradient_boosting_20260104/](./conductor/tracks/gradient_boosting_20260104/)*
 
-## [ ] Track: Performance Optimization (Rust)
+## [x] Track: Performance Optimization (Rust)
 *Link: [./conductor/tracks/performance_optimization_rust_20260104/](./conductor/tracks/performance_optimization_rust_20260104/)*
 
 ## [x] Track: Strict GUIDE Variable Importance
