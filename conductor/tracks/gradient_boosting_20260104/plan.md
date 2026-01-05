@@ -7,9 +7,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Regressor' (Protocol in workflow.md)
 
 ## Phase 2: Gradient Boosting Classifier (Binary)
-- [ ] Task: Implement `GuideGradientBoostingClassifier` skeleton
-- [ ] Task: Implement Binary Deviance boosting loop
-- [ ] Task: Implement `predict_proba` using sigmoid transformation
+- [x] Task: Implement `GuideGradientBoostingClassifier` skeleton
+- [x] Task: Implement Binary Deviance boosting loop
+- [x] Task: Implement `predict_proba` using sigmoid transformation
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Classifier' (Protocol in workflow.md)
 
 ## Phase 3: Benchmarking & Docs
