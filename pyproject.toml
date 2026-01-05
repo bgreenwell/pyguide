@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
 
 [project]
 name = "pyguide"
@@ -22,6 +22,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Intended Audience :: Science/Research",
+    "Programming Language :: Rust",
 ]
 dependencies = [
     "matplotlib>=3.10.0",
@@ -31,6 +32,11 @@ dependencies = [
     "scipy>=1.10.0",
 ]
 
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "pyguide._core"
+python-source = "src"
+
 [project.urls]
 Homepage = "https://github.com/bgreenwell/pyguide"
 Repository = "https://github.com/bgreenwell/pyguide"
@@ -38,6 +44,7 @@ Documentation = "https://github.com/bgreenwell/pyguide"
 
 [dependency-groups]
 dev = [
+    "maturin>=1.10.2",
     "myst-parser>=4.0.1",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
