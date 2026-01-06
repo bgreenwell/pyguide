@@ -12,7 +12,7 @@
 - [x] Task: Implement `predict_proba` using sigmoid transformation
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Classifier' (Protocol in workflow.md)
 
-## Phase 3: Benchmarking & Docs
+## Phase 3: Benchmarking & Docs [checkpoint: 5c816e7]
 - [x] Task: Add `GuideGradientBoosting*` to `pyguide.ensemble` module
 - [x] Task: Create benchmarks comparing against sklearn GBM
 - [x] Task: Update Documentation and Examples
