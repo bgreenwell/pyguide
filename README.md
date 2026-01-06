@@ -166,8 +166,6 @@ Some (very) preliminary benchmarks are shown below:
 
 ```bash
 uv run python benchmarks/main_benchmark.py
-```
-
 --- Benchmarking Classifier: Iris (150 samples, 4 features) ---
 | Model                       |   Train Time (s) |   Test Time (s) |   Accuracy |
 |:----------------------------|-----------------:|----------------:|-----------:|
