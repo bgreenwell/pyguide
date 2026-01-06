@@ -1,7 +1,9 @@
 import numpy as np
 import pytest
 from sklearn.datasets import make_classification
+
 from pyguide import GuideGradientBoostingClassifier
+
 
 def test_gbm_classifier_binary():
     X, y = make_classification(n_samples=100, n_features=10, n_informative=5, random_state=42)

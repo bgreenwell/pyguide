@@ -5,7 +5,7 @@ build-backend = "maturin"
 [project]
 name = "pyguide"
 version = "0.1.0"
-description = "A scikit-learn compatible implementation of the GUIDE (Generalized, Unbiased, Interaction Detection and Estimation) algorithm."
+description = "A scikit-learn compatible implementation of the GUIDE (Generalized, Unbiased, Interaction Detection and Estimation) decision tree algorithm."
 readme = "README.md"
 authors = [
     { name = "Brandon Greenwell", email = "greenwell.brandon@gmail.com" }

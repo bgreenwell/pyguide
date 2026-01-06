@@ -3,10 +3,10 @@ Gradient Boosting with GUIDE trees.
 """
 import numpy as np
 from scipy.special import expit, logit
-from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
-from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
+from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from sklearn.utils import check_random_state
 from sklearn.utils.multiclass import check_classification_targets
+from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
 from .regressor import GuideTreeRegressor
 
@@ -78,7 +78,7 @@ class GuideGradientBoostingRegressor(RegressorMixin, BaseEstimator):
         
         self.estimators_ = []
         
-        for i in range(self.n_estimators):
+        for _i in range(self.n_estimators):
             # 2. Compute negative gradient (residuals for LS)
             residuals = y - y_pred
             
@@ -198,7 +198,7 @@ class GuideGradientBoostingClassifier(ClassifierMixin, BaseEstimator):
         
         self.estimators_ = []
         
-        for i in range(self.n_estimators):
+        for _i in range(self.n_estimators):
             # 2. Compute negative gradient (residuals: y - p)
             # p = sigmoid(raw_pred)
             prob_pred = expit(raw_pred)

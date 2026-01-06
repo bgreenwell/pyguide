@@ -1,7 +1,8 @@
 import numpy as np
-import pytest
 from sklearn.datasets import make_regression
+
 from pyguide import GuideGradientBoostingRegressor
+
 
 def test_gbm_regressor_basic():
     X, y = make_regression(n_samples=100, n_features=5, noise=0.1, random_state=42)

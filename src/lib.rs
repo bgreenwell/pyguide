@@ -1,6 +1,6 @@
-use pyo3::prelude::*;
-use numpy::{PyArrayMethods, PyArray1, PyArray2};
 use ndarray::{Array1, Array2};
+use numpy::{PyArray1, PyArray2, PyArrayMethods};
+use pyo3::prelude::*;
 use std::collections::BTreeSet;
 
 #[pymodule]
@@ -15,7 +15,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
 #[pyfunction]
 fn calculate_chi2(contingency: &Bound<'_, PyArray2<f64>>) -> PyResult<(f64, f64)> {
     let array = unsafe { contingency.as_array() };
-    
+
     let row_sums: Vec<f64> = array.sum_axis(ndarray::Axis(1)).to_vec();
     let col_sums: Vec<f64> = array.sum_axis(ndarray::Axis(0)).to_vec();
     let total: f64 = row_sums.iter().sum();
@@ -36,7 +36,7 @@ fn calculate_chi2(contingency: &Bound<'_, PyArray2<f64>>) -> PyResult<(f64, f64)
     }
 
     let dof = (row_sums.len() - 1) * (col_sums.len() - 1);
-    
+
     Ok((chi2_stat, dof as f64))
 }
 
@@ -50,15 +50,15 @@ fn compute_contingency_table(
 ) -> PyResult<Py<PyArray2<f64>>> {
     let x_view = unsafe { x.as_array() };
     let z_view = unsafe { z.as_array() };
-    
+
     let mut table = Array2::<f64>::zeros((num_x, num_z));
-    
+
     for (&xi, &zi) in x_view.iter().zip(z_view.iter()) {
         if xi >= 0 && (xi as usize) < num_x && zi >= 0 && (zi as usize) < num_z {
             table[[xi as usize, zi as usize]] += 1.0;
         }
     }
-    
+
     Ok(PyArray2::from_array(py, &table).unbind())
 }
 
@@ -115,7 +115,8 @@ fn bin_continuous(
         for (i, &val) in x_view.iter().enumerate() {
             if val.is_nan() {
                 binned[i] = -1;
-            } else if let Ok(idx) = unique_values.binary_search_by(|v| v.partial_cmp(&val).unwrap()) {
+            } else if let Ok(idx) = unique_values.binary_search_by(|v| v.partial_cmp(&val).unwrap())
+            {
                 binned[i] = idx as i64;
             }
         }
@@ -187,19 +188,23 @@ fn find_best_threshold_numerical(
         // Gini logic
         let y_int: Vec<usize> = y_view.iter().map(|&yi| yi as usize).collect();
         let n_classes = y_int.iter().max().map_or(0, |&m| m + 1);
-        
+
         let mut total_counts = vec![0.0; n_classes];
         for &yi in &y_int {
             total_counts[yi] += 1.0;
         }
-        
+
         let mut nan_counts = vec![0.0; n_classes];
         for &yi in &nan_y {
             nan_counts[yi as usize] += 1.0;
         }
-        
-        let current_impurity = 1.0 - total_counts.iter().map(|&c| (c / n_total as f64).powi(2)).sum::<f64>();
-        
+
+        let current_impurity = 1.0
+            - total_counts
+                .iter()
+                .map(|&c| (c / n_total as f64).powi(2))
+                .sum::<f64>();
+
         let mut left_counts = vec![0.0; n_classes];
         let n_nan = nan_y.len() as f64;
         let _n_total_f = n_total as f64;
@@ -207,25 +212,35 @@ fn find_best_threshold_numerical(
         for i in 0..non_nan_data.len() - 1 {
             let (_, yi) = non_nan_data[i];
             left_counts[yi as usize] += 1.0;
-            
+
             // Potential split point if next x is different
-            if non_nan_data[i].0 < non_nan_data[i+1].0 {
+            if non_nan_data[i].0 < non_nan_data[i + 1].0 {
                 let n_l_nn = (i + 1) as f64;
                 let n_r_nn = (non_nan_data.len() - (i + 1)) as f64;
-                
+
                 // Option 1: Missing go left
                 let n_l = n_l_nn + n_nan;
                 let n_r = n_r_nn;
                 if n_l > 0.0 && n_r > 0.0 {
-                    let imp_l = 1.0 - left_counts.iter().zip(&nan_counts)
-                        .map(|(&lc, &nc)| ((lc + nc) / n_l).powi(2)).sum::<f64>();
-                    let imp_r = 1.0 - total_counts.iter().zip(&left_counts).zip(&nan_counts)
-                        .map(|((&tc, &lc), &nc)| ((tc - lc - nc) / n_r).powi(2)).sum::<f64>();
-                    let gain = current_impurity - (n_l/ _n_total_f * imp_l + n_r/ _n_total_f * imp_r);
+                    let imp_l = 1.0
+                        - left_counts
+                            .iter()
+                            .zip(&nan_counts)
+                            .map(|(&lc, &nc)| ((lc + nc) / n_l).powi(2))
+                            .sum::<f64>();
+                    let imp_r = 1.0
+                        - total_counts
+                            .iter()
+                            .zip(&left_counts)
+                            .zip(&nan_counts)
+                            .map(|((&tc, &lc), &nc)| ((tc - lc - nc) / n_r).powi(2))
+                            .sum::<f64>();
+                    let gain =
+                        current_impurity - (n_l / _n_total_f * imp_l + n_r / _n_total_f * imp_r);
                     if gain > best_gain {
                         best_gain = gain;
                         best_missing_go_left = true;
-                        best_threshold = Some((non_nan_data[i].0 + non_nan_data[i+1].0) / 2.0);
+                        best_threshold = Some((non_nan_data[i].0 + non_nan_data[i + 1].0) / 2.0);
                     }
                 }
 
@@ -233,14 +248,23 @@ fn find_best_threshold_numerical(
                 let n_l = n_l_nn;
                 let n_r = n_r_nn + n_nan;
                 if n_l > 0.0 && n_r > 0.0 {
-                    let imp_l = 1.0 - left_counts.iter().map(|&lc| (lc / n_l).powi(2)).sum::<f64>();
-                    let imp_r = 1.0 - total_counts.iter().zip(&left_counts)
-                        .map(|(&tc, &lc)| ((tc - lc) / n_r).powi(2)).sum::<f64>();
-                    let gain = current_impurity - (n_l/ _n_total_f * imp_l + n_r/ _n_total_f * imp_r);
+                    let imp_l = 1.0
+                        - left_counts
+                            .iter()
+                            .map(|&lc| (lc / n_l).powi(2))
+                            .sum::<f64>();
+                    let imp_r = 1.0
+                        - total_counts
+                            .iter()
+                            .zip(&left_counts)
+                            .map(|(&tc, &lc)| ((tc - lc) / n_r).powi(2))
+                            .sum::<f64>();
+                    let gain =
+                        current_impurity - (n_l / _n_total_f * imp_l + n_r / _n_total_f * imp_r);
                     if gain > best_gain {
                         best_gain = gain;
                         best_missing_go_left = false;
-                        best_threshold = Some((non_nan_data[i].0 + non_nan_data[i+1].0) / 2.0);
+                        best_threshold = Some((non_nan_data[i].0 + non_nan_data[i + 1].0) / 2.0);
                     }
                 }
             }
@@ -251,21 +275,21 @@ fn find_best_threshold_numerical(
         let sum_y2_total: f64 = y_view.iter().map(|&yi| yi.powi(2)).sum();
         let sum_y_nan: f64 = nan_y.iter().sum();
         let sum_y2_nan: f64 = nan_y.iter().map(|&yi| yi.powi(2)).sum();
-        
+
         let current_impurity = sum_y2_total - (sum_y_total.powi(2) / n_total as f64);
-        
+
         let mut sum_y_l_nn = 0.0;
         let mut sum_y2_l_nn = 0.0;
-        
+
         for i in 0..non_nan_data.len() - 1 {
             let (_, yi) = non_nan_data[i];
             sum_y_l_nn += yi;
             sum_y2_l_nn += yi.powi(2);
-            
-            if non_nan_data[i].0 < non_nan_data[i+1].0 {
+
+            if non_nan_data[i].0 < non_nan_data[i + 1].0 {
                 let n_l_nn = (i + 1) as f64;
                 let n_r_nn = (non_nan_data.len() - (i + 1)) as f64;
-                
+
                 let sum_y_r_nn = sum_y_total - sum_y_nan - sum_y_l_nn;
                 let sum_y2_r_nn = sum_y2_total - sum_y2_nan - sum_y2_l_nn;
 
@@ -279,7 +303,7 @@ fn find_best_threshold_numerical(
                     if gain > best_gain {
                         best_gain = gain;
                         best_missing_go_left = true;
-                        best_threshold = Some((non_nan_data[i].0 + non_nan_data[i+1].0) / 2.0);
+                        best_threshold = Some((non_nan_data[i].0 + non_nan_data[i + 1].0) / 2.0);
                     }
                 }
 
@@ -293,7 +317,7 @@ fn find_best_threshold_numerical(
                     if gain > best_gain {
                         best_gain = gain;
                         best_missing_go_left = false;
-                        best_threshold = Some((non_nan_data[i].0 + non_nan_data[i+1].0) / 2.0);
+                        best_threshold = Some((non_nan_data[i].0 + non_nan_data[i + 1].0) / 2.0);
                     }
                 }
             }
