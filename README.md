@@ -5,7 +5,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/pyguide.svg)](https://pypi.org/project/pyguide/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A high-quality, scikit-learn compatible Python implementation of the **GUIDE** (Generalized, Unbiased, Interaction Detection and Estimation) algorithm.
+An open-source, scikit-learn compatible Python implementation of the **GUIDE** (Generalized, Unbiased, Interaction Detection and Estimation) decision tree algorithm.
 
 ## Why GUIDE?
 
