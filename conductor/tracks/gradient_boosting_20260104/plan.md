@@ -13,7 +13,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Classifier' (Protocol in workflow.md)
 
 ## Phase 3: Benchmarking & Docs
-- [ ] Task: Add `GuideGradientBoosting*` to `pyguide.ensemble` module
-- [ ] Task: Create benchmarks comparing against sklearn GBM
-- [ ] Task: Update Documentation and Examples
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Benchmarking & Docs' (Protocol in workflow.md)
+- [x] Task: Add `GuideGradientBoosting*` to `pyguide.ensemble` module
+- [x] Task: Create benchmarks comparing against sklearn GBM
+- [x] Task: Update Documentation and Examples
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Benchmarking & Docs' (Protocol in workflow.md)

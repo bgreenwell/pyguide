@@ -1,12 +1,20 @@
 import time
 
+import numpy as np
 import pandas as pd
 from sklearn.datasets import load_diabetes, load_digits, load_iris
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.ensemble import (
+    GradientBoostingClassifier,
+    GradientBoostingRegressor,
+    RandomForestClassifier,
+    RandomForestRegressor,
+)
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 from pyguide import (
+    GuideGradientBoostingClassifier,
+    GuideGradientBoostingRegressor,
     GuideRandomForestClassifier,
     GuideRandomForestRegressor,
     GuideTreeClassifier,
@@ -87,6 +95,50 @@ def benchmark_classifier(name, X, y):
         "Test Time (s)": test_time_rf_guide,
         "Accuracy": score_rf_guide
     })
+
+    # 5. Scikit-learn Gradient Boosting
+    # Note: sklearn GBM is slower than RF but more accurate usually
+    gbm_sklearn = GradientBoostingClassifier(n_estimators=20, max_depth=3, random_state=42)
+    start = time.time()
+    gbm_sklearn.fit(X_train, y_train)
+    train_time_gbm = time.time() - start
+    
+    start = time.time()
+    score_gbm = gbm_sklearn.score(X_test, y_test)
+    test_time_gbm = time.time() - start
+    
+    results.append({
+        "Model": "sklearn (Gradient Boosting)",
+        "Train Time (s)": train_time_gbm,
+        "Test Time (s)": test_time_gbm,
+        "Accuracy": score_gbm
+    })
+
+    # 6. pyguide Gradient Boosting
+    # Only binary supported for now!
+    if len(np.unique(y)) == 2:
+        gbm_guide = GuideGradientBoostingClassifier(n_estimators=20, max_depth=3, random_state=42)
+        start = time.time()
+        gbm_guide.fit(X_train, y_train)
+        train_time_gbm_guide = time.time() - start
+        
+        start = time.time()
+        score_gbm_guide = gbm_guide.score(X_test, y_test)
+        test_time_gbm_guide = time.time() - start
+        
+        results.append({
+            "Model": "pyguide (Gradient Boosting)",
+            "Train Time (s)": train_time_gbm_guide,
+            "Test Time (s)": test_time_gbm_guide,
+            "Accuracy": score_gbm_guide
+        })
+    else:
+        results.append({
+            "Model": "pyguide (Gradient Boosting)",
+            "Train Time (s)": 0.0,
+            "Test Time (s)": 0.0,
+            "Accuracy": 0.0 # Not supported
+        })
     
     df = pd.DataFrame(results)
     print(df.to_markdown(index=False))
@@ -166,6 +218,40 @@ def benchmark_regressor(name, X, y):
         "Test Time (s)": test_time_rf_guide,
         "R2 Score": score_rf_guide
     })
+
+    # 5. Scikit-learn Gradient Boosting
+    gbm_sklearn = GradientBoostingRegressor(n_estimators=20, max_depth=3, random_state=42)
+    start = time.time()
+    gbm_sklearn.fit(X_train, y_train)
+    train_time_gbm = time.time() - start
+    
+    start = time.time()
+    score_gbm = gbm_sklearn.score(X_test, y_test)
+    test_time_gbm = time.time() - start
+    
+    results.append({
+        "Model": "sklearn (Gradient Boosting)",
+        "Train Time (s)": train_time_gbm,
+        "Test Time (s)": test_time_gbm,
+        "R2 Score": score_gbm
+    })
+
+    # 6. pyguide Gradient Boosting
+    gbm_guide = GuideGradientBoostingRegressor(n_estimators=20, max_depth=3, random_state=42)
+    start = time.time()
+    gbm_guide.fit(X_train, y_train)
+    train_time_gbm_guide = time.time() - start
+    
+    start = time.time()
+    score_gbm_guide = gbm_guide.score(X_test, y_test)
+    test_time_gbm_guide = time.time() - start
+    
+    results.append({
+        "Model": "pyguide (Gradient Boosting)",
+        "Train Time (s)": train_time_gbm_guide,
+        "Test Time (s)": test_time_gbm_guide,
+        "R2 Score": score_gbm_guide
+    })
     
     df = pd.DataFrame(results)
     print(df.to_markdown(index=False))
@@ -174,6 +260,7 @@ def benchmark_regressor(name, X, y):
 
 if __name__ == "__main__":
     # Classification
+    # Note: Iris and Digits are multiclass, so GBM won't run for pyguide
     X_iris, y_iris = load_iris(return_X_y=True)
     benchmark_classifier("Iris", X_iris, y_iris)
     
