@@ -195,7 +195,8 @@ uv run python benchmarks/main_benchmark.py
 | pyguide (Random Forest)     |      1.31263     |     0.00675607  |   0.46877  |
 | sklearn (Gradient Boosting) |      0.0121379   |     0.000537157 |   0.450993 |
 | pyguide (Gradient Boosting) |      0.843419    |     0.00146008  |   0.484351 |
-
+```
+**Note:** The gradient boosting results for the iris and digits data sets are currently 0 because multivariate outcomes are currently not supported.
 
 ## References
 
