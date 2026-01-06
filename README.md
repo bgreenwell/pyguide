@@ -166,35 +166,47 @@ Some (very) preliminary benchmarks are shown below:
 
 ```bash
 uv run python benchmarks/main_benchmark.py
+```
+
 --- Benchmarking Classifier: Iris (150 samples, 4 features) ---
 | Model                       |   Train Time (s) |   Test Time (s) |   Accuracy |
 |:----------------------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)              |      0.000412226 |     0.000177145 |          1 |
-| pyguide (GUIDE)             |      0.00168872  |     0.000141144 |          1 |
-| sklearn (Random Forest)     |      0.0064311   |     0.000495195 |          1 |
-| pyguide (Random Forest)     |      0.0409889   |     0.000804901 |          1 |
-| sklearn (Gradient Boosting) |      0.0102081   |     0.000274897 |          1 |
+| sklearn (CART)              |      0.000684977 |     0.000187159 |          1 |
+| pyguide (GUIDE)             |      0.00245309  |     0.000161886 |          1 |
+| sklearn (Random Forest)     |      0.00682116  |     0.000476837 |          1 |
+| pyguide (Random Forest)     |      0.042968    |     0.00081706  |          1 |
+| sklearn (Gradient Boosting) |      0.0229151   |     0.000649929 |          1 |
 | pyguide (Gradient Boosting) |      0           |     0           |          0 |
 
 --- Benchmarking Classifier: Digits (1797 samples, 64 features) ---
 | Model                       |   Train Time (s) |   Test Time (s) |   Accuracy |
 |:----------------------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)              |       0.00504208 |     0.000189066 |   0.663889 |
-| pyguide (GUIDE)             |       0.0904272  |     0.000524998 |   0.708333 |
-| sklearn (Random Forest)     |       0.0160892  |     0.000732899 |   0.938889 |
-| pyguide (Random Forest)     |       0.457482   |     0.00805092  |   0.925    |
-| sklearn (Gradient Boosting) |       0.598285   |     0.00100899  |   0.930556 |
+| sklearn (CART)              |       0.00626874 |     0.000355721 |   0.663889 |
+| pyguide (GUIDE)             |       0.0897272  |     0.000550985 |   0.708333 |
+| sklearn (Random Forest)     |       0.0162752  |     0.000712872 |   0.938889 |
+| pyguide (Random Forest)     |       0.467017   |     0.00838208  |   0.925    |
+| sklearn (Gradient Boosting) |       0.613889   |     0.00105691  |   0.930556 |
 | pyguide (Gradient Boosting) |       0          |     0           |   0        |
+
+--- Benchmarking Classifier: Breast Cancer (569 samples, 30 features) ---
+| Model                       |   Train Time (s) |   Test Time (s) |   Accuracy |
+|:----------------------------|-----------------:|----------------:|-----------:|
+| sklearn (CART)              |       0.00244403 |     0.000133991 |   0.947368 |
+| pyguide (GUIDE)             |       0.024884   |     0.000295877 |   0.973684 |
+| sklearn (Random Forest)     |       0.0109897  |     0.000590086 |   0.964912 |
+| pyguide (Random Forest)     |       0.376772   |     0.00233197  |   0.964912 |
+| sklearn (Gradient Boosting) |       0.0363209  |     0.000236988 |   0.95614  |
+| pyguide (Gradient Boosting) |       3.26811    |     0.00185609  |   0.95614  |
 
 --- Benchmarking Regressor: Diabetes (442 samples, 10 features) ---
 | Model                       |   Train Time (s) |   Test Time (s) |   R2 Score |
 |:----------------------------|-----------------:|----------------:|-----------:|
-| sklearn (CART)              |      0.000635862 |     0.00014019  |   0.334482 |
-| pyguide (GUIDE)             |      0.0134792   |     0.000224113 |   0.314395 |
-| sklearn (Random Forest)     |      0.0110421   |     0.000590801 |   0.429393 |
-| pyguide (Random Forest)     |      1.31263     |     0.00675607  |   0.46877  |
-| sklearn (Gradient Boosting) |      0.0121379   |     0.000537157 |   0.450993 |
-| pyguide (Gradient Boosting) |      0.843419    |     0.00146008  |   0.484351 |
+| sklearn (CART)              |      0.000643015 |     0.000144958 |   0.334482 |
+| pyguide (GUIDE)             |      0.0127881   |     0.000193119 |   0.314395 |
+| sklearn (Random Forest)     |      0.0108769   |     0.000529289 |   0.429393 |
+| pyguide (Random Forest)     |      1.3244      |     0.002249    |   0.46877  |
+| sklearn (Gradient Boosting) |      0.00865674  |     0.000172138 |   0.450993 |
+| pyguide (Gradient Boosting) |      0.866097    |     0.00140405  |   0.484351 |
 ```
 **Note:** The gradient boosting results for the iris and digits data sets are currently 0 because multivariate outcomes are currently not supported.
 

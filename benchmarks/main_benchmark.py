@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 import pandas as pd
-from sklearn.datasets import load_diabetes, load_digits, load_iris
+from sklearn.datasets import load_breast_cancer, load_diabetes, load_digits, load_iris
 from sklearn.ensemble import (
     GradientBoostingClassifier,
     GradientBoostingRegressor,
@@ -266,6 +266,9 @@ if __name__ == "__main__":
     
     X_digits, y_digits = load_digits(return_X_y=True)
     benchmark_classifier("Digits", X_digits, y_digits)
+
+    X_bc, y_bc = load_breast_cancer(return_X_y=True)
+    benchmark_classifier("Breast Cancer", X_bc, y_bc)
     
     # Regression
     X_diabetes, y_diabetes = load_diabetes(return_X_y=True)
