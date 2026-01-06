@@ -6,11 +6,11 @@
 - [x] Task: Add support for `subsample` (Stochastic Gradient Boosting)
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Regressor' (Protocol in workflow.md)
 
-## Phase 2: Gradient Boosting Classifier (Binary)
+## Phase 2: Gradient Boosting Classifier (Binary) [checkpoint: fc2f6b4]
 - [x] Task: Implement `GuideGradientBoostingClassifier` skeleton
 - [x] Task: Implement Binary Deviance boosting loop
 - [x] Task: Implement `predict_proba` using sigmoid transformation
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Classifier' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Classifier' (Protocol in workflow.md)
 
 ## Phase 3: Benchmarking & Docs
 - [ ] Task: Add `GuideGradientBoosting*` to `pyguide.ensemble` module
