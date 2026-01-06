@@ -25,6 +25,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'myst_parser',
+    'nbsphinx',
 ]
 
 source_suffix = {

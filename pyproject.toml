@@ -44,8 +44,10 @@ Documentation = "https://github.com/bgreenwell/pyguide"
 
 [dependency-groups]
 dev = [
+    "ipykernel>=7.1.0",
     "maturin>=1.10.2",
     "myst-parser>=4.0.1",
+    "nbsphinx>=0.9.8",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
     "ruff>=0.14.10",
