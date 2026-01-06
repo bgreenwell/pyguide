@@ -20,6 +20,7 @@ pyguide documentation
 
    examples/regression
    examples/classification
+   examples/strict_importance
 
 .. toctree::
    :maxdepth: 2
