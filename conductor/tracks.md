@@ -4,6 +4,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
+## [x] Track: Documentation & Benchmarks Update
+*Link: [./conductor/tracks/docs_update_20260104/](./conductor/tracks/docs_update_20260104/)*
+
 ## [x] Track: Gradient Boosting
 *Link: [./conductor/tracks/gradient_boosting_20260104/](./conductor/tracks/gradient_boosting_20260104/)*
 
